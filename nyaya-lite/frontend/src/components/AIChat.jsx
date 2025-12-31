@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import VoiceInput from './VoiceInput';
 import SkeletonLoader from './SkeletonLoader';
 import ResultCard from './ResultCard';
+import ReactMarkdown from 'react-markdown';
 
 export default function AIChat() {
     const { t } = useTranslation();
@@ -26,8 +27,9 @@ export default function AIChat() {
     // Handle new results from the hook
     useEffect(() => {
         if (results) {
-            // Priority: AI summary -> Local message -> First matched law description -> Fallback
-            const responseText = results.summary ||
+            // Priority: AI detailed_analysis -> AI summary -> Local message -> Fallback
+            const responseText = results.detailed_analysis ||
+                results.summary ||
                 results.message ||
                 (results.matches && results.matches[0]?.description) ||
                 "I've analyzed your situation and found some relevant legal information.";
@@ -75,56 +77,62 @@ export default function AIChat() {
                             </div>
 
                             {/* Bubble */}
-                            <div className={`p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.type === 'user'
-                                ? 'bg-indigo-500 text-white rounded-tr-none'
-                                : 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-tl-none'
+                            <div className={`p-4 rounded-2xl text-sm leading-relaxed shadow-sm flex-1 ${msg.type === 'user'
+                                ? 'bg-indigo-600 text-white rounded-tr-none max-w-[80%] ml-auto'
+                                : 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-tl-none w-full max-w-full'
                                 }`}>
-                                {msg.text}
+
+                                {msg.type === 'bot' ? (
+                                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                                        <ReactMarkdown
+                                            components={{
+                                                h3: ({ node, ...props }) => <h3 className="text-base font-bold text-indigo-500 mb-2 mt-4" {...props} />,
+                                                ul: ({ node, ...props }) => <ul className="list-disc pl-4 space-y-1 my-3" {...props} />,
+                                                li: ({ node, ...props }) => <li className="text-sm opacity-90" {...props} />,
+                                                p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                                strong: ({ node, ...props }) => <strong className="font-bold text-indigo-400" {...props} />,
+                                            }}
+                                        >
+                                            {msg.text}
+                                        </ReactMarkdown>
+                                    </div>
+                                ) : (
+                                    msg.text
+                                )}
 
                                 {/* Rich Content for Bot (if available) */}
                                 {msg.data && (
-                                    <div className="mt-4 space-y-4">
-                                        {/* Simple Explanation for AI Responses */}
-                                        {msg.data.simple_explanation && (
-                                            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/40 rounded-xl border border-indigo-100 dark:border-indigo-800 text-sm border-l-4 border-l-indigo-500">
-                                                <p className="font-medium text-indigo-900 dark:text-indigo-100 mb-1 flex items-center gap-2">
-                                                    <Bot size={14} /> Simplified Advice:
-                                                </p>
-                                                <span className="opacity-90">{msg.data.simple_explanation}</span>
+                                    <div className="mt-6 space-y-6">
+                                        {/* If we have direct law matches (from backend analyzer) */}
+                                        {msg.data.matches && msg.data.matches.length > 0 && (
+                                            <div className="space-y-4 pt-4 border-t border-[var(--border-color)]">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Verified Legal Matches</p>
+                                                </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {msg.data.matches.slice(0, 2).map((match, i) => (
+                                                        <ResultCard key={i} match={match} />
+                                                    ))}
+                                                </div>
                                             </div>
                                         )}
 
-                                        {/* If we have direct law matches (from backend analyzer) */}
-                                        {msg.data.matches && msg.data.matches.length > 0 ? (
-                                            <div className="space-y-3">
-                                                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider ml-1">Legal Analysis & Provisions:</p>
-                                                {msg.data.matches.slice(0, 2).map((match, i) => (
-                                                    <ResultCard key={i} match={match} />
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            /* If AI result but no database matches, or fallback display */
-                                            <div className="space-y-3">
-                                                {/* Risk Badge */}
-                                                {msg.data.risk_level && msg.data.risk_level !== 'N/A' && msg.data.risk_level !== 'Conversational' && (
-                                                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.risk_level === 'Emergency')
-                                                            ? 'bg-red-100 text-red-600'
-                                                            : 'bg-green-100 text-green-600'
+                                        {/* Simple Explanation / Bottom Stats if it was a legal query */}
+                                        {msg.data.primary_offense && msg.data.primary_offense !== 'Conversational' && (
+                                            <div className="flex flex-wrap gap-2 pt-2">
+                                                {msg.data.risk_level && msg.data.risk_level !== 'N/A' && (
+                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.risk_level === 'Emergency')
+                                                            ? 'bg-red-500/10 text-red-500'
+                                                            : 'bg-green-500/10 text-green-500'
                                                         }`}>
                                                         {msg.data.risk_level} Risk
                                                     </span>
                                                 )}
-
-                                                {/* Steps - Only show if they have actual content beyond placeholders */}
-                                                {msg.data.steps && msg.data.steps.length > 0 && msg.data.steps[0].title !== 'Immediate Action' && (
-                                                    <div className="space-y-2">
-                                                        {msg.data.steps.slice(0, 3).map((step, i) => (
-                                                            <div key={i} className="pl-3 border-l-2 border-indigo-200">
-                                                                <p className="font-bold text-xs">{step.title}</p>
-                                                                <p className="text-xs opacity-80">{step.description}</p>
-                                                            </div>
-                                                        ))}
-                                                    </div>
+                                                {msg.data.lawyer_type && (
+                                                    <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500 text-[10px] font-bold uppercase">
+                                                        {msg.data.lawyer_type}
+                                                    </span>
                                                 )}
                                             </div>
                                         )}
