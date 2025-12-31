@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import { Toaster } from 'react-hot-toast'
+import './i18n'; // Initialize i18n
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>

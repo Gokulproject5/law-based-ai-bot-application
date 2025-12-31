@@ -121,43 +121,27 @@ export default function MapView() {
 
     return (
         <div className="space-y-4 h-full flex flex-col">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center px-2">
                 <h2 className="text-xl font-bold text-[var(--text-primary)]">Find Help Nearby</h2>
                 <button
                     onClick={getUserLocation}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white transition-all hover:opacity-90"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white transition-all hover:opacity-90 shadow-md"
                     style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
                 >
                     {loading ? <Loader size={16} className="animate-spin" /> : <Locate size={16} />}
-                    {loading ? 'Locating...' : 'Find Lawyers'}
+                    {loading ? 'Locating...' : 'Search Here'}
                 </button>
             </div>
 
             {locationError && (
-                <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+                <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm mx-2">
                     {locationError}
                 </div>
             )}
 
-            {/* Quick Links */}
-            <div className="grid grid-cols-2 gap-2">
-                <button
-                    onClick={() => openGoogleMaps('Police Station near me')}
-                    className="p-3 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-blue-100"
-                >
-                    <ExternalLink size={16} /> Police Stations
-                </button>
-                <button
-                    onClick={() => openGoogleMaps('District Court near me')}
-                    className="p-3 bg-orange-50 text-orange-700 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-orange-100"
-                >
-                    <ExternalLink size={16} /> Courts
-                </button>
-            </div>
-
             {/* Map */}
-            <div className="flex-1 rounded-xl overflow-hidden border border-[var(--border-color)] relative z-0 min-h-[300px]">
+            <div className="flex-1 rounded-xl overflow-hidden border border-[var(--border-color)] relative z-0 shadow-inner">
                 <MapContainer center={mapCenter} zoom={userLocation ? 13 : 5} style={{ height: '100%', width: '100%' }}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
