@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 const apiRoutes = require('./routes/api');
 const lawRoutes = require('./routes/laws');
 
@@ -16,6 +17,7 @@ const app = express();
 
 // Security functions and performance
 app.use(helmet());
+app.use(mongoSanitize()); // Prevent NoSQL injection
 app.use(compression());
 app.use(morgan('dev')); // Use 'dev' for concise logging during development
 
