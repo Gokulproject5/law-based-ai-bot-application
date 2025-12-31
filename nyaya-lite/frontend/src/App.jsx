@@ -51,7 +51,7 @@ export default function App() {
         setLoading(true);
         setResults(null);
         try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
             const r = await axios.post(`${API_URL}/api/analyze`, { text });
             setResults(r.data);
         } catch (e) {

@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "postinstall": "npm install --prefix ../frontend && npm run build --prefix ../frontend"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.2",

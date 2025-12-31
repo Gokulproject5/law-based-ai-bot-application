@@ -9,7 +9,10 @@ export default function AdminView() {
         ipc_sections: '',
         severity: 'Medium'
     });
+    const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+
+    const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,15 +20,17 @@ export default function AdminView() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Start loading
         try {
             // Note: You need to implement POST /api/laws in backend for this to work fully
             // For now, this is a UI shell as per "Admin Features (Later)"
-            alert("Admin API endpoint not yet fully secured/implemented. This is a UI demo.");
-            // await axios.post('http://localhost:5000/api/laws', form);
-            setMessage('Law added successfully (Demo)!');
+            await axios.post(`${API_URL}/api/laws`, form);
+            setMessage('Law added successfully!');
             setForm({ title: '', category: '', description: '', ipc_sections: '', severity: 'Medium' });
         } catch (err) {
             setMessage('Error adding law.');
+        } finally {
+            setLoading(false); // End loading
         }
     };
 

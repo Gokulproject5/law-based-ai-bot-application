@@ -11,9 +11,11 @@ export default function CategoryView() {
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('local'); // 'local' or 'official'
 
+    const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
+
     useEffect(() => {
         // Fetch categories on mount
-        axios.get('http://localhost:5000/api/categories')
+        axios.get(`${API_URL}/api/categories`)
             .then(res => setCategories(res.data))
             .catch(err => console.error(err));
     }, []);
@@ -22,7 +24,7 @@ export default function CategoryView() {
         setSelectedCategory(category);
         setLoading(true);
         try {
-            const res = await axios.get(`http://localhost:5000/api/laws?category=${encodeURIComponent(category)}`);
+            const res = await axios.get(`${API_URL}/api/laws?category=${encodeURIComponent(category)}`);
             setLaws(res.data);
         } catch (err) {
             console.error(err);

@@ -39,7 +39,8 @@ export default function MapView() {
     const [locationError, setLocationError] = useState(null);
     const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]); // India center
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
+
 
     const getUserLocation = () => {
         setLoading(true);
