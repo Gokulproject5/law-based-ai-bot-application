@@ -25,10 +25,16 @@ export default function AIChat() {
     // Handle new results from the hook
     useEffect(() => {
         if (results) {
+            // Priority: AI summary -> Local message -> First matched law description -> Fallback
+            const responseText = results.summary ||
+                results.message ||
+                (results.matches && results.matches[0]?.description) ||
+                "I've analyzed your situation and found some relevant legal information.";
+
             const botResponse = {
                 type: 'bot',
-                data: results, // Store full object to render rich cards
-                text: results.summary || "I found some information."
+                data: results,
+                text: responseText
             };
             setMessages(prev => [...prev, botResponse]);
         }
@@ -69,29 +75,43 @@ export default function AIChat() {
 
                             {/* Bubble */}
                             <div className={`p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.type === 'user'
-                                    ? 'bg-indigo-500 text-white rounded-tr-none'
-                                    : 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-tl-none'
+                                ? 'bg-indigo-500 text-white rounded-tr-none'
+                                : 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-tl-none'
                                 }`}>
                                 {msg.text}
 
                                 {/* Rich Content for Bot (if available) */}
                                 {msg.data && (
                                     <div className="mt-4 space-y-3">
-                                        {/* Risk Badge */}
-                                        {msg.data.risk_level && (
-                                            <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${msg.data.risk_level === 'High' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'
+                                        {/* Risk Badge (AI urgency or Local urgency) */}
+                                        {(msg.data.risk_level || msg.data.urgency_level) && (
+                                            <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.urgency_level === 'High' || msg.data.risk_level === 'Emergency' || msg.data.urgency_level === 'Emergency')
+                                                    ? 'bg-red-100 text-red-600'
+                                                    : 'bg-green-100 text-green-600'
                                                 }`}>
-                                                {msg.data.risk_level} Risk
+                                                {msg.data.risk_level || msg.data.urgency_level} Risk
                                             </span>
                                         )}
 
-                                        {/* Steps */}
-                                        {msg.data.steps && msg.data.steps.slice(0, 3).map((step, i) => (
-                                            <div key={i} className="pl-3 border-l-2 border-indigo-200">
-                                                <p className="font-bold text-xs">{step.title}</p>
-                                                <p className="text-xs opacity-80">{step.description}</p>
+                                        {/* Steps - prefer AI steps, fallback to matching laws if needed */}
+                                        {msg.data.steps ? (
+                                            msg.data.steps.slice(0, 3).map((step, i) => (
+                                                <div key={i} className="pl-3 border-l-2 border-indigo-200">
+                                                    <p className="font-bold text-xs">{step.title}</p>
+                                                    <p className="text-xs opacity-80">{step.description}</p>
+                                                </div>
+                                            ))
+                                        ) : msg.data.matches && msg.data.matches.length > 0 && (
+                                            <div className="space-y-2">
+                                                <p className="text-xs font-bold text-indigo-500 uppercase">Relevant Provisions:</p>
+                                                {msg.data.matches.slice(0, 2).map((match, i) => (
+                                                    <div key={i} className="pl-3 border-l-2 border-indigo-200">
+                                                        <p className="font-bold text-xs">{match.title}</p>
+                                                        <p className="text-xs opacity-80 line-clamp-2">{match.description}</p>
+                                                    </div>
+                                                ))}
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 )}
                             </div>
