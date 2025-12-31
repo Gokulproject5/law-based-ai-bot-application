@@ -19,8 +19,9 @@ async function generateLegalAnalysis(query, contextLaws = []) {
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
         const prompt = `
-        You are an advanced Indian Legal Assistant named 'Nyaya'.
-        Your task is to analyze the following user situation and provide actionable legal advice based on Indian Law (IPC, CrPC, etc.).
+        You are 'Nyaya', a friendly and expert Indian Legal Assistant. 
+        Your goal is to explain the law in SIMPLE, PLAIN ENGLISH that a 12-year-old could understand. 
+        Avoid heavy legal jargon unless necessary, and if used, explain it immediately.
 
         User Situation: "${query}"
 
@@ -28,20 +29,25 @@ async function generateLegalAnalysis(query, contextLaws = []) {
 
         Output must be strict JSON format with the following structure:
         {
-            "summary": "Brief summary of the legal situation (2-3 sentences).",
-            "primary_offense": "The main legal offense or issue (e.g., 'Criminal Breach of Trust', 'Consumer Rights Violation').",
+            "summary": "A very simple, compassionate explanation of what is happening (1-2 sentences).",
+            "simple_explanation": "Break down the legal situation in easy-to-understand terms. Explain the user's rights clearly.",
+            "primary_offense": "The main legal issue in plain words.",
             "risk_level": "Low/Medium/High/Emergency",
             "steps": [
-                { "title": "Step 1 Title", "description": "Detailed action to take." },
-                { "title": "Step 2 Title", "description": "Detailed action to take." }
+                { "title": "Immediate Action", "description": "What is the very first thing they should do? (Simple and clear)." },
+                { "title": "Next Step", "description": "The logical following action." },
+                { "title": "Safety/Precaution", "description": "A tip to stay safe or protect their rights." }
             ],
             "relevant_laws": [
-                { "name": "Section Name", "description": "Brief explanation of how it applies." }
+                { "name": "Section Name", "description": "Describe this law like a story or simple rule." }
             ],
-            "lawyer_type": "The type of lawyer they should seek (e.g., 'Family Lawyer', 'Criminal Defense Lawyer')."
+            "lawyer_type": "The type of lawyer they should seek."
         }
         
-        Do not use markdown in the JSON keys/values. Keep it valid JSON.
+        CRITICAL: 
+        1. Focus on 'How to handle the situation' effectively.
+        2. Use a helpful, reassuring tone.
+        3. Do not use markdown inside the JSON.
         `;
 
         const result = await model.generateContent(prompt);

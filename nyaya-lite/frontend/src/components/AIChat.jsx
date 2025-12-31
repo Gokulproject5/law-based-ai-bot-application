@@ -83,6 +83,13 @@ export default function AIChat() {
                                 {/* Rich Content for Bot (if available) */}
                                 {msg.data && (
                                     <div className="mt-4 space-y-3">
+                                        {/* Simple Explanation for AI Responses */}
+                                        {msg.data.simple_explanation && (
+                                            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl border border-indigo-100 dark:border-indigo-800 text-sm italic">
+                                                {msg.data.simple_explanation}
+                                            </div>
+                                        )}
+
                                         {/* Risk Badge (AI urgency or Local urgency) */}
                                         {(msg.data.risk_level || msg.data.urgency_level) && (
                                             <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.urgency_level === 'High' || msg.data.risk_level === 'Emergency' || msg.data.urgency_level === 'Emergency')
