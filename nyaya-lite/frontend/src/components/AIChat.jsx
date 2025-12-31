@@ -106,17 +106,17 @@ export default function AIChat() {
                                             /* If AI result but no database matches, or fallback display */
                                             <div className="space-y-3">
                                                 {/* Risk Badge */}
-                                                {(msg.data.risk_level || msg.data.urgency_level) && (
-                                                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.urgency_level === 'High' || msg.data.risk_level === 'Emergency' || msg.data.urgency_level === 'Emergency')
+                                                {msg.data.risk_level && msg.data.risk_level !== 'N/A' && msg.data.risk_level !== 'Conversational' && (
+                                                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.risk_level === 'Emergency')
                                                             ? 'bg-red-100 text-red-600'
                                                             : 'bg-green-100 text-green-600'
                                                         }`}>
-                                                        {msg.data.risk_level || msg.data.urgency_level} Risk
+                                                        {msg.data.risk_level} Risk
                                                     </span>
                                                 )}
 
-                                                {/* Steps */}
-                                                {msg.data.steps && (
+                                                {/* Steps - Only show if they have actual content beyond placeholders */}
+                                                {msg.data.steps && msg.data.steps.length > 0 && msg.data.steps[0].title !== 'Immediate Action' && (
                                                     <div className="space-y-2">
                                                         {msg.data.steps.slice(0, 3).map((step, i) => (
                                                             <div key={i} className="pl-3 border-l-2 border-indigo-200">

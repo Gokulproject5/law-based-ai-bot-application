@@ -9,7 +9,7 @@ const { searchNearbyLawyers, getLawyerDetails } = require('../utils/googlePlaces
 
 // Validation Schema
 const analyzeSchema = Joi.object({
-    text: Joi.string().min(3).max(5000).required().messages({
+    text: Joi.string().min(2).max(5000).required().messages({
         'string.empty': 'Please describe your situation.',
         'string.min': 'Description is too short. Please provide more details.',
         'string.max': 'Description is too long. Please summarize.'
