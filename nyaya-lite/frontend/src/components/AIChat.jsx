@@ -4,6 +4,7 @@ import { useLegalAnalysis } from '../hooks/useLegalAnalysis';
 import { useTranslation } from 'react-i18next';
 import VoiceInput from './VoiceInput';
 import SkeletonLoader from './SkeletonLoader';
+import ResultCard from './ResultCard';
 
 export default function AIChat() {
     const { t } = useTranslation();
@@ -82,41 +83,49 @@ export default function AIChat() {
 
                                 {/* Rich Content for Bot (if available) */}
                                 {msg.data && (
-                                    <div className="mt-4 space-y-3">
+                                    <div className="mt-4 space-y-4">
                                         {/* Simple Explanation for AI Responses */}
                                         {msg.data.simple_explanation && (
-                                            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl border border-indigo-100 dark:border-indigo-800 text-sm italic">
-                                                {msg.data.simple_explanation}
+                                            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/40 rounded-xl border border-indigo-100 dark:border-indigo-800 text-sm border-l-4 border-l-indigo-500">
+                                                <p className="font-medium text-indigo-900 dark:text-indigo-100 mb-1 flex items-center gap-2">
+                                                    <Bot size={14} /> Simplified Advice:
+                                                </p>
+                                                <span className="opacity-90">{msg.data.simple_explanation}</span>
                                             </div>
                                         )}
 
-                                        {/* Risk Badge (AI urgency or Local urgency) */}
-                                        {(msg.data.risk_level || msg.data.urgency_level) && (
-                                            <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.urgency_level === 'High' || msg.data.risk_level === 'Emergency' || msg.data.urgency_level === 'Emergency')
-                                                    ? 'bg-red-100 text-red-600'
-                                                    : 'bg-green-100 text-green-600'
-                                                }`}>
-                                                {msg.data.risk_level || msg.data.urgency_level} Risk
-                                            </span>
-                                        )}
-
-                                        {/* Steps - prefer AI steps, fallback to matching laws if needed */}
-                                        {msg.data.steps ? (
-                                            msg.data.steps.slice(0, 3).map((step, i) => (
-                                                <div key={i} className="pl-3 border-l-2 border-indigo-200">
-                                                    <p className="font-bold text-xs">{step.title}</p>
-                                                    <p className="text-xs opacity-80">{step.description}</p>
-                                                </div>
-                                            ))
-                                        ) : msg.data.matches && msg.data.matches.length > 0 && (
-                                            <div className="space-y-2">
-                                                <p className="text-xs font-bold text-indigo-500 uppercase">Relevant Provisions:</p>
+                                        {/* If we have direct law matches (from backend analyzer) */}
+                                        {msg.data.matches && msg.data.matches.length > 0 ? (
+                                            <div className="space-y-3">
+                                                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider ml-1">Legal Analysis & Provisions:</p>
                                                 {msg.data.matches.slice(0, 2).map((match, i) => (
-                                                    <div key={i} className="pl-3 border-l-2 border-indigo-200">
-                                                        <p className="font-bold text-xs">{match.title}</p>
-                                                        <p className="text-xs opacity-80 line-clamp-2">{match.description}</p>
-                                                    </div>
+                                                    <ResultCard key={i} match={match} />
                                                 ))}
+                                            </div>
+                                        ) : (
+                                            /* If AI result but no database matches, or fallback display */
+                                            <div className="space-y-3">
+                                                {/* Risk Badge */}
+                                                {(msg.data.risk_level || msg.data.urgency_level) && (
+                                                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.urgency_level === 'High' || msg.data.risk_level === 'Emergency' || msg.data.urgency_level === 'Emergency')
+                                                            ? 'bg-red-100 text-red-600'
+                                                            : 'bg-green-100 text-green-600'
+                                                        }`}>
+                                                        {msg.data.risk_level || msg.data.urgency_level} Risk
+                                                    </span>
+                                                )}
+
+                                                {/* Steps */}
+                                                {msg.data.steps && (
+                                                    <div className="space-y-2">
+                                                        {msg.data.steps.slice(0, 3).map((step, i) => (
+                                                            <div key={i} className="pl-3 border-l-2 border-indigo-200">
+                                                                <p className="font-bold text-xs">{step.title}</p>
+                                                                <p className="text-xs opacity-80">{step.description}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>
