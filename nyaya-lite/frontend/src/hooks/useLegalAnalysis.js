@@ -27,7 +27,6 @@ export function useLegalAnalysis() {
                 setError(r.data.error);
                 toast.error(r.data.error);
             } else {
-                console.log("Analysis Result:", r.data); // Debug log
                 setResults(r.data);
                 // Optional: toast.success("Analysis Complete"); 
             }
