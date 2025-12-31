@@ -10,7 +10,7 @@ const LANGUAGES = [
     { code: 'kn-IN', name: 'ಕನ್ನಡ', flag: '🇮🇳' }
 ];
 
-export default function VoiceInput({ value, onChange, onSubmit }) {
+export default function VoiceInput({ value = '', onChange, onSubmit, onTranscript, compact = false }) {
     const [listening, setListening] = useState(false);
     const [lang, setLang] = useState('en-IN');
     const recognitionRef = useRef(null);
@@ -25,7 +25,8 @@ export default function VoiceInput({ value, onChange, onSubmit }) {
 
         rec.onresult = (e) => {
             const text = e.results[0][0].transcript;
-            onChange(text);
+            if (onTranscript) onTranscript(text);
+            if (onChange) onChange(text);
         };
         rec.onend = () => setListening(false);
         recognitionRef.current = rec;
@@ -73,68 +74,82 @@ export default function VoiceInput({ value, onChange, onSubmit }) {
             </div>
 
             {/* Input Area with Glassmorphism */}
-            <div className="relative">
-                <div className="gradient-border rounded-2xl overflow-hidden">
-                    <textarea
-                        value={value}
-                        onChange={e => onChange(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        rows={4}
-                        className="w-full p-4 pr-24 resize-none transition-all"
-                        style={{
-                            background: 'var(--bg-secondary)',
-                            color: 'var(--text-primary)',
-                            border: 'none',
-                            outline: 'none'
-                        }}
-                        placeholder={`Type your legal query or tap the mic to speak...`}
-                    />
-                </div>
-
-                {/* Voice Wave Animation when listening */}
-                {listening && (
-                    <div className="absolute top-2 left-4 flex items-center gap-1">
-                        <div className="voice-wave"></div>
-                        <div className="voice-wave"></div>
-                        <div className="voice-wave"></div>
-                        <div className="voice-wave"></div>
-                        <div className="voice-wave"></div>
+            {!compact && (
+                <div className="relative">
+                    <div className="gradient-border rounded-2xl overflow-hidden">
+                        <textarea
+                            value={value}
+                            onChange={e => onChange?.(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            rows={4}
+                            className="w-full p-4 pr-24 resize-none transition-all"
+                            style={{
+                                background: 'var(--bg-secondary)',
+                                color: 'var(--text-primary)',
+                                border: 'none',
+                                outline: 'none'
+                            }}
+                            placeholder={`Type your legal query or tap the mic to speak...`}
+                        />
                     </div>
-                )}
 
-                {/* Action Buttons */}
-                <div className="absolute bottom-3 right-3 flex gap-2">
-                    <button
-                        onClick={toggleListen}
-                        className={`p-3 rounded-full transition-all ripple-container ${
-                            listening 
-                                ? 'pulse glow-strong' 
-                                : 'glass hover-lift'
-                        }`}
-                        style={{
-                            background: listening 
-                                ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)' 
-                                : 'var(--glass-bg)',
-                            boxShadow: listening ? 'var(--shadow-lg)' : 'var(--shadow-sm)'
-                        }}
-                        title={listening ? "Stop Recording" : "Start Voice Input"}
-                    >
-                        {listening ? (
-                            <MicOff size={20} className="text-white" />
-                        ) : (
-                            <Mic size={20} style={{ color: '#667eea' }} />
-                        )}
-                    </button>
-                    <button
-                        onClick={onSubmit}
-                        disabled={!value.trim()}
-                        className="btn-gradient p-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Analyze Query"
-                    >
-                        <Send size={20} />
-                    </button>
+                    {/* Voice Wave Animation when listening */}
+                    {listening && (
+                        <div className="absolute top-2 left-4 flex items-center gap-1">
+                            <div className="voice-wave"></div>
+                            <div className="voice-wave"></div>
+                            <div className="voice-wave"></div>
+                            <div className="voice-wave"></div>
+                            <div className="voice-wave"></div>
+                        </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="absolute bottom-3 right-3 flex gap-2">
+                        <button
+                            onClick={toggleListen}
+                            className={`p-3 rounded-full transition-all ripple-container ${listening
+                                    ? 'pulse glow-strong'
+                                    : 'glass hover-lift'
+                                }`}
+                            style={{
+                                background: listening
+                                    ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)'
+                                    : 'var(--glass-bg)',
+                                boxShadow: listening ? 'var(--shadow-lg)' : 'var(--shadow-sm)'
+                            }}
+                            title={listening ? "Stop Recording" : "Start Voice Input"}
+                        >
+                            {listening ? (
+                                <MicOff size={20} className="text-white" />
+                            ) : (
+                                <Mic size={20} style={{ color: '#667eea' }} />
+                            )}
+                        </button>
+                        <button
+                            onClick={onSubmit}
+                            disabled={!value?.trim()}
+                            className="btn-gradient p-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Analyze Query"
+                        >
+                            <Send size={20} />
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
+
+            {compact && (
+                <button
+                    onClick={toggleListen}
+                    className={`p-2 rounded-full transition-all ${listening
+                            ? 'bg-red-500 text-white pulse'
+                            : 'bg-[var(--bg-tertiary)] text-indigo-500 hover:bg-indigo-50 transition-colors'
+                        }`}
+                    title={listening ? "Stop Recording" : "Start Voice Input"}
+                >
+                    {listening ? <MicOff size={18} /> : <Mic size={18} />}
+                </button>
+            )}
 
             {/* Status Text */}
             <div className="flex items-center justify-center gap-2 text-xs text-[var(--text-muted)]">
