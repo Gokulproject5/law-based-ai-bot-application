@@ -1,0 +1,1934 @@
+[
+    {
+        "title": "Vehicle Accident",
+        "keywords": [
+            "accident",
+            "crash",
+            "collision",
+            "hit",
+            "car",
+            "bike",
+            "scooter",
+            "injury"
+        ],
+        "category": "Accident & Injury",
+        "ipc_sections": [
+            "279",
+            "337",
+            "338",
+            "304A"
+        ],
+        "description": "Rash driving or negligence causing hurt or death.",
+        "steps": [
+            "Check for injuries and call ambulance (108) if needed.",
+            "Note down the vehicle number of the other party.",
+            "Take photos of the scene and damages.",
+            "File an FIR at the nearest police station.",
+            "Inform your insurance company immediately."
+        ],
+        "evidence_required": [
+            "Photos of vehicle damage",
+            "Photos of injuries",
+            "Vehicle number of offender",
+            "Witness contact details",
+            "Hospital reports (if any)"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 6 months (279) or 2 years (304A) + Fine",
+        "time_limit": "No specific limit for FIR, but immediate is best. Compensation claim: 6 months.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "FIR",
+            "Insurance Claim"
+        ]
+    },
+    {
+        "title": "Theft of Mobile Phone",
+        "keywords": [
+            "phone",
+            "mobile",
+            "stolen",
+            "lost",
+            "snatched",
+            "iphone",
+            "android"
+        ],
+        "category": "Theft / Property",
+        "ipc_sections": [
+            "379"
+        ],
+        "description": "Theft of movable property.",
+        "steps": [
+            "Block your SIM card immediately.",
+            "File an FIR or e-FIR online.",
+            "Register on CEIR portal (ceir.gov.in) to block the IMEI.",
+            "Keep a copy of the FIR for getting a duplicate SIM."
+        ],
+        "evidence_required": [
+            "IMEI Number",
+            "Phone Bill / Invoice",
+            "Last known location (if available)"
+        ],
+        "severity": "Medium",
+        "penalty": "Imprisonment up to 3 years or fine or both",
+        "time_limit": "No strict limit, but delay weakens case.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR",
+            "Complaint Letter"
+        ]
+    },
+    {
+        "title": "Domestic Violence",
+        "keywords": [
+            "husband",
+            "wife",
+            "beating",
+            "abuse",
+            "torture",
+            "dowry",
+            "in-laws",
+            "domestic"
+        ],
+        "category": "Harassment & Abuse",
+        "ipc_sections": [
+            "498A",
+            "DV Act 2005"
+        ],
+        "description": "Cruelty by husband or relatives of husband.",
+        "steps": [
+            "Call Women's Helpline 181 or Police 112.",
+            "Go to a safe place (parents' home or shelter).",
+            "File a complaint with the Protection Officer or Police.",
+            "Seek medical help if injured and keep reports."
+        ],
+        "evidence_required": [
+            "Medical reports of injury",
+            "Photos of injury",
+            "Threatening messages/recordings",
+            "Witness statements"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 3 years + Fine",
+        "time_limit": "Limit varies, but 498A is a continuing offense.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "Complaint Letter",
+            "DV Complaint"
+        ]
+    },
+    {
+        "title": "Online Financial Fraud (UPI/Bank)",
+        "keywords": [
+            "fraud",
+            "scam",
+            "upi",
+            "bank",
+            "money",
+            "phishing",
+            "otp",
+            "paytm",
+            "gpay"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "420",
+            "IT Act 66D"
+        ],
+        "description": "Cheating by personation using computer resource.",
+        "steps": [
+            "Call 1930 (Cybercrime Helpline) immediately.",
+            "Report on cybercrime.gov.in.",
+            "Contact your bank to freeze the account/transaction.",
+            "Take screenshots of the transaction and messages."
+        ],
+        "evidence_required": [
+            "Transaction ID/Reference Number",
+            "Screenshots of chat/SMS",
+            "Bank Statement",
+            "Suspect's phone number/UPI ID"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 3 years (IT Act) / 7 years (420)",
+        "time_limit": "Golden Hour: Report within 1 hour for best chance of recovery.",
+        "offense_type": "Cognizable, Bailable (IT Act)",
+        "templates": [
+            "Cyber Complaint",
+            "Bank Dispute Form"
+        ]
+    },
+    {
+        "title": "Stalking",
+        "keywords": [
+            "stalking",
+            "following",
+            "watching",
+            "creepy",
+            "harassing",
+            "online stalking"
+        ],
+        "category": "Women/Child Protection",
+        "ipc_sections": [
+            "354D"
+        ],
+        "description": "Following a woman, contacting her despite disinterest, or monitoring use of internet.",
+        "steps": [
+            "Do not engage with the stalker.",
+            "Keep a record of all interactions (calls, texts, logs).",
+            "File a complaint at the nearest police station or online.",
+            "Dial 1091 (Women Helpline) for assistance."
+        ],
+        "evidence_required": [
+            "Call logs",
+            "Screenshots of messages/social media",
+            "Photos/Videos of the stalker following"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 3 years (1st offense) / 5 years (subsequent)",
+        "time_limit": "3 years limitation.",
+        "offense_type": "Cognizable, Bailable (1st offense)",
+        "templates": [
+            "Complaint Letter"
+        ]
+    },
+    {
+        "title": "Cheque Bounce",
+        "keywords": [
+            "cheque",
+            "bounce",
+            "dishonour",
+            "bank",
+            "payment",
+            "money"
+        ],
+        "category": "Miscellaneous",
+        "ipc_sections": [
+            "NI Act 138"
+        ],
+        "description": "Dishonour of cheque for insufficiency of funds.",
+        "steps": [
+            "Collect the 'Cheque Return Memo' from the bank.",
+            "Send a Legal Notice to the drawer within 30 days.",
+            "If no payment in 15 days, file a case in court within 30 days.",
+            "Consult a lawyer."
+        ],
+        "evidence_required": [
+            "Original Cheque",
+            "Return Memo",
+            "Copy of Legal Notice",
+            "Proof of Service (Postal receipt)"
+        ],
+        "severity": "Medium",
+        "penalty": "Imprisonment up to 2 years or Fine (2x cheque amount)",
+        "time_limit": "Strict timelines apply (30 days for notice, etc.).",
+        "offense_type": "Non-Cognizable, Bailable",
+        "templates": [
+            "Legal Notice"
+        ]
+    },
+    {
+        "title": "Landlord Tenant Dispute (Eviction)",
+        "keywords": [
+            "tenant",
+            "landlord",
+            "rent",
+            "eviction",
+            "vacate",
+            "house",
+            "owner"
+        ],
+        "category": "Land & Property",
+        "ipc_sections": [
+            "Rent Control Act"
+        ],
+        "description": "Illegal eviction or dispute over rent/property.",
+        "steps": [
+            "Check your Rent Agreement terms.",
+            "Landlord cannot evict without due process/notice.",
+            "File a complaint with the Rent Controller.",
+            "Do not use force."
+        ],
+        "evidence_required": [
+            "Rent Agreement",
+            "Rent receipts",
+            "Notices sent/received",
+            "Photos of property condition"
+        ],
+        "severity": "Low",
+        "penalty": "Civil penalties, eviction orders",
+        "time_limit": "Varies by state act.",
+        "offense_type": "Civil Dispute",
+        "templates": [
+            "Legal Notice"
+        ]
+    },
+    {
+        "title": "Medical Negligence",
+        "keywords": [
+            "doctor",
+            "hospital",
+            "negligence",
+            "wrong treatment",
+            "death",
+            "operation"
+        ],
+        "category": "Accident & Injury",
+        "ipc_sections": [
+            "304A",
+            "Consumer Protection Act"
+        ],
+        "description": "Death or injury caused by negligent act of medical professional.",
+        "steps": [
+            "Secure all medical records and bills immediately.",
+            "Get an expert opinion if possible.",
+            "File a police complaint for criminal negligence.",
+            "File a case in Consumer Forum for compensation."
+        ],
+        "evidence_required": [
+            "Case sheet / Medical records",
+            "Prescriptions",
+            "Bills",
+            "Post-mortem report (if death)"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 2 years (304A) + Compensation",
+        "time_limit": "2 years for Consumer Case.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "Consumer Complaint",
+            "Police Complaint"
+        ]
+    },
+    {
+        "title": "Defamation",
+        "keywords": [
+            "insult",
+            "reputation",
+            "slander",
+            "libel",
+            "bad name",
+            "rumors"
+        ],
+        "category": "Miscellaneous",
+        "ipc_sections": [
+            "499",
+            "500"
+        ],
+        "description": "Harming the reputation of a person.",
+        "steps": [
+            "Save proofs of the defamatory statement (recording, screenshot).",
+            "Send a Legal Notice asking to withdraw/apologize.",
+            "File a criminal complaint in Magistrate court.",
+            "File a civil suit for damages."
+        ],
+        "evidence_required": [
+            "Defamatory material (article, post, video)",
+            "Proof of publication",
+            "Witnesses who saw/heard it"
+        ],
+        "severity": "Low",
+        "penalty": "Imprisonment up to 2 years or Fine",
+        "time_limit": "3 years.",
+        "offense_type": "Non-Cognizable, Bailable",
+        "templates": [
+            "Legal Notice",
+            "Defamation Complaint"
+        ]
+    },
+    {
+        "title": "Consumer Complaint (Defective Product)",
+        "keywords": [
+            "product",
+            "defective",
+            "bad quality",
+            "warranty",
+            "guarantee",
+            "service",
+            "shop"
+        ],
+        "category": "Consumer Rights",
+        "ipc_sections": [
+            "Consumer Protection Act 2019"
+        ],
+        "description": "Sale of defective goods or deficiency in service.",
+        "steps": [
+            "Complain to the seller/company customer care.",
+            "If unresolved, send a written notice.",
+            "File a complaint on National Consumer Helpline (1915).",
+            "File a case in District Consumer Commission."
+        ],
+        "evidence_required": [
+            "Bill / Invoice",
+            "Warranty Card",
+            "Photos of defect",
+            "Correspondence with company"
+        ],
+        "severity": "Low",
+        "penalty": "Compensation, Replacement, Refund",
+        "time_limit": "2 years from cause of action.",
+        "offense_type": "Civil Dispute",
+        "templates": [
+            "Consumer Complaint"
+        ]
+    },
+    {
+        "title": "Sexual Harassment at Workplace",
+        "keywords": [
+            "workplace",
+            "boss",
+            "colleague",
+            "sexual",
+            "harassment",
+            "posh"
+        ],
+        "category": "Harassment & Abuse",
+        "ipc_sections": [
+            "POSH Act 2013",
+            "354A"
+        ],
+        "description": "Unwelcome acts or behavior of sexual nature at workplace.",
+        "steps": [
+            "File a written complaint to the Internal Complaints Committee (ICC).",
+            "If no ICC, complain to Local Complaints Committee (LCC).",
+            "Can also file FIR under 354A.",
+            "Keep records of incidents."
+        ],
+        "evidence_required": [
+            "Emails/Messages",
+            "Witnesses",
+            "Diary entries of incidents"
+        ],
+        "severity": "High",
+        "penalty": "Disciplinary action, Termination, Imprisonment (if FIR)",
+        "time_limit": "3 months to report to ICC.",
+        "offense_type": "Cognizable (354A)",
+        "templates": [
+            "ICC Complaint"
+        ]
+    },
+    {
+        "title": "Missing Child",
+        "keywords": [
+            "child",
+            "missing",
+            "kidnap",
+            "lost child",
+            "runaway"
+        ],
+        "category": "Women/Child Protection",
+        "ipc_sections": [
+            "363",
+            "JJ Act"
+        ],
+        "description": "Kidnapping or missing minor.",
+        "steps": [
+            "Call 1098 (Childline) and Police 100/112 immediately.",
+            "File an FIR (Mandatory for missing child).",
+            "Upload details on TrackChild portal.",
+            "Search nearby areas and inform relatives."
+        ],
+        "evidence_required": [
+            "Recent photo of child",
+            "Birth certificate/ID",
+            "Description of clothes worn"
+        ],
+        "severity": "Emergency",
+        "penalty": "Imprisonment up to 7 years (Kidnapping)",
+        "time_limit": "Immediate reporting required.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR"
+        ]
+    },
+    {
+        "title": "Hit and Run",
+        "keywords": [
+            "hit",
+            "run",
+            "car",
+            "accident",
+            "fled",
+            "escaped"
+        ],
+        "category": "Accident & Injury",
+        "ipc_sections": [
+            "279",
+            "304A",
+            "MV Act 161"
+        ],
+        "description": "Accident where the vehicle does not stop.",
+        "steps": [
+            "Note any details of the vehicle (color, make, part of number).",
+            "Call Police and Ambulance.",
+            "Look for CCTV cameras nearby.",
+            "Apply for Solatium Fund compensation."
+        ],
+        "evidence_required": [
+            "CCTV footage",
+            "Witness accounts",
+            "Debris from vehicle"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment, Fine",
+        "time_limit": "Immediate FIR.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "FIR",
+            "Compensation App"
+        ]
+    },
+    {
+        "title": "Cyber Bullying",
+        "keywords": [
+            "bullying",
+            "troll",
+            "abuse",
+            "online",
+            "comments",
+            "harass"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "IT Act 66E",
+            "67",
+            "507"
+        ],
+        "description": "Bullying or harassment using electronic means.",
+        "steps": [
+            "Block the user.",
+            "Report the content to the social media platform.",
+            "Take screenshots.",
+            "File a complaint at cybercrime.gov.in."
+        ],
+        "evidence_required": [
+            "Screenshots",
+            "Profile URL of bully",
+            "Chat logs"
+        ],
+        "severity": "Medium",
+        "penalty": "Imprisonment up to 3 years / Fine",
+        "time_limit": "No specific limit.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "Cyber Complaint"
+        ]
+    },
+    {
+        "title": "RTI Filing",
+        "keywords": [
+            "rti",
+            "information",
+            "government",
+            "status",
+            "application"
+        ],
+        "category": "Miscellaneous",
+        "ipc_sections": [
+            "RTI Act 2005"
+        ],
+        "description": "Right to Information from public authority.",
+        "steps": [
+            "Identify the Public Information Officer (PIO).",
+            "Write the application clearly specifying information needed.",
+            "Pay the fee (Rs. 10 usually).",
+            "Submit online (rtionline.gov.in) or via post."
+        ],
+        "evidence_required": [
+            "Postal Order/Fee receipt",
+            "Copy of application"
+        ],
+        "severity": "Low",
+        "penalty": "Penalty on PIO for delay",
+        "time_limit": "Reply must be given in 30 days.",
+        "offense_type": "Civil Right",
+        "templates": [
+            "RTI Application"
+        ]
+    },
+    {
+        "title": "Wrongful Termination",
+        "keywords": [
+            "fired",
+            "job",
+            "termination",
+            "sacked",
+            "illegal",
+            "salary"
+        ],
+        "category": "Employment Issues",
+        "ipc_sections": [
+            "Industrial Disputes Act"
+        ],
+        "description": "Termination without following due process or notice.",
+        "steps": [
+            "Check your employment contract.",
+            "Send a formal grievance letter to HR.",
+            "File a dispute with the Labour Commissioner.",
+            "Send a Legal Notice."
+        ],
+        "evidence_required": [
+            "Appointment Letter",
+            "Termination Letter (or lack thereof)",
+            "Salary slips",
+            "Performance reviews"
+        ],
+        "severity": "Medium",
+        "penalty": "Reinstatement, Back wages",
+        "time_limit": "3 years (Limitation Act).",
+        "offense_type": "Civil Dispute",
+        "templates": [
+            "Legal Notice",
+            "Labour Complaint"
+        ]
+    },
+    {
+        "title": "Dowry Harassment",
+        "keywords": [
+            "dowry",
+            "money",
+            "demand",
+            "marriage",
+            "harass",
+            "in-laws"
+        ],
+        "category": "Harassment & Abuse",
+        "ipc_sections": [
+            "498A",
+            "Dowry Prohibition Act"
+        ],
+        "description": "Harassment of woman for dowry.",
+        "steps": [
+            "File a complaint with the Dowry Prohibition Officer.",
+            "File an FIR at the police station.",
+            "Secure your jewelry and stridhan.",
+            "Seek legal aid."
+        ],
+        "evidence_required": [
+            "Proof of demand (letters, recordings)",
+            "List of dowry items given",
+            "Witness statements"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment min 5 years (Dowry Death 304B)",
+        "time_limit": "No strict limit, but delay needs explanation.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR",
+            "Complaint"
+        ]
+    },
+    {
+        "title": "Chain Snatching",
+        "keywords": [
+            "chain",
+            "snatch",
+            "gold",
+            "thief",
+            "bike",
+            "robbery"
+        ],
+        "category": "Theft / Property",
+        "ipc_sections": [
+            "379",
+            "356",
+            "392"
+        ],
+        "description": "Snatching property using criminal force.",
+        "steps": [
+            "Raise an alarm immediately.",
+            "Call 100/112.",
+            "Note offender's description and vehicle.",
+            "File an FIR."
+        ],
+        "evidence_required": [
+            "Description of ornament",
+            "Bill/Receipt of item",
+            "Description of snatcher"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 10 years (Robbery)",
+        "time_limit": "Immediate FIR.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR"
+        ]
+    },
+    {
+        "title": "Passport Lost",
+        "keywords": [
+            "passport",
+            "lost",
+            "missing",
+            "travel",
+            "document"
+        ],
+        "category": "Miscellaneous",
+        "ipc_sections": [
+            "Passports Act"
+        ],
+        "description": "Loss of Indian Passport.",
+        "steps": [
+            "File a Police Complaint/Lost Report immediately.",
+            "Apply for re-issue on Passport Seva portal.",
+            "Submit the police report with application.",
+            "Inform embassy if lost abroad."
+        ],
+        "evidence_required": [
+            "Copy of old passport (if available)",
+            "Police Report (FIR/NCR)"
+        ],
+        "severity": "Medium",
+        "penalty": "Fine for negligence (rare)",
+        "time_limit": "Immediate reporting.",
+        "offense_type": "Administrative",
+        "templates": [
+            "Take screenshots of all threats and messages.",
+            "Report immediately on cybercrime.gov.in or call 1930.",
+            "File an FIR at the nearest police station or cyber cell."
+        ],
+        "evidence_required": [
+            "Screenshots of threatening messages",
+            "Phone number/social media profile of blackmailer",
+            "Payment details if money was sent",
+            "Any images/videos shared (if safe to provide)"
+        ],
+        "severity": "Emergency",
+        "penalty": "Imprisonment up to 10 years (384) + IT Act penalties",
+        "time_limit": "Immediate reporting crucial. Do not delay.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "Cyber Complaint",
+            "FIR"
+        ]
+    },
+    {
+        "title": "Identity Theft",
+        "keywords": [
+            "identity",
+            "theft",
+            "aadhar",
+            "pan",
+            "fake",
+            "impersonation",
+            "fraud",
+            "someone using my name"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "419",
+            "465",
+            "IT Act 66C",
+            "66D"
+        ],
+        "description": "Using another person's identity for fraud or cheating.",
+        "steps": [
+            "Collect evidence of misuse (fake accounts, fraudulent transactions).",
+            "Report to cybercrime.gov.in immediately.",
+            "File an FIR.",
+            "Report to UIDAI if Aadhar is misused.",
+            "File complaint with Income Tax if PAN is misused.",
+            "Alert your bank and freeze accounts if needed."
+        ],
+        "evidence_required": [
+            "Proof of fake profiles/accounts",
+            "Transaction records showing fraud",
+            "Your identity documents",
+            "Screenshots of misuse"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 3 years + Fine",
+        "time_limit": "Report immediately to prevent further misuse.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "Cyber Complaint",
+            "FIR"
+        ]
+    },
+    {
+        "title": "OTP Fraud",
+        "keywords": [
+            "otp",
+            "verification code",
+            "code",
+            "sms",
+            "one time password",
+            "sharing otp"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "420",
+            "IT Act 66D"
+        ],
+        "description": "Fraudsters trick victims into sharing OTP to access bank accounts.",
+        "steps": [
+            "Never share OTP with anyone, even if they claim to be from bank.",
+            "Call your bank immediately and block cards/accounts.",
+            "Call 1930 within 1 hour (Golden Hour).",
+            "Report on cybercrime.gov.in.",
+            "Take screenshots of SMS/calls.",
+            "File FIR if money was debited."
+        ],
+        "evidence_required": [
+            "SMS with OTP",
+            "Call logs of fraudster",
+            "Bank statement showing debit",
+            "Screenshots of conversation"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 3 years + Fine",
+        "time_limit": "Golden Hour: Report within 1 hour for recovery.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "Cyber Complaint",
+            "Bank Dispute Form"
+        ]
+    },
+    {
+        "title": "Social Media Account Hacking",
+        "keywords": [
+            "hacked",
+            "account",
+            "facebook",
+            "instagram",
+            "whatsapp",
+            "twitter",
+            "password",
+            "unauthorized access"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "IT Act 66",
+            "43"
+        ],
+        "description": "Unauthorized access to social media or email accounts.",
+        "steps": [
+            "Try to recover account using platform's recovery options.",
+            "Report the hack to the platform (Facebook/Instagram/etc.).",
+            "Change passwords of all linked accounts.",
+            "Alert friends/contacts about the hack.",
+            "If used for fraud/blackmail, report on cybercrime.gov.in.",
+            "File FIR if serious harm or financial loss."
+        ],
+        "evidence_required": [
+            "Screenshots of unauthorized activity",
+            "Login alerts/emails",
+            "Proof of ownership (old photos, emails)",
+            "Reports to platform"
+        ],
+        "severity": "Medium",
+        "penalty": "Imprisonment up to 3 years + Fine (IT Act 66)",
+        "time_limit": "Report quickly to prevent misuse.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "Cyber Complaint"
+        ]
+    },
+    {
+        "title": "Fake Job Scam",
+        "keywords": [
+            "job",
+            "fake",
+            "scam",
+            "placement fee",
+            "registration",
+            "work from home",
+            "interview fee"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "420",
+            "IT Act 66D"
+        ],
+        "description": "Fraudsters offering fake jobs and demanding money for registration/training.",
+        "steps": [
+            "Do not pay any more money.",
+            "Collect all communications (emails, messages, ads).",
+            "Report on cybercrime.gov.in.",
+            "File FIR mentioning cheating (IPC 420).",
+            "Report to job portal if ad was posted there."
+        ],
+        "evidence_required": [
+            "Job offer letter/email",
+            "Payment receipts",
+            "Company details (website, contact)",
+            "Chat/email exchanges"
+        ],
+        "severity": "Medium",
+        "penalty": "Imprisonment up to 7 years (IPC 420)",
+        "time_limit": "No strict limit. Report as soon as you realize.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "Cyber Complaint",
+            "FIR"
+        ]
+    },
+    {
+        "title": "Phishing Attack",
+        "keywords": [
+            "phishing",
+            "fake email",
+            "fake link",
+            "suspicious link",
+            "verify account",
+            "update kyc"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "420",
+            "IT Act 66D"
+        ],
+        "description": "Fake emails/messages pretending to be from banks/companies to steal credentials.",
+        "steps": [
+            "Do not click on suspicious links.",
+            "Do not enter credentials on unknown websites.",
+            "Forward the phishing email/SMS to your bank.",
+            "If you already entered details, change passwords immediately.",
+            "Report on cybercrime.gov.in.",
+            "Alert bank if financial data was shared."
+        ],
+        "evidence_required": [
+            "Phishing email/SMS screenshot",
+            "Fake website URL",
+            "Email headers (if available)"
+        ],
+        "severity": "Medium",
+        "penalty": "Imprisonment up to 3 years + Fine",
+        "time_limit": "Immediate action if credentials shared.",
+        "offense_type": "Cognizable, Bailable",
+        "templates": [
+            "Cyber Complaint"
+        ]
+    },
+    {
+        "title": "Property Encroachment",
+        "keywords": [
+            "encroachment",
+            "land",
+            "property",
+            "neighbor",
+            "fence",
+            "boundary",
+            "illegal construction"
+        ],
+        "category": "Land & Property",
+        "ipc_sections": [
+            "441",
+            "447",
+            "Local Municipal Act"
+        ],
+        "description": "Illegal occupation or construction on another's property.",
+        "steps": [
+            "Check your property documents and survey numbers.",
+            "Send a legal notice to the encroacher.",
+            "File a complaint with the Tahsildar/Revenue Officer.",
+            "File a case for trespass (441 IPC) if civil route fails.",
+            "Get a survey done to establish boundaries."
+        ],
+        "evidence_required": [
+            "Property documents (Sale deed, Patta)",
+            "Survey/measurement records",
+            "Photos of encroachment",
+            "Witness statements"
+        ],
+        "severity": "Medium",
+        "penalty": "Removal of encroachment, Fine, Imprisonment (447)",
+        "time_limit": "Act quickly. Delay weakens claim.",
+        "offense_type": "Mixed (Civil + Criminal)",
+        "templates": [
+            "Legal Notice",
+            "Complaint"
+        ]
+    },
+    {
+        "title": "Builder Fraud / Construction Delay",
+        "keywords": [
+            "builder",
+            "flat",
+            "apartment",
+            "delay",
+            "possession",
+            "fraud",
+            "not delivered"
+        ],
+        "category": "Land & Property",
+        "ipc_sections": [
+            "420",
+            "RERA 2016"
+        ],
+        "description": "Builder not delivering possession or violating agreement.",
+        "steps": [
+            "Check your agreement for delay clauses.",
+            "Send a legal notice to the builder.",
+            "File a complaint with RERA Authority.",
+            "File a consumer complaint.",
+            "Join or form a buyer's association."
+        ],
+        "evidence_required": [
+            "Builder-Buyer Agreement",
+            "Payment receipts",
+            "Possession date commitment",
+            "Communication with builder"
+        ],
+        "severity": "Medium",
+        "penalty": "Refund + Compensation under RERA",
+        "time_limit": "RERA complaint: Within limitation period.",
+        "offense_type": "Civil + RERA",
+        "templates": [
+            "Legal Notice",
+            "Consumer Complaint",
+            "RERA Complaint"
+        ]
+    },
+    {
+        "title": "RERA Complaint",
+        "keywords": [
+            "rera",
+            "real estate",
+            "builder",
+            "project",
+            "flat",
+            "delay"
+        ],
+        "category": "Land & Property",
+        "ipc_sections": [
+            "RERA Act 2016"
+        ],
+        "description": "Violations under Real Estate Regulatory Authority.",
+        "steps": [
+            "Collect all documents (Agreement, Receipts, etc.).",
+            "File a complaint on your State RERA website.",
+            "Pay the prescribed fee.",
+            "Attend hearings as per RERA schedule.",
+            "Can also file a consumer case parallelly."
+        ],
+        "evidence_required": [
+            "Agreement with builder",
+            "Proof of payment",
+            "Delay evidence",
+            "Project registration details"
+        ],
+        "severity": "Low",
+        "penalty": "Compensation, Penalty on builder",
+        "time_limit": "3 years from cause of action.",
+        "offense_type": "RERA Tribunal",
+        "templates": [
+            "RERA Complaint"
+        ]
+    },
+    {
+        "title": "PF/ESI Dispute",
+        "keywords": [
+            "pf",
+            "provident fund",
+            "esi",
+            "epf",
+            "not deposited",
+            "employer"
+        ],
+        "category": "Employment Issues",
+        "ipc_sections": [
+            "EPF Act 1952",
+            "ESI Act 1948"
+        ],
+        "description": "Employer not depositing PF/ESI or denying withdrawal.",
+        "steps": [
+            "Check your PF account online (EPFO portal).",
+            "File a grievance on EPFO portal.",
+            "File a complaint with the Regional PF Commissioner.",
+            "Can approach Labour Court if unresolved.",
+            "For ESI, complain to ESI office."
+        ],
+        "evidence_required": [
+            "Salary slips showing PF deduction",
+            "UAN number",
+            "Employment proof",
+            "Bank statements"
+        ],
+        "severity": "Medium",
+        "penalty": "Fines on employer, Back payment",
+        "time_limit": "No strict limit, but early complaint better.",
+        "offense_type": "Labour Law",
+        "templates": [
+            "Labour Complaint"
+        ]
+    },
+    {
+        "title": "Workplace Discrimination",
+        "keywords": [
+            "discrimination",
+            "caste",
+            "religion",
+            "gender",
+            "bias",
+            "unfair treatment"
+        ],
+        "category": "Employment Issues",
+        "ipc_sections": [
+            "Equal Opportunity Act",
+            "SC/ST Act (if applicable)"
+        ],
+        "description": "Discrimination based on caste, religion, gender, etc. at workplace.",
+        "steps": [
+            "Document all instances of discrimination.",
+            "File a written complaint with HR or management.",
+            "If unresolved, complain to Labour Commissioner.",
+            "For SC/ST discrimination, file under SC/ST Act.",
+            "Can approach Human Rights Commission.",
+            "Consult a lawyer for legal recourse."
+        ],
+        "evidence_required": [
+            "Emails/messages showing bias",
+            "Witness statements",
+            "Performance records",
+            "Complaint to HR (if filed)"
+        ],
+        "severity": "Medium",
+        "penalty": "Compensation, Employer penalty",
+        "time_limit": "Varies by law.",
+        "offense_type": "Civil + Labour Law",
+        "templates": [
+            "Complaint Letter",
+            "Labour Complaint"
+        ]
+    },
+    {
+        "title": "Divorce (Mutual Consent)",
+        "keywords": [
+            "divorce",
+            "separation",
+            "mutual",
+            "husband",
+            "wife",
+            "marriage"
+        ],
+        "category": "Family / Marriage",
+        "ipc_sections": [
+            "Hindu Marriage Act",
+            "Special Marriage Act"
+        ],
+        "description": "Divorce by mutual consent.",
+        "steps": [
+            "Both parties must agree to divorce.",
+            "File a joint petition in Family Court.",
+            "1st motion hearing (cooling period of 6 months).",
+            "2nd motion hearing after 6 months.",
+            "Decree of divorce granted.",
+            "Consult a family lawyer."
+        ],
+        "evidence_required": [
+            "Marriage certificate",
+            "Settlement agreement (alimony, custody)",
+            "Identity proofs"
+        ],
+        "severity": "Low",
+        "penalty": "N/A (Civil matter)",
+        "time_limit": "Minimum 6 months from filing.",
+        "offense_type": "Civil / Family Law",
+        "templates": [
+            "Divorce Petition"
+        ]
+    },
+    {
+        "title": "Maintenance (125 CrPC)",
+        "keywords": [
+            "maintenance",
+            "alimony",
+            "wife",
+            "child",
+            "support",
+            "money",
+            "125 crpc"
+        ],
+        "category": "Family / Marriage",
+        "ipc_sections": [
+            "CrPC 125"
+        ],
+        "description": "Wife/child/parents can claim maintenance from husband/son.",
+        "steps": [
+            "Assess your financial need and husband's income.",
+            "File a petition under Section 125 CrPC in Magistrate Court.",
+            "Submit evidence of marriage, income, need.",
+            "Court will determine maintenance amount.",
+            "Consult a lawyer."
+        ],
+        "evidence_required": [
+            "Marriage certificate",
+            "Proof of no income/insufficient income",
+            "Husband's income proof (if available)",
+            "Children's birth certificates"
+        ],
+        "severity": "Low",
+        "penalty": "Monthly maintenance awarded",
+        "time_limit": "No limit, but delay affects interim relief.",
+        "offense_type": "Criminal Court (Magistrate)",
+        "templates": [
+            "Maintenance Petition"
+        ]
+    },
+    {
+        "title": "Child Custody",
+        "keywords": [
+            "custody",
+            "child",
+            "visitation",
+            "guardianship",
+            "parental rights"
+        ],
+        "category": "Family / Marriage",
+        "ipc_sections": [
+            "Guardians and Wards Act",
+            "Hindu Minority Act"
+        ],
+        "description": "Dispute over child custody after separation/divorce.",
+        "steps": [
+            "Custody decisions prioritize child's welfare.",
+            "File a petition in Family Court or Civil Court.",
+            "Submit evidence of your ability to care for child.",
+            "Court may grant joint or sole custody.",
+            "Consult a family lawyer."
+        ],
+        "evidence_required": [
+            "Child's birth certificate",
+            "Proof of parenting ability",
+            "Income proof",
+            "Character references"
+        ],
+        "severity": "Low",
+        "penalty": "N/A (Custody order)",
+        "time_limit": "No strict limit.",
+        "offense_type": "Civil / Family Law",
+        "templates": [
+            "Custody Petition"
+        ]
+    },
+    {
+        "title": "POCSO (Child Sexual Abuse)",
+        "keywords": [
+            "child",
+            "abuse",
+            "sexual",
+            "minor",
+            "pocso",
+            "molestation"
+        ],
+        "category": "Women/Child Protection",
+        "ipc_sections": [
+            "POCSO Act 2012",
+            "354",
+            "376"
+        ],
+        "description": "Sexual offenses against children below 18 years.",
+        "steps": [
+            "Call 1098 (Childline) or 112 immediately.",
+            "Take the child to a safe place.",
+            "File FIR at police station (Mandatory).",
+            "Medical examination will be arranged by police.",
+            "Special court handles POCSO cases.",
+            "Child Welfare Committee will be involved."
+        ],
+        "evidence_required": [
+            "Medical examination report",
+            "Statement of child (recorded by court)",
+            "Any physical evidence",
+            "Witness statements"
+        ],
+        "severity": "Emergency",
+        "penalty": "Rigorous Imprisonment (min 7 years to life)",
+        "time_limit": "Immediate reporting mandatory.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR"
+        ]
+    },
+    {
+        "title": "Outrage of Modesty (Molestation)",
+        "keywords": [
+            "molestation",
+            "touch",
+            "inappropriate",
+            "modesty",
+            "assault",
+            "groping"
+        ],
+        "category": "Women/Child Protection",
+        "ipc_sections": [
+            "354",
+            "354A",
+            "354B"
+        ],
+        "description": "Assault or use of criminal force to outrage the modesty of a woman.",
+        "steps": [
+            "Call 100/112 or Women Helpline 181 immediately.",
+            "File an FIR at the nearest police station.",
+            "Preserve evidence (torn clothes, injuries).",
+            "Get medical examination done.",
+            "Seek support from women's organizations."
+        ],
+        "evidence_required": [
+            "Medical certificate",
+            "Witness statements",
+            "CCTV footage (if any)",
+            "Description of accused"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment 1-5 years + Fine",
+        "time_limit": "No limit, but immediate reporting advised.",
+        "offense_type": "Cognizable, Bailable (354)",
+        "templates": [
+            "FIR",
+            "Complaint"
+        ]
+    },
+    {
+        "title": "Vehicle Theft",
+        "keywords": [
+            "vehicle",
+            "car",
+            "bike",
+            "scooter",
+            "stolen",
+            "theft",
+            "missing"
+        ],
+        "category": "Theft / Property",
+        "ipc_sections": [
+            "379"
+        ],
+        "description": "Theft of motor vehicle.",
+        "steps": [
+            "File an FIR immediately at the nearest police station.",
+            "Note down vehicle details (number, chassis, engine number).",
+            "Inform your insurance company.",
+            "Check CCTV footage nearby.",
+            "Track using GPS if installed.",
+            "Keep checking vahan.parivahan.gov.in for vehicle status."
+        ],
+        "evidence_required": [
+            "Vehicle registration certificate (RC)",
+            "Insurance papers",
+            "Keys (if available)",
+            "Parking receipt/CCTV"
+        ],
+        "severity": "Medium",
+        "penalty": "Imprisonment up to 3 years + Fine",
+        "time_limit": "Immediate FIR required.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR",
+            "Insurance Claim"
+        ]
+    },
+    {
+        "title": "House Break-in / Burglary",
+        "keywords": [
+            "burglary",
+            "break-in",
+            "theft",
+            "house",
+            "robbery",
+            "stolen items"
+        ],
+        "category": "Theft / Property",
+        "ipc_sections": [
+            "457",
+            "380",
+            "379"
+        ],
+        "description": "House-breaking and theft.",
+        "steps": [
+            "Do not touch anything - preserve the crime scene.",
+            "Call 100/112 immediately.",
+            "File an FIR.",
+            "Make a list of stolen items with approximate value.",
+            "Check for CCTV in building or nearby.",
+            "Inform neighbors to be alert."
+        ],
+        "evidence_required": [
+            "List of stolen items",
+            "Purchase bills (if available)",
+            "Photos of break-in point",
+            "CCTV footage",
+            "Fingerprints (police will collect)"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 14 years (457)",
+        "time_limit": "Immediate FIR.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR"
+        ]
+    },
+    {
+        "title": "FIR Copy Request",
+        "keywords": [
+            "fir",
+            "copy",
+            "police",
+            "report",
+            "how to get fir"
+        ],
+        "category": "Miscellaneous",
+        "ipc_sections": [
+            "CrPC 154",
+            "157"
+        ],
+        "description": "How to obtain a copy of your FIR.",
+        "steps": [
+            "You are entitled to a free copy of the FIR.",
+            "Ask the police officer at the station where FIR was filed.",
+            "If denied, submit a written application to the Station House Officer (SHO).",
+            "You can also apply through RTI.",
+            "Online FIR copy can be downloaded from state police websites (if e-FIR)."
+        ],
+        "evidence_required": [
+            "FIR number (if you have it)",
+            "Identity proof",
+            "Written application (if needed)"
+        ],
+        "severity": "Low",
+        "penalty": "N/A",
+        "time_limit": "Usually given immediately. If not, RTI within 30 days.",
+        "offense_type": "Administrative",
+        "templates": [
+            "RTI Application",
+            "Request Letter"
+        ]
+    },
+    {
+        "title": "Online Delivery Fraud",
+        "keywords": [
+            "delivery",
+            "amazon",
+            "flipkart",
+            "fraud",
+            "not delivered",
+            "wrong product",
+            "refund"
+        ],
+        "category": "Consumer Rights",
+        "ipc_sections": [
+            "420",
+            "Consumer Protection Act"
+        ],
+        "description": "Not receiving ordered product or receiving wrong/damaged product.",
+        "steps": [
+            "Contact customer care immediately and raise a complaint.",
+            "If unresolved, escalate to grievance officer.",
+            "File a complaint on National Consumer Helpline (1915).",
+            "Write a review on the platform.",
+            "If fraud, file on consumerhelpline.gov.in.",
+            "Can file in Consumer Forum for compensation."
+        ],
+        "evidence_required": [
+            "Order confirmation",
+            "Payment receipt",
+            "Delivery photo/video",
+            "Chat/email with customer care",
+            "Unboxing video (if available)"
+        ],
+        "severity": "Low",
+        "penalty": "Refund + Compensation",
+        "time_limit": "2 years for consumer complaint.",
+        "offense_type": "Consumer Dispute",
+        "templates": [
+            "Consumer Complaint"
+        ]
+    },
+    {
+        "title": "Bank Account Fraud",
+        "keywords": [
+            "bank",
+            "account",
+            "unauthorized",
+            "transaction",
+            "fraud",
+            "atm"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "420",
+            "IT Act 66C"
+        ],
+        "description": "Unauthorized transactions or access to bank account.",
+        "steps": [
+            "Call bank customer care immediately and block card/account.",
+            "File a dispute with the bank.",
+            "Report to 1930 (Cybercrime Helpline).",
+            "File FIR if bank doesn't resolve.",
+            "Submit written complaint to bank manager.",
+            "Escalate to Banking Ombudsman if needed."
+        ],
+        "evidence_required": [
+            "Bank statement",
+            "Transaction alerts",
+            "Complaint reference number from bank",
+            "Any suspicious SMS/emails"
+        ],
+        "severity": "High",
+        "penalty": "Recovery + Imprisonment for fraudster",
+        "time_limit": "Report within 24 hours for best chance.",
+        "offense_type": "Cognizable",
+        "templates": [
+            "Bank Dispute Form",
+            "Cyber Complaint"
+        ]
+    },
+    {
+        "title": "Electricity Bill Dispute",
+        "keywords": [
+            "electricity",
+            "bill",
+            "high",
+            "wrong",
+            "meter",
+            "power"
+        ],
+        "category": "Consumer Rights",
+        "ipc_sections": [
+            "Consumer Protection Act",
+            "Electricity Act 2003"
+        ],
+        "description": "Dispute over high or wrong electricity bill.",
+        "steps": [
+            "Check if meter reading is correct.",
+            "File a complaint with the electricity board office.",
+            "Ask for meter testing.",
+            "If unresolved, file with Consumer Forum.",
+            "Keep records of previous bills for comparison."
+        ],
+        "evidence_required": [
+            "Copies of bills (current and past)",
+            "Meter reading photo",
+            "Complaint receipt from board",
+            "Meter test report (if done)"
+        ],
+        "severity": "Low",
+        "penalty": "Bill correction, Compensation",
+        "time_limit": "Usually 30 days to dispute.",
+        "offense_type": "Consumer Dispute",
+        "templates": [
+            "Consumer Complaint",
+            "Complaint Letter"
+        ]
+    },
+    {
+        "title": "Blackmail/Threatening",
+        "keywords": [
+            "blackmail",
+            "threat",
+            "extortion",
+            "threatening",
+            "demanding money"
+        ],
+        "category": "Harassment & Abuse",
+        "ipc_sections": [
+            "384",
+            "385",
+            "503",
+            "506"
+        ],
+        "description": "Threatening or blackmailing for money or other demands.",
+        "steps": [
+            "Do not comply with demands.",
+            "Save all evidence (messages, calls, recordings).",
+            "File an FIR immediately.",
+            "For cyber blackmail, also report on cybercrime.gov.in.",
+            "Seek police protection if feeling threatened."
+        ],
+        "evidence_required": [
+            "Threatening messages/emails",
+            "Call recordings",
+            "Demand letters",
+            "Witness statements"
+        ],
+        "severity": "High",
+        "penalty": "Imprisonment up to 10 years (384)",
+        "time_limit": "Immediate reporting advised.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR",
+            "Complaint"
+        ]
+    },
+    {
+        "title": "Neighbour Dispute",
+        "keywords": [
+            "neighbour",
+            "neighbor",
+            "dispute",
+            "noise",
+            "fight",
+            "nuisance"
+        ],
+        "category": "Harassment & Abuse",
+        "ipc_sections": [
+            "268",
+            "290",
+            "504"
+        ],
+        "description": "Disputes with neighbors over noise, property, or other issues.",
+        "steps": [
+            "Try to resolve amicably first.",
+            "If noise pollution, complain to local police (especially after 10 PM).",
+            "For property dispute, consult a lawyer.",
+            "File a police complaint if harassment continues.",
+            "Can approach mediation centers."
+        ],
+        "evidence_required": [
+            "Audio/video of disturbance",
+            "Witness statements",
+            "Property documents (if relevant)",
+            "Complaint history"
+        ],
+        "severity": "Low",
+        "penalty": "Fine, Injunction orders",
+        "time_limit": "No strict limit.",
+        "offense_type": "Mostly Civil, Some Criminal",
+        "templates": [
+            "Complaint Letter"
+        ]
+    },
+    {
+        "title": "Illegal Termination / Fired Without Notice",
+        "keywords": [
+            "fired",
+            "terminated",
+            "sacked",
+            "without notice",
+            "job loss"
+        ],
+        "category": "Employment Issues",
+        "ipc_sections": [
+            "Industrial Disputes Act",
+            "Shops and Establishments Act"
+        ],
+        "description": "Termination without following due process or notice period.",
+        "steps": [
+            "Check your employment contract for notice period clause.",
+            "Send a written grievance to HR/management.",
+            "File a complaint with Labour Commissioner.",
+            "Send a legal notice demanding notice pay.",
+            "Can approach Labour Court."
+        ],
+        "evidence_required": [
+            "Appointment letter",
+            "Termination letter (or lack of it)",
+            "Employment contract",
+            "Salary slips",
+            "Email communications"
+        ],
+        "severity": "Medium",
+        "penalty": "Reinstatement or compensation",
+        "time_limit": "3 years under Limitation Act.",
+        "offense_type": "Labour Law",
+        "templates": [
+            "Legal Notice",
+            "Labour Complaint"
+        ]
+    },
+    {
+        "title": "Salary Not Paid",
+        "keywords": [
+            "salary",
+            "not paid",
+            "wages",
+            "withholding",
+            "payment"
+        ],
+        "category": "Employment Issues",
+        "ipc_sections": [
+            "Payment of Wages Act",
+            "406 IPC"
+        ],
+        "description": "Employer not paying salary on time or withholding wages.",
+        "steps": [
+            "Send a written demand to employer (email/letter).",
+            "File a complaint with Labour Commissioner.",
+            "Can file a case under Payment of Wages Act.",
+            "For deliberate withholding, can file FIR under IPC 406 (Criminal Breach of Trust).",
+            "Consult a labour lawyer."
+        ],
+        "evidence_required": [
+            "Appointment letter",
+            "Salary slips (previous months)",
+            "Work attendance records",
+            "Email/letter demanding salary"
+        ],
+        "severity": "Medium",
+        "penalty": "Payment with interest, Employer penalty",
+        "time_limit": "Complaint within reasonable time (usually 1-2 years).",
+        "offense_type": "Labour Law + IPC (if criminal)",
+        "templates": [
+            "Legal Notice",
+            "Labour Complaint"
+        ]
+    },
+    {
+        "title": "Ragging",
+        "keywords": [
+            "ragging",
+            "college",
+            "student",
+            "bullying",
+            "senior"
+        ],
+        "category": "Harassment & Abuse",
+        "ipc_sections": [
+            "UGC Regulations 2009",
+            "506",
+            "354"
+        ],
+        "description": "Ragging in educational institutions.",
+        "steps": [
+            "Report immediately to Anti-Ragging Committee of your institution.",
+            "Call UGC Anti-Ragging Helpline 1800-180-5522.",
+            "File a complaint on antiragging.in.",
+            "Can file FIR if physical/sexual harassment.",
+            "Parents can also complain."
+        ],
+        "evidence_required": [
+            "Description of incident",
+            "Names of perpetrators (if known)",
+            "Witness statements",
+            "Medical certificate (if injured)"
+        ],
+        "severity": "High",
+        "penalty": "Suspension/Expulsion, Imprisonment possible",
+        "time_limit": "Immediate reporting advised.",
+        "offense_type": "UGC Regulations + IPC",
+        "templates": [
+            "Anti-Ragging Complaint"
+        ]
+    },
+    {
+        "title": "False Accusation / Fake Case",
+        "keywords": [
+            "false",
+            "fake",
+            "accusation",
+            "wrongly accused",
+            "innocent"
+        ],
+        "category": "Miscellaneous",
+        "ipc_sections": [
+            "211",
+            "500"
+        ],
+        "description": "Being falsely accused of a crime.",
+        "steps": [
+            "Stay calm and do not panic.",
+            "Hire a criminal lawyer immediately.",
+            "Collect evidence proving your innocence.",
+            "Apply for anticipatory bail if arrest is likely.",
+            "After acquittal, can file a case for false accusation (IPC 211) or defamation."
+        ],
+        "evidence_required": [
+            "Alibi evidence",
+            "Witness statements",
+            "Documents proving innocence",
+            "Electronic evidence (GPS, phone records)"
+        ],
+        "severity": "High",
+        "penalty": "Counter-case possible, Compensation",
+        "time_limit": "Immediate legal consultation needed.",
+        "offense_type": "Criminal Defense",
+        "templates": [
+            "Bail Application"
+        ]
+    },
+    {
+        "title": "Illegal Arrest / Police Harassment",
+        "keywords": [
+            "police",
+            "arrest",
+            "illegal",
+            "harassment",
+            "custody",
+            "torture"
+        ],
+        "category": "Miscellaneous",
+        "ipc_sections": [
+            "CrPC 41",
+            "330",
+            "342"
+        ],
+        "description": "Illegal arrest or harassment by police.",
+        "steps": [
+            "Ask for the reason for arrest and show cause.",
+            "You have right to know charges and consult a lawyer.",
+            "Family must be informed within 12 hours.",
+            "Medical examination if tortured.",
+            "File a complaint with Senior Police Officer/Superintendent of Police.",
+            "Can approach Human Rights Commission.",
+            "File a writ in High Court."
+        ],
+        "evidence_required": [
+            "Arrest memo",
+            "Medical certificate (if tortured)",
+            "Witness accounts",
+            "Details of arresting officer"
+        ],
+        "severity": "High",
+        "penalty": "Departmental action, Compensation",
+        "time_limit": "Immediate action needed.",
+        "offense_type": "Constitutional Rights",
+        "templates": [
+            "Complaint to SP",
+            "Human Rights Complaint"
+        ]
+    },
+    {
+        "title": "Dowry Death",
+        "keywords": [
+            "dowry",
+            "death",
+            "suicide",
+            "murder",
+            "bride",
+            "harassment"
+        ],
+        "category": "Harassment & Abuse",
+        "ipc_sections": [
+            "304B",
+            "498A"
+        ],
+        "description": "Death of a woman within 7 years of marriage due to dowry harassment.",
+        "steps": [
+            "Call 100/112 or Women Helpline 181 immediately.",
+            "FIR is mandatory.",
+            "Post-mortem will be conducted.",
+            "Special investigation by police.",
+            "Family of deceased can engage a lawyer.",
+            "Compensation can be claimed."
+        ],
+        "evidence_required": [
+            "Post-mortem report",
+            "Evidence of dowry demand",
+            "Witness statements",
+            "Prior complaints (if any)"
+        ],
+        "severity": "Emergency",
+        "penalty": "Imprisonment minimum 7 years, up to life",
+        "time_limit": "Immediate reporting.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR"
+        ]
+    },
+    {
+        "title": "Acid Attack",
+        "keywords": [
+            "acid",
+            "attack",
+            "burn",
+            "thrown"
+        ],
+        "category": "Women/Child Protection",
+        "ipc_sections": [
+            "326A",
+            "326B"
+        ],
+        "description": "Throwing acid causing grievous hurt.",
+        "steps": [
+            "Immediately wash with clean water for 15-20 minutes.",
+            "Call 108 (Ambulance) and 100/112 (Police).",
+            "Get emergency medical treatment.",
+            "FIR will be filed by police.",
+            "Government compensation available.",
+            "Free medical treatment under government schemes."
+        ],
+        "evidence_required": [
+            "Medical reports",
+            "Photos of injury",
+            "Witness statements",
+            "Identity of attacker (if known)"
+        ],
+        "severity": "Emergency",
+        "penalty": "Imprisonment minimum 10 years, up to life",
+        "time_limit": "Immediate emergency response.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR"
+        ]
+    },
+    {
+        "title": "Online Harassment of Women",
+        "keywords": [
+            "online",
+            "harassment",
+            "women",
+            "comments",
+            "messages",
+            "cyber"
+        ],
+        "category": "Cybercrime",
+        "ipc_sections": [
+            "354A",
+            "509",
+            "IT Act 66A",
+            "67"
+        ],
+        "description": "Online sexual harassment, unwanted messages, comments.",
+        "steps": [
+            "Do not respond to the harasser.",
+            "Take screenshots immediately.",
+            "Block the person.",
+            "Report to the social media platform.",
+            "File a complaint on cybercrime.gov.in.",
+            "Can file FIR under 354A or IT Act.",
+            "Use 'She Box' portal for workplace-related harassment."
+        ],
+        "evidence_required": [
+            "Screenshots of messages/comments",
+            "Profile details of harasser",
+            "Platform report confirmation"
+        ],
+        "severity": "Medium",
+        "penalty": "Imprisonment up to 3 years + Fine",
+        "time_limit": "No strict limit, but report quickly.",
+        "offense_type": "Cognizable",
+        "templates": [
+            "Cyber Complaint",
+            "FIR"
+        ]
+    },
+    {
+        "title": "Kidnapping",
+        "keywords": [
+            "kidnapping",
+            "abduction",
+            "taken",
+            "missing",
+            "forcefully"
+        ],
+        "category": "Women/Child Protection",
+        "ipc_sections": [
+            "363",
+            "364",
+            "365"
+        ],
+        "description": "Kidnapping or abduction of a person.",
+        "steps": [
+            "Call 100/112 immediately.",
+            "File an FIR without delay.",
+            "For child, also call 1098.",
+            "Provide recent photo and description.",
+            "Check CCTV in the area.",
+            "Alert family and neighbors."
+        ],
+        "evidence_required": [
+            "Recent photo of victim",
+            "Description of clothes/appearance",
+            "Last known location",
+            "CCTV footage",
+            "Witness accounts"
+        ],
+        "severity": "Emergency",
+        "penalty": "Imprisonment up to 10 years or life",
+        "time_limit": "Immediate reporting critical.",
+        "offense_type": "Cognizable, Non-Bailable",
+        "templates": [
+            "FIR"
+        ]
+    }
+]
