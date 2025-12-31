@@ -51,11 +51,13 @@ async function generateLegalAnalysis(query, contextLaws = []) {
         // Extract JSON from potential markdown code blocks
         const jsonMatch = text.match(/\{[\s\S]*\}/);
         const jsonStr = jsonMatch ? jsonMatch[0] : text;
+        console.log("Raw AI Response:", text);
 
         return JSON.parse(jsonStr);
 
     } catch (error) {
-        console.error("Gemini AI Analysis failed:", error);
+        console.error("Gemini AI Analysis failed with ERROR:", error.message);
+        if (error.response) console.error("Error Response:", error.response.data);
         return null; // Fallback
     }
 }

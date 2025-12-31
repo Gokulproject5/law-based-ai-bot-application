@@ -31,7 +31,9 @@ router.post('/analyze', async (req, res) => {
         const allLaws = await LawEntry.find({});
 
         // 1. Try Gemini AI Analysis first
+        console.log("Attempting Gemini AI Analysis...");
         let aiAnalysis = await generateLegalAnalysis(text, allLaws.slice(0, 10)); // Pass some context
+        console.log("AI Analysis Result:", aiAnalysis ? "SUCCESS" : "FAILED/NULL");
 
         // 2. Fallback to local analysis if AI fails or no key
         const localResult = analyzeText(text, allLaws);
