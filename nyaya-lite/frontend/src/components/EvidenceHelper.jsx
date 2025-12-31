@@ -23,15 +23,15 @@ export default function EvidenceHelper({ checklist }) {
     };
 
     return (
-        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
-            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 space-y-4">
+            <h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
                 <CheckSquare className="text-blue-600" size={20} />
                 Evidence Checklist
             </h3>
 
             <div className="space-y-2">
                 {checklist && checklist.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-sm text-gray-700">
+                    <div key={idx} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                         <input type="checkbox" className="mt-1" />
                         <span>{item}</span>
                     </div>
@@ -39,8 +39,8 @@ export default function EvidenceHelper({ checklist }) {
                 {!checklist && <p className="text-gray-500 text-sm">No specific evidence checklist available.</p>}
             </div>
 
-            <div className="border-t pt-4">
-                <h4 className="text-sm font-semibold mb-2">Collect Proof</h4>
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <h4 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">Collect Proof</h4>
                 <div className="flex gap-2">
                     <button
                         onClick={handleCameraCapture}
@@ -76,7 +76,7 @@ export default function EvidenceHelper({ checklist }) {
                 </div>
             )}
 
-            <p className="text-xs text-gray-500 italic mt-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400 italic mt-2">
                 * Photos/Docs are stored locally in your browser session only.
             </p>
         </div>

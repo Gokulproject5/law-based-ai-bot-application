@@ -2,13 +2,37 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 const apiRoutes = require('./routes/api');
-const lawRoutes = require('./routes/laws'); // New route
+const lawRoutes = require('./routes/laws');
 
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+
+// Security functions and performance
+app.use(helmet());
+app.use(compression());
+app.use(morgan('dev')); // Use 'dev' for concise logging during development
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+app.use(limiter);
+
+// CORS Configuration
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? clientUrl : '*',
+  credentials: true
+}));
 app.use(bodyParser.json());
 
 // Routes
@@ -20,6 +44,15 @@ const MONGO = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/nyaya';
 mongoose.connect(MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Mongo connected'))
   .catch(err => console.error(err));
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong!'
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log('Server listening on', PORT));

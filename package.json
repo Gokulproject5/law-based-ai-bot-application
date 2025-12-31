@@ -2,10 +2,11 @@
   "name": "law-app",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node nyaya-lite/backend/server.js",
+    "dev": "nodemon nyaya-lite/backend/server.js",
+    "install-all": "npm install && cd nyaya-lite/backend && npm install && cd ../frontend && npm install"
   },
   "repository": {
     "type": "git",

@@ -3,6 +3,7 @@ const router = express.Router();
 const { analyzeText } = require('../utils/analyzer');
 const LawEntry = require('../models/LawEntry');
 const Lawyer = require('../models/Lawyer');
+const { searchNearbyLawyers, getLawyerDetails } = require('../utils/googlePlacesAPI');
 
 // POST /api/analyze
 router.post('/analyze', async (req, res) => {
@@ -48,6 +49,41 @@ router.get('/lawyers', async (req, res) => {
         res.json(lawyers);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch lawyers' });
+    }
+});
+
+// GET /api/lawyers/nearby
+router.get('/lawyers/nearby', async (req, res) => {
+    try {
+        const { lat, lng, radius } = req.query;
+
+        if (!lat || !lng) {
+            return res.status(400).json({ error: 'Latitude and longitude required' });
+        }
+
+        const lawyers = await searchNearbyLawyers(
+            parseFloat(lat),
+            parseFloat(lng),
+            radius ? parseInt(radius) : 5000
+        );
+
+        res.json(lawyers);
+    } catch (err) {
+        console.error('Error fetching nearby lawyers:', err);
+        res.status(500).json({ error: 'Failed to fetch nearby lawyers' });
+    }
+});
+
+// GET /api/lawyers/details/:placeId
+router.get('/lawyers/details/:placeId', async (req, res) => {
+    try {
+        const details = await getLawyerDetails(req.params.placeId);
+        if (!details) {
+            return res.status(404).json({ error: 'Lawyer details not found' });
+        }
+        res.json(details);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch lawyer details' });
     }
 });
 
