@@ -146,8 +146,8 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
                 </button>
             )}
 
-            {/* Status Text */}
-            <div className="flex items-center justify-center gap-2 text-xs text-[var(--text-muted)]">
+            {/* Status Text (Hidden on small mobile when info is already cramped) */}
+            <div className={`hidden sm:flex items-center justify-center gap-2 text-xs text-[var(--text-muted)] ${compact ? 'mt-1' : ''}`}>
                 {listening ? (
                     <span className="flex items-center gap-2 text-red-500 font-medium">
                         <span className="w-2 h-2 bg-red-500 rounded-full pulse"></span>

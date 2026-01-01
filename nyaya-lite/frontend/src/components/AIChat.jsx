@@ -214,7 +214,7 @@ export default function AIChat() {
             </div>
 
             {/* Input Area */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-[var(--glass-bg)] backdrop-blur-lg border-t border-[var(--glass-border)] flex items-center gap-2">
+            <div className="absolute bottom-0 left-0 right-0 p-2 md:p-4 bg-[var(--glass-bg)] backdrop-blur-lg border-t border-[var(--glass-border)] flex items-center gap-2 shadow-2xl">
                 <VoiceInput onTranscript={(text) => setInputValue(text)} compact={true} />
 
                 <input
@@ -223,7 +223,7 @@ export default function AIChat() {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend(inputValue)}
                     placeholder={t('input_placeholder')}
-                    className="flex-1 bg-[var(--bg-tertiary)] border-0 focus:ring-2 ring-indigo-500 rounded-full px-4 py-2 text-sm"
+                    className="flex-1 bg-[var(--bg-tertiary)] border-0 focus:ring-2 ring-indigo-500 rounded-full px-3 md:px-4 py-2 text-sm"
                     disabled={loading}
                 />
 
@@ -232,7 +232,7 @@ export default function AIChat() {
                     disabled={!inputValue.trim() || loading}
                     className="p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                    <Send size={20} />
+                    <Send size={18} md:size={20} />
                 </button>
             </div>
         </div >

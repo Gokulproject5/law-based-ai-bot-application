@@ -28,7 +28,9 @@ export default function App() {
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300 font-inter">
-            <EmergencyButton />
+            <div className="hidden md:block">
+                <EmergencyButton />
+            </div>
             <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
 
             {/* Navigation (Sidebar Desktop / Bottom Bar Mobile) */}
@@ -54,6 +56,9 @@ export default function App() {
                         <DailyTip compact={true} />
                         <div className="hidden md:block">
                             <LanguageSelector />
+                        </div>
+                        <div className="md:hidden">
+                            <EmergencyButton compact={true} />
                         </div>
                         <button
                             onClick={() => setIsSettingsOpen(true)}
@@ -81,14 +86,14 @@ export default function App() {
                     }>
                         <Routes>
                             <Route path="/" element={
-                                <div className="h-[calc(100vh-140px)]">
+                                <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-140px)]">
                                     <AIChat />
                                 </div>
                             } />
                             <Route path="/categories" element={<CategoryView />} />
                             <Route path="/templates" element={<TemplateGenerator />} />
                             <Route path="/map" element={
-                                <div className="h-[calc(100vh-140px)]">
+                                <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-140px)]">
                                     <MapView />
                                 </div>
                             } />

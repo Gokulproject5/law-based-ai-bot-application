@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Camera, Upload, CheckSquare, X, FileText, Image as ImageIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import CameraCapture from './CameraCapture';
@@ -7,16 +8,34 @@ export default function EvidenceHelper({ checklist }) {
     const [uploads, setUploads] = useState([]);
     const [showCamera, setShowCamera] = useState(false);
 
+    // Cleanup object URLs to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            uploads.forEach(u => {
+                if (u.type === 'file' && u.url) {
+                    URL.revokeObjectURL(u.url);
+                }
+            });
+        };
+    }, [uploads]);
+
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
+
+            // Limit file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File size exceeds 5MB limit.");
+                return;
+            }
+
             const url = URL.createObjectURL(file);
-            setUploads([...uploads, { name: file.name, url, type: 'file' }]);
+            setUploads(prev => [...prev, { name: file.name, url, type: 'file' }]);
         }
     };
 
     const handleCameraCapture = (imageData) => {
-        setUploads([...uploads, {
+        setUploads(prev => [...prev, {
             name: `Capture_${new Date().getTime()}.jpg`,
             url: imageData,
             type: 'image'
@@ -24,7 +43,9 @@ export default function EvidenceHelper({ checklist }) {
     };
 
     const removeUpload = (index) => {
-        setUploads(uploads.filter((_, i) => i !== index));
+        const item = uploads[index];
+        if (item.type === 'file') URL.revokeObjectURL(item.url);
+        setUploads(prev => prev.filter((_, i) => i !== index));
     };
 
     return (
