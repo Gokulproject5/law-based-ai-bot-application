@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { AlertTriangle, Shield, FileText, ChevronDown, ChevronUp, Download } from 'lucide-react';
 import EvidenceHelper from './EvidenceHelper';
+import { useTranslation } from 'react-i18next';
 
 export default function ResultCard({ match }) {
+    const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
 
     const severityColors = {
@@ -48,7 +50,7 @@ Disclaimer: Not legal advice. Consult a lawyer.
                 <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                         <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase ${severityColors[match.severity] || 'bg-gray-100 text-gray-800'}`}>
-                            {match.severity} Severity
+                            {t(match.severity.toLowerCase())} {t('severity')}
                         </span>
                         <span className="text-xs text-gray-500 dark:text-gray-400">{match.category}</span>
                     </div>
@@ -59,7 +61,7 @@ Disclaimer: Not legal advice. Consult a lawyer.
                     {!expanded && match.steps && match.steps.length > 0 && (
                         <div className="mt-3 flex items-start gap-2 text-sm bg-blue-50 dark:bg-gray-800 p-2 rounded-lg border border-blue-100 dark:border-gray-700">
                             <span className="bg-blue-600 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs flex-shrink-0 mt-0.5">1</span>
-                            <span className="text-gray-900 dark:text-white font-medium">Next Step: {match.steps[0]}</span>
+                            <span className="text-gray-900 dark:text-white font-medium">{t('next_step')} {match.steps[0]}</span>
                         </div>
                     )}
                 </div>
@@ -76,7 +78,7 @@ Disclaimer: Not legal advice. Consult a lawyer.
                     <div className="flex items-start gap-2">
                         <Shield className="text-blue-600 mt-0.5" size={18} />
                         <div>
-                            <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Relevant Laws (IPC/Acts)</h4>
+                            <h4 className="font-semibold text-sm text-gray-900 dark:text-white">{t('relevant_laws')}</h4>
                             <div className="flex flex-wrap gap-1 mt-1">
                                 {match.ipc_sections && match.ipc_sections.map((sec, idx) => (
                                     <span key={idx} className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded border border-blue-100 font-mono">
@@ -89,7 +91,7 @@ Disclaimer: Not legal advice. Consult a lawyer.
 
                     {/* Action Steps */}
                     <div>
-                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-2">Recommended Actions</h4>
+                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-2">{t('recommended_actions')}</h4>
                         <ul className="space-y-2">
                             {match.steps && match.steps.map((step, idx) => (
                                 <li key={idx} className="flex gap-2 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 p-2 rounded border border-gray-100 dark:border-gray-700">
@@ -110,16 +112,17 @@ Disclaimer: Not legal advice. Consult a lawyer.
                             className="flex-1 flex items-center justify-center gap-2 bg-gray-800 text-white py-2 rounded-lg text-sm hover:bg-gray-900 transition"
                         >
                             <Download size={16} />
-                            Download Summary
+                            {t('download_summary')}
                         </button>
                         {/* Template Button could go here */}
                     </div>
 
                     <div className="text-xs text-center text-gray-400 mt-2">
-                        Penalty: {match.penalty || "Consult a lawyer for details."}
+                        {t('penalty')} {match.penalty || t('consult_lawyer_details')}
                     </div>
                 </div>
             )}
         </div>
     );
 }
+

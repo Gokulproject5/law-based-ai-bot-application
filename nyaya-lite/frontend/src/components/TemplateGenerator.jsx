@@ -1,74 +1,76 @@
 import React, { useState } from 'react';
 import { FileText, Download, Check } from 'lucide-react';
 import jsPDF from 'jspdf';
-
-const TEMPLATES = {
-    FIR: {
-        title: "FIR Complaint Format",
-        fields: ["Name", "Incident Date", "Incident Location", "Description of Incident", "Suspect Details (if any)"],
-        generate: (data) => {
-            const doc = new jsPDF();
-            doc.setFontSize(16);
-            doc.text("FIR Complaint Draft", 105, 20, null, null, "center");
-
-            doc.setFontSize(12);
-            doc.text(`To,\nThe Station House Officer,\n[Police Station Name],\n[City]`, 20, 40);
-
-            doc.text(`Subject: Complaint regarding incident on ${data['Incident Date'] || '[Date]'}`, 20, 70);
-
-            const body = `Sir/Madam,\n\nI, ${data['Name'] || '[Name]'}, wish to report an incident that occurred at ${data['Incident Location'] || '[Location]'} on ${data['Incident Date'] || '[Date]'}.\n\nDetails:\n${data['Description of Incident'] || '[Description]'}\n\nSuspect Details: ${data['Suspect Details (if any)'] || 'Unknown'}\n\nI request you to register an FIR and take necessary action.\n\nSincerely,\n${data['Name'] || '[Name]'}\n[Phone Number]`;
-
-            const splitText = doc.splitTextToSize(body, 170);
-            doc.text(splitText, 20, 90);
-
-            doc.save("FIR_Draft.pdf");
-        }
-    },
-    RTI: {
-        title: "RTI Application",
-        fields: ["Name", "Department", "Information Required", "Time Period"],
-        generate: (data) => {
-            const doc = new jsPDF();
-            doc.setFontSize(16);
-            doc.text("RTI Application", 105, 20, null, null, "center");
-
-            doc.setFontSize(12);
-            doc.text(`To,\nThe Public Information Officer,\n${data['Department'] || '[Department]'}`, 20, 40);
-
-            doc.text(`Subject: Application under Right to Information Act, 2005`, 20, 60);
-
-            const body = `Sir/Madam,\n\nPlease provide the following information:\n${data['Information Required'] || '[Info]'}\n\nPeriod: ${data['Time Period'] || '[Period]'}\n\nI am attaching the application fee.\n\nSincerely,\n${data['Name'] || '[Name]'}`;
-
-            const splitText = doc.splitTextToSize(body, 170);
-            doc.text(splitText, 20, 80);
-
-            doc.save("RTI_Application.pdf");
-        }
-    },
-    Consumer: {
-        title: "Consumer Complaint",
-        fields: ["Name", "Company Name", "Product Details", "Defect Description", "Relief Sought"],
-        generate: (data) => {
-            const doc = new jsPDF();
-            doc.setFontSize(16);
-            doc.text("Consumer Complaint Notice", 105, 20, null, null, "center");
-
-            doc.setFontSize(12);
-            doc.text(`To,\nThe Manager,\n${data['Company Name'] || '[Company]'}`, 20, 40);
-
-            doc.text(`Subject: Complaint regarding defective product`, 20, 60);
-
-            const body = `Sir/Madam,\n\nI purchased ${data['Product Details'] || '[Product]'} from your store/website.\n\nHowever, the product is defective/service is deficient as follows:\n${data['Defect Description'] || '[Defect]'}\n\nI request you to provide the following relief: ${data['Relief Sought'] || '[Relief]'} within 15 days, failing which I will approach the Consumer Forum.\n\nSincerely,\n${data['Name'] || '[Name]'}`;
-
-            const splitText = doc.splitTextToSize(body, 170);
-            doc.text(splitText, 20, 80);
-
-            doc.save("Consumer_Complaint.pdf");
-        }
-    }
-};
+import { useTranslation } from 'react-i18next';
 
 export default function TemplateGenerator() {
+    const { t } = useTranslation();
+    const TEMPLATES = {
+        FIR: {
+            title: t('fir_title'),
+            fields: [t('name'), t('incident_date'), t('incident_location'), t('description_incident'), t('suspect_details')],
+            generate: (data) => {
+                const doc = new jsPDF();
+                doc.setFontSize(16);
+                doc.text(t('fir_title'), 105, 20, null, null, "center");
+
+                doc.setFontSize(12);
+                doc.text(`To,\nThe Station House Officer,\n[Police Station Name],\n[City]`, 20, 40);
+
+                doc.text(`Subject: Complaint regarding incident on ${data[t('incident_date')] || '[Date]'}`, 20, 70);
+
+                const body = `Sir/Madam,\n\nI, ${data[t('name')] || '[Name]'}, wish to report an incident that occurred at ${data[t('incident_location')] || '[Location]'} on ${data[t('incident_date')] || '[Date]'}.\n\nDetails:\n${data[t('description_incident')] || '[Description]'}\n\nSuspect Details: ${data[t('suspect_details')] || 'Unknown'}\n\nI request you to register an FIR and take necessary action.\n\nSincerely,\n${data[t('name')] || '[Name]'}\n[Phone Number]`;
+
+                const splitText = doc.splitTextToSize(body, 170);
+                doc.text(splitText, 20, 90);
+
+                doc.save("FIR_Draft.pdf");
+            }
+        },
+        RTI: {
+            title: t('rti_title'),
+            fields: [t('name'), t('department'), t('info_required'), t('time_period')],
+            generate: (data) => {
+                const doc = new jsPDF();
+                doc.setFontSize(16);
+                doc.text(t('rti_title'), 105, 20, null, null, "center");
+
+                doc.setFontSize(12);
+                doc.text(`To,\nThe Public Information Officer,\n${data[t('department')] || '[Department]'}`, 20, 40);
+
+                doc.text(`Subject: Application under Right to Information Act, 2005`, 20, 60);
+
+                const body = `Sir/Madam,\n\nPlease provide the following information:\n${data[t('info_required')] || '[Info]'}\n\nPeriod: ${data[t('time_period')] || '[Period]'}\n\nI am attaching the application fee.\n\nSincerely,\n${data[t('name')] || '[Name]'}`;
+
+                const splitText = doc.splitTextToSize(body, 170);
+                doc.text(splitText, 20, 80);
+
+                doc.save("RTI_Application.pdf");
+            }
+        },
+        Consumer: {
+            title: t('consumer_title'),
+            fields: [t('name'), t('company_name'), t('product_details'), t('defect_description'), t('relief_sought')],
+            generate: (data) => {
+                const doc = new jsPDF();
+                doc.setFontSize(16);
+                doc.text(t('consumer_title'), 105, 20, null, null, "center");
+
+                doc.setFontSize(12);
+                doc.text(`To,\nThe Manager,\n${data[t('company_name')] || '[Company]'}`, 20, 40);
+
+                doc.text(`Subject: Complaint regarding defective product`, 20, 60);
+
+                const body = `Sir/Madam,\n\nI purchased ${data[t('product_details')] || '[Product]'} from your store/website.\n\nHowever, the product is defective/service is deficient as follows:\n${data[t('defect_description')] || '[Defect]'}\n\nI request you to provide the following relief: ${data[t('relief_sought')] || '[Relief]'} within 15 days, failing which I will approach the Consumer Forum.\n\nSincerely,\n${data[t('name')] || '[Name]'}`;
+
+                const splitText = doc.splitTextToSize(body, 170);
+                doc.text(splitText, 20, 80);
+
+                doc.save("Consumer_Complaint.pdf");
+            }
+        }
+    };
+
     const [selectedTemplate, setSelectedTemplate] = useState('FIR');
     const [formData, setFormData] = useState({});
 
@@ -82,7 +84,7 @@ export default function TemplateGenerator() {
 
     return (
         <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-800">Legal Templates</h2>
+            <h2 className="text-xl font-bold text-gray-800">{t('legal_templates')}</h2>
 
             <div className="flex gap-2 overflow-x-auto pb-2">
                 {Object.keys(TEMPLATES).map(key => (
@@ -106,7 +108,7 @@ export default function TemplateGenerator() {
                                 type="text"
                                 className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                                 onChange={(e) => handleChange(field, e.target.value)}
-                                placeholder={`Enter ${field}`}
+                                placeholder={`${t('enter')}${field}`}
                             />
                         </div>
                     ))}
@@ -116,9 +118,10 @@ export default function TemplateGenerator() {
                     onClick={handleDownload}
                     className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-700 transition"
                 >
-                    <Download size={18} /> Download PDF
+                    <Download size={18} /> {t('download_pdf')}
                 </button>
             </div>
         </div>
     );
 }
+

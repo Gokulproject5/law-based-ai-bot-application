@@ -3,8 +3,10 @@ import axios from 'axios';
 import ResultCard from './ResultCard';
 import { ChevronRight, ArrowLeft, BookOpen, Database } from 'lucide-react';
 import OfficialActView from './OfficialActView';
+import { useTranslation } from 'react-i18next';
 
 export default function CategoryView() {
+    const { t } = useTranslation();
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [laws, setLaws] = useState([]);
@@ -45,7 +47,7 @@ export default function CategoryView() {
                         }`}
                 >
                     <Database size={18} />
-                    <span>Our Database</span>
+                    <span>{t('our_database')}</span>
                 </button>
                 <button
                     onClick={() => setActiveTab('official')}
@@ -55,7 +57,7 @@ export default function CategoryView() {
                         }`}
                 >
                     <BookOpen size={18} />
-                    <span>Official Acts</span>
+                    <span>{t('official_acts')}</span>
                 </button>
             </div>
 
@@ -71,7 +73,7 @@ export default function CategoryView() {
                             </button>
                         )}
                         <h2 className="text-2xl font-bold text-gray-800">
-                            {selectedCategory || 'Legal Categories'}
+                            {selectedCategory || t('legal_categories')}
                         </h2>
                     </div>
 
@@ -87,16 +89,16 @@ export default function CategoryView() {
                                     <ChevronRight size={20} className="text-gray-400" />
                                 </button>
                             ))}
-                            {categories.length === 0 && <div className="text-center text-gray-500">Loading categories...</div>}
+                            {categories.length === 0 && <div className="text-center text-gray-500">{t('loading_categories')}</div>}
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            {loading && <div className="text-center text-blue-600 animate-pulse">Loading laws...</div>}
+                            {loading && <div className="text-center text-blue-600 animate-pulse">{t('loading_laws')}</div>}
                             {!loading && laws.map((law, idx) => (
                                 <ResultCard key={idx} match={law} />
                             ))}
                             {!loading && laws.length === 0 && (
-                                <div className="text-center text-gray-500">No laws found in this category.</div>
+                                <div className="text-center text-gray-500">{t('no_laws_found')}</div>
                             )}
                         </div>
                     )}
@@ -105,3 +107,4 @@ export default function CategoryView() {
         </div>
     );
 }
+

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Phone, MapPin, Star, ExternalLink, Navigation } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function LawyerCard({ lawyer, onGetDirections }) {
+    const { t } = useTranslation();
     const callLawyer = () => {
         if (lawyer.phone) {
             window.location.href = `tel:${lawyer.phone}`;
@@ -51,7 +53,7 @@ export default function LawyerCard({ lawyer, onGetDirections }) {
             {/* Distance */}
             {lawyer.distance && (
                 <div className="text-xs text-[var(--text-muted)] font-medium">
-                    📍 {lawyer.distance} away
+                    📍 {lawyer.distance} {t('away')}
                 </div>
             )}
 
@@ -59,9 +61,9 @@ export default function LawyerCard({ lawyer, onGetDirections }) {
             {lawyer.isOpen !== undefined && (
                 <div className="text-xs font-medium">
                     {lawyer.isOpen ? (
-                        <span className="text-green-600">🟢 Open now</span>
+                        <span className="text-green-600">🟢 {t('open_now')}</span>
                     ) : (
-                        <span className="text-red-600">🔴 Closed</span>
+                        <span className="text-red-600">🔴 {t('closed')}</span>
                     )}
                 </div>
             )}
@@ -75,7 +77,7 @@ export default function LawyerCard({ lawyer, onGetDirections }) {
                         style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
                     >
                         <Phone size={16} className="inline mr-2" />
-                        Call
+                        {t('call')}
                     </button>
                 )}
                 <button
@@ -84,7 +86,7 @@ export default function LawyerCard({ lawyer, onGetDirections }) {
                     style={{ borderColor: '#667eea', color: '#667eea' }}
                 >
                     <Navigation size={16} className="inline mr-2" />
-                    Directions
+                    {t('directions')}
                 </button>
             </div>
 
@@ -95,7 +97,7 @@ export default function LawyerCard({ lawyer, onGetDirections }) {
                         onClick={openInGoogleMaps}
                         className="text-sm text-[#667eea] hover:underline inline-flex items-center gap-1"
                     >
-                        View on Google Maps
+                        {t('view_on_google_maps')}
                         <ExternalLink size={12} />
                     </button>
                 </div>
@@ -103,3 +105,4 @@ export default function LawyerCard({ lawyer, onGetDirections }) {
         </div>
     );
 }
+

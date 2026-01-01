@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { BookOpen, Search, X, ExternalLink } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function OfficialActView() {
+    const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [selectedAct, setSelectedAct] = useState(null);
@@ -57,8 +59,8 @@ export default function OfficialActView() {
         <div className="space-y-4 fade-in">
             {/* Header */}
             <div className="text-center space-y-2">
-                <h2 className="text-2xl font-bold gradient-text font-['Outfit']">Official Acts & Sections</h2>
-                <p className="text-[var(--text-secondary)] text-sm">Search Indian Acts from official sources</p>
+                <h2 className="text-2xl font-bold gradient-text font-['Outfit']">{t('official_acts_sections')}</h2>
+                <p className="text-[var(--text-secondary)] text-sm">{t('search_official_desc')}</p>
             </div>
 
             {/* Search Form */}
@@ -68,7 +70,7 @@ export default function OfficialActView() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search for acts (e.g., IPC, IT Act, Consumer Act)"
+                        placeholder={t('search_acts_placeholder')}
                         className="flex-1 p-3 border border-[var(--border-color)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#667eea]"
                     />
                     <button
@@ -89,14 +91,14 @@ export default function OfficialActView() {
             {loading && (
                 <div className="flex flex-col items-center justify-center py-8">
                     <div className="spinner mb-4"></div>
-                    <p className="text-[var(--text-secondary)]">Searching...</p>
+                    <p className="text-[var(--text-secondary)]">{t('searching')}</p>
                 </div>
             )}
 
             {/* Search Results */}
             {!loading && searchResults.length > 0 && (
                 <div className="space-y-3">
-                    <h3 className="font-semibold text-[var(--text-primary)]">Search Results ({searchResults.length})</h3>
+                    <h3 className="font-semibold text-[var(--text-primary)]">{t('search_results')} ({searchResults.length})</h3>
                     {searchResults.map((act, idx) => (
                         <div
                             key={idx}
@@ -113,9 +115,9 @@ export default function OfficialActView() {
                                     <h4 className="font-bold text-[var(--text-primary)]">{act.title}</h4>
                                     <p className="text-sm text-[var(--text-secondary)] mt-1">{act.description}</p>
                                     <div className="flex gap-3 mt-2 text-xs text-[var(--text-muted)]">
-                                        <span>Year: {act.year}</span>
+                                        <span>{t('year')}{act.year}</span>
                                         <span>•</span>
-                                        <span>Sections: {act.totalSections}</span>
+                                        <span>{t('sections')}{act.totalSections}</span>
                                     </div>
                                 </div>
                             </div>
@@ -139,18 +141,18 @@ export default function OfficialActView() {
 
                     <div className="card-premium p-4 space-y-3">
                         <div>
-                            <span className="font-semibold">Type:</span> {selectedAct.type}
+                            <span className="font-semibold">{t('type')}</span> {selectedAct.type}
                         </div>
                         <div>
-                            <span className="font-semibold">Enacted:</span> {selectedAct.enacted}
+                            <span className="font-semibold">{t('enacted')}</span> {selectedAct.enacted}
                         </div>
                         {selectedAct.commenced && (
                             <div>
-                                <span className="font-semibold">Commenced:</span> {selectedAct.commenced}
+                                <span className="font-semibold">{t('commenced')}</span> {selectedAct.commenced}
                             </div>
                         )}
                         <div>
-                            <span className="font-semibold">Total Sections:</span> {selectedAct.totalSections}
+                            <span className="font-semibold">{t('total_sections')}</span> {selectedAct.totalSections}
                         </div>
                         <p className="text-[var(--text-secondary)]">{selectedAct.description}</p>
 
@@ -162,7 +164,7 @@ export default function OfficialActView() {
                                 className="inline-flex items-center gap-2 text-[#667eea] hover:underline"
                             >
                                 <ExternalLink size={16} />
-                                View Official Document
+                                {t('view_official_doc')}
                             </a>
                         )}
                     </div>
@@ -170,14 +172,14 @@ export default function OfficialActView() {
                     {/* Popular Sections */}
                     {selectedAct.popularSections && selectedAct.popularSections.length > 0 && (
                         <div className="space-y-2">
-                            <h4 className="font-semibold text-[var(--text-primary)]">Popular Sections</h4>
+                            <h4 className="font-semibold text-[var(--text-primary)]">{t('popular_sections')}</h4>
                             {selectedAct.popularSections.map((sec, idx) => (
                                 <div
                                     key={idx}
                                     onClick={() => viewSection(selectedAct.id, sec.section)}
                                     className="card-premium p-3 cursor-pointer hover-lift"
                                 >
-                                    <div className="font-semibold text-[#667eea]">Section {sec.section}</div>
+                                    <div className="font-semibold text-[#667eea]">{t('section')} {sec.section}</div>
                                     <div className="text-sm text-[var(--text-secondary)]">{sec.title}</div>
                                 </div>
                             ))}
@@ -193,20 +195,20 @@ export default function OfficialActView() {
                         onClick={() => setSelectedSection(null)}
                         className="text-sm text-[#667eea] hover:underline"
                     >
-                        ← Back to Act
+                        {t('back_to_act')}
                     </button>
-                    <h4 className="font-bold text-lg">Section {selectedSection.section}</h4>
+                    <h4 className="font-bold text-lg">{t('section')} {selectedSection.section}</h4>
                     <p className="font-semibold text-[var(--text-primary)]">{selectedSection.title}</p>
                     <p className="text-[var(--text-secondary)]">{selectedSection.content}</p>
 
                     <div className="bg-[var(--bg-secondary)] p-3 rounded-lg space-y-2 text-sm">
-                        <div><span className="font-semibold">Punishment:</span> {selectedSection.punishment}</div>
+                        <div><span className="font-semibold">{t('punishment')}</span> {selectedSection.punishment}</div>
                         <div className="flex gap-4">
                             <span className={selectedSection.cognizable ? 'text-green-600' : 'text-red-600'}>
-                                {selectedSection.cognizable ? '✓' : '✗'} Cognizable
+                                {selectedSection.cognizable ? '✓' : '✗'} {t('cognizable')}
                             </span>
                             <span className={selectedSection.bailable ? 'text-green-600' : 'text-red-600'}>
-                                {selectedSection.bailable ? '✓' : '✗'} Bailable
+                                {selectedSection.bailable ? '✓' : '✗'} {t('bailable')}
                             </span>
                         </div>
                     </div>
@@ -217,10 +219,11 @@ export default function OfficialActView() {
             {!loading && searchResults.length === 0 && !selectedAct && searchQuery && (
                 <div className="card-premium text-center p-8">
                     <BookOpen size={48} className="mx-auto text-gray-300 mb-3" />
-                    <p className="text-[var(--text-secondary)]">No acts found for "{searchQuery}"</p>
-                    <p className="text-sm text-[var(--text-muted)] mt-2">Try searching for IPC, IT Act, or Consumer Act</p>
+                    <p className="text-[var(--text-secondary)]">{t('no_acts_found', { query: searchQuery })}</p>
+                    <p className="text-sm text-[var(--text-muted)] mt-2">{t('try_searching_for')}</p>
                 </div>
             )}
         </div>
     );
 }
+

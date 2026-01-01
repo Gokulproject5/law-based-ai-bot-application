@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Lightbulb } from 'lucide-react';
-
-const TIPS = [
-    "You have the right to remain silent if arrested.",
-    "Police cannot refuse to file an FIR for a cognizable offense.",
-    "Women cannot be arrested after sunset and before sunrise (exceptions apply).",
-    "You can file an RTI to get information from any government body.",
-    "Domestic violence covers physical, emotional, and economic abuse.",
-    "Tenants cannot be evicted without a court order.",
-    "Cyberbullying is a punishable offense under the IT Act."
-];
+import { useTranslation } from 'react-i18next';
 
 export default function DailyTip() {
+    const { t } = useTranslation();
     const [tip, setTip] = useState("");
+
+    const TIPS = [
+        t('tip1'),
+        t('tip2'),
+        t('tip3'),
+        t('tip4'),
+        t('tip5'),
+        t('tip6'),
+        t('tip7')
+    ];
 
     useEffect(() => {
         // Pick a random tip on mount

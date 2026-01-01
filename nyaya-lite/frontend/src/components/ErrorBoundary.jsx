@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -15,19 +16,20 @@ class ErrorBoundary extends React.Component {
     }
 
     render() {
+        const { t } = this.props;
         if (this.state.hasError) {
             return (
                 <div className="flex flex-col items-center justify-center min-h-[50vh] p-6 text-center">
                     <div className="card-premium p-8 max-w-sm border-l-4 border-red-500">
-                        <h2 className="text-xl font-bold text-red-600 mb-2 font-['Outfit']">Something went wrong</h2>
+                        <h2 className="text-xl font-bold text-red-600 mb-2 font-['Outfit']">{t('something_went_wrong')}</h2>
                         <p className="text-[var(--text-secondary)] text-sm mb-6">
-                            We're sorry, but the application encountered an unexpected error.
+                            {t('unexpected_error')}
                         </p>
                         <button
                             onClick={() => window.location.reload()}
                             className="btn-gradient w-full"
                         >
-                            Reload Application
+                            {t('reload_app')}
                         </button>
                         {process.env.NODE_ENV === 'development' && (
                             <div className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-left overflow-auto max-h-32 text-red-500">
@@ -43,4 +45,4 @@ class ErrorBoundary extends React.Component {
     }
 }
 
-export default ErrorBoundary;
+export default withTranslation()(ErrorBoundary);

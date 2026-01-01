@@ -39,12 +39,9 @@ router.post('/analyze', async (req, res) => {
         const localResult = analyzeText(text, allLaws);
 
         if (aiAnalysis) {
-            // Merge AI result with local matches if needed, or just return AI result
-            // We'll structure it to match what frontend expects, or send new format
             return res.json({
-                ...aiAnalysis, // summary, steps, risk_level, relevant_laws
-                matches: localResult.matches, // Keep local matches as reference
-                source: 'AI'
+                ...aiAnalysis, // includes source: 'Gemini AI' from geminiService
+                matches: localResult.matches, // local matches for comparison
             });
         }
 

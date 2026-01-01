@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { ExternalLink, Locate, Loader } from 'lucide-react';
+import { ExternalLink, Locate, Loader, Shield, Scale, Users } from 'lucide-react';
 import LawyerCard from './LawyerCard';
 import axios from 'axios';
 import L from 'leaflet';
+import { useTranslation } from 'react-i18next';
 
 // Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -33,6 +34,7 @@ function RecenterMap({ center }) {
 }
 
 export default function MapView() {
+    const { t, i18n } = useTranslation();
     const [userLocation, setUserLocation] = useState(null);
     const [lawyers, setLawyers] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -92,7 +94,8 @@ export default function MapView() {
                 setLocationError('Unable to get your location. Please enable location services.');
                 console.error('Geolocation error:', error);
                 setLoading(false);
-            }
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
     };
 
@@ -110,8 +113,28 @@ export default function MapView() {
         return distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`;
     };
 
-    const openGoogleMaps = (query) => {
-        window.open(`https://www.google.com/maps/search/${query}`, '_blank');
+    const openGoogleMaps = (type) => {
+        const queries = {
+            police: {
+                en: 'Police Station near me',
+                hi: 'मेरे पास पुलिस स्टेशन',
+                ta: 'எனக்கு அருகில் உள்ள காவல் நிலையம்'
+            },
+            court: {
+                en: 'Court near me',
+                hi: 'मेरे पास न्यायालय',
+                ta: 'எனக்கு அருகில் உள்ள நீதிமன்றம்'
+            },
+            lawyers: {
+                en: 'Lawyers near me',
+                hi: 'मेरे पास वकील',
+                ta: 'எனக்கு அருகில் உள்ள வழக்கறிஞர்கள்'
+            }
+        };
+
+        const currentLang = i18n.language.split('-')[0];
+        const query = queries[type][currentLang] || queries[type]['en'];
+        window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
     };
 
     const getDirections = (lawyer) => {
@@ -122,7 +145,7 @@ export default function MapView() {
     return (
         <div className="space-y-4 h-full flex flex-col">
             <div className="flex justify-between items-center px-2">
-                <h2 className="text-xl font-bold text-[var(--text-primary)]">Find Help Nearby</h2>
+                <h2 className="text-xl font-bold text-[var(--text-primary)]">{t('find_help_nearby')}</h2>
                 <button
                     onClick={getUserLocation}
                     disabled={loading}
@@ -130,7 +153,32 @@ export default function MapView() {
                     style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
                 >
                     {loading ? <Loader size={16} className="animate-spin" /> : <Locate size={16} />}
-                    {loading ? 'Locating...' : 'Search Here'}
+                    {loading ? t('locating') : t('search_here')}
+                </button>
+            </div>
+
+            {/* Quick Redirect Buttons */}
+            <div className="grid grid-cols-3 gap-3 px-2">
+                <button
+                    onClick={() => openGoogleMaps('police')}
+                    className="flex flex-col items-center justify-center p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 hover:bg-red-500/20 transition-all gap-1"
+                >
+                    <Shield size={20} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{t('police_station')}</span>
+                </button>
+                <button
+                    onClick={() => openGoogleMaps('court')}
+                    className="flex flex-col items-center justify-center p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 hover:bg-amber-500/20 transition-all gap-1"
+                >
+                    <Scale size={20} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{t('court')}</span>
+                </button>
+                <button
+                    onClick={() => openGoogleMaps('lawyers')}
+                    className="flex flex-col items-center justify-center p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 hover:bg-indigo-500/20 transition-all gap-1"
+                >
+                    <Users size={20} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{t('lawyers')}</span>
                 </button>
             </div>
 
@@ -153,7 +201,7 @@ export default function MapView() {
                     {userLocation && (
                         <Marker position={[userLocation.lat, userLocation.lng]}>
                             <Popup>
-                                <strong>Your Location</strong>
+                                <strong>{t('your_location')}</strong>
                             </Popup>
                         </Marker>
                     )}
@@ -178,7 +226,7 @@ export default function MapView() {
                                         onClick={() => getDirections(lawyer)}
                                         className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 w-full"
                                     >
-                                        Get Directions
+                                        {t('get_directions')}
                                     </button>
                                 </div>
                             </Popup>
@@ -189,9 +237,9 @@ export default function MapView() {
 
             {/* Lawyer List */}
             {lawyers.length > 0 && (
-                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                <div className="space-y-3 max-h-[400px] overflow-y-auto px-2">
                     <h3 className="font-semibold text-[var(--text-primary)]">
-                        Nearby Lawyers ({lawyers.length})
+                        {t('nearby_lawyers')} ({lawyers.length})
                     </h3>
                     {lawyers.map((lawyer, idx) => (
                         <LawyerCard
@@ -203,9 +251,10 @@ export default function MapView() {
                 </div>
             )}
 
-            <p className="text-xs text-[var(--text-muted)] text-center">
-                Click "Find Lawyers" to search for lawyers near your current location
+            <p className="text-xs text-[var(--text-muted)] text-center px-4">
+                {t('click_to_find')}
             </p>
         </div>
     );
 }
+

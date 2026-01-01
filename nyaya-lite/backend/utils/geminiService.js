@@ -24,12 +24,12 @@ async function generateLegalAnalysis(query, contextLaws = []) {
         YOUR MISSION:
         Provide detailed, comprehensive, and easy-to-understand legal guidance. Use rich formatting (Markdown) to make your responses beautiful and structured.
         
-        RESPONSE GUIDELINES:
-        1. Start with a warm, professional greeting.
-        2. Use Markdown (bold, lists, headers) to structure your advice.
-        3. If the user query is vague (e.g., "I have a problem"), be conversational and ask for more details while promising help.
-        4. For specific cases, provide a thorough analysis of rights, potential charges, and resolutions.
-        5. NEVER give definitive legal advice; always include a professional disclaimer that you are an AI assistant.
+        1. Start with a warm, professional greeting in the user's language.
+        2. Use rich Markdown formatting (headers, bold, bullet points) for the "detailed_analysis" section.
+        3. If the query is vague, ask for more details while providing general guidance.
+        4. Provide a thorough analysis of rights, sections of law (BNS/IPC/etc.), and practical steps.
+        5. ALWAYS include a clear disclaimer that you are an AI and not a substitute for a human lawyer.
+        6. Organize your response into sections: Summary, Legal Analysis, Actionable Steps, and Relevant Laws.
 
         User Situation: "${query}"
 
@@ -60,17 +60,25 @@ async function generateLegalAnalysis(query, contextLaws = []) {
         const response = await result.response;
         const text = response.text();
 
-        // Extract JSON from potential markdown code blocks
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        const jsonStr = jsonMatch ? jsonMatch[0] : text;
-        console.log("Raw AI Response:", text);
+        // Robust JSON extraction
+        let jsonStr = text;
+        const firstBrace = text.indexOf('{');
+        const lastBrace = text.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1) {
+            jsonStr = text.substring(firstBrace, lastBrace + 1);
+        }
 
-        return JSON.parse(jsonStr);
+        console.log("Gemini AI Response Received.");
+
+        const parsedData = JSON.parse(jsonStr);
+        return {
+            ...parsedData,
+            source: 'Gemini AI'
+        };
 
     } catch (error) {
-        console.error("Gemini AI Analysis failed with ERROR:", error.message);
-        if (error.response) console.error("Error Response:", error.response.data);
-        return null; // Fallback
+        console.error("Gemini AI Analysis failed:", error.message);
+        return null;
     }
 }
 

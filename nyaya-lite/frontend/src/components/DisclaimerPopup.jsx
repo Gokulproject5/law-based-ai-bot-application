@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function DisclaimerPopup({ onAccept }) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
@@ -25,23 +27,24 @@ export default function DisclaimerPopup({ onAccept }) {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
-                    <h2 className="text-xl font-bold">Legal Disclaimer</h2>
+                    <h2 className="text-xl font-bold">{t('legal_disclaimer_title')}</h2>
                 </div>
 
                 <div className="text-gray-700 space-y-3 text-sm">
-                    <p><strong>1. Not Legal Advice:</strong> The information provided by Nyaya Lite is for educational and informational purposes only. It is not a substitute for professional legal advice.</p>
-                    <p><strong>2. No Lawyer-Client Relationship:</strong> Using this app does not create a lawyer-client relationship.</p>
-                    <p><strong>3. Consult a Professional:</strong> Always consult with a qualified advocate or police officer for official proceedings.</p>
-                    <p><strong>4. Emergency:</strong> For immediate danger, call 112 or 100.</p>
+                    <p><strong>{t('disclaimer_point1_title')}</strong> {t('disclaimer_point1_desc')}</p>
+                    <p><strong>{t('disclaimer_point2_title')}</strong> {t('disclaimer_point2_desc')}</p>
+                    <p><strong>{t('disclaimer_point3_title')}</strong> {t('disclaimer_point3_desc')}</p>
+                    <p><strong>{t('disclaimer_point4_title')}</strong> {t('disclaimer_point4_desc')}</p>
                 </div>
 
                 <button
                     onClick={handleAccept}
                     className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                 >
-                    I Understand and Agree
+                    {t('i_understand_agree')}
                 </button>
             </div>
         </div>
     );
 }
+

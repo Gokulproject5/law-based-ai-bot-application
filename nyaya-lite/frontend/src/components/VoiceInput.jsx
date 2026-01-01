@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff, Send, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const LANGUAGES = [
     { code: 'en-IN', name: 'English', flag: '🇮🇳' },
@@ -11,6 +12,7 @@ const LANGUAGES = [
 ];
 
 export default function VoiceInput({ value = '', onChange, onSubmit, onTranscript, compact = false }) {
+    const { t } = useTranslation();
     const [listening, setListening] = useState(false);
     const [lang, setLang] = useState('en-IN');
     const recognitionRef = useRef(null);
@@ -33,7 +35,7 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
     }, [onChange, lang]);
 
     function toggleListen() {
-        if (!recognitionRef.current) return alert('Your browser does not support voice input (use Chrome/Edge/Safari).');
+        if (!recognitionRef.current) return alert(t('browser_not_supported'));
         if (listening) {
             recognitionRef.current.stop();
             setListening(false);
@@ -89,7 +91,7 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
                                 border: 'none',
                                 outline: 'none'
                             }}
-                            placeholder={`Type your legal query or tap the mic to speak...`}
+                            placeholder={t('voice_placeholder')}
                         />
                     </div>
 
@@ -109,8 +111,8 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
                         <button
                             onClick={toggleListen}
                             className={`p-3 rounded-full transition-all ripple-container ${listening
-                                    ? 'pulse glow-strong'
-                                    : 'glass hover-lift'
+                                ? 'pulse glow-strong'
+                                : 'glass hover-lift'
                                 }`}
                             style={{
                                 background: listening
@@ -118,7 +120,7 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
                                     : 'var(--glass-bg)',
                                 boxShadow: listening ? 'var(--shadow-lg)' : 'var(--shadow-sm)'
                             }}
-                            title={listening ? "Stop Recording" : "Start Voice Input"}
+                            title={listening ? t('stop_recording') : t('start_voice_input')}
                         >
                             {listening ? (
                                 <MicOff size={20} className="text-white" />
@@ -130,7 +132,7 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
                             onClick={onSubmit}
                             disabled={!value?.trim()}
                             className="btn-gradient p-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-                            title="Analyze Query"
+                            title={t('analyze_query')}
                         >
                             <Send size={20} />
                         </button>
@@ -142,10 +144,10 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
                 <button
                     onClick={toggleListen}
                     className={`p-2 rounded-full transition-all ${listening
-                            ? 'bg-red-500 text-white pulse'
-                            : 'bg-[var(--bg-tertiary)] text-indigo-500 hover:bg-indigo-50 transition-colors'
+                        ? 'bg-red-500 text-white pulse'
+                        : 'bg-[var(--bg-tertiary)] text-indigo-500 hover:bg-indigo-50 transition-colors'
                         }`}
-                    title={listening ? "Stop Recording" : "Start Voice Input"}
+                    title={listening ? t('stop_recording') : t('start_voice_input')}
                 >
                     {listening ? <MicOff size={18} /> : <Mic size={18} />}
                 </button>
@@ -156,10 +158,10 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
                 {listening ? (
                     <span className="flex items-center gap-2 text-red-500 font-medium">
                         <span className="w-2 h-2 bg-red-500 rounded-full pulse"></span>
-                        Listening... Speak now
+                        {t('listening_speak_now')}
                     </span>
                 ) : (
-                    <span>Powered by Web Speech API • Press Enter to submit</span>
+                    <span>{t('powered_by_api')}</span>
                 )}
             </div>
         </div>

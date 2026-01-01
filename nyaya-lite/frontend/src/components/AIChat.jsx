@@ -32,7 +32,7 @@ export default function AIChat() {
                 results.summary ||
                 results.message ||
                 (results.matches && results.matches[0]?.description) ||
-                "I've analyzed your situation and found some relevant legal information.";
+                t('analyzed_results');
 
             const botResponse = {
                 type: 'bot',
@@ -46,7 +46,7 @@ export default function AIChat() {
     // Handle errors
     useEffect(() => {
         if (error) {
-            setMessages(prev => [...prev, { type: 'bot', text: "Sorry, I encountered an error: " + error, isError: true }]);
+            setMessages(prev => [...prev, { type: 'bot', text: t('error_encountered') + error, isError: true }]);
         }
     }, [error]);
 
@@ -84,6 +84,18 @@ export default function AIChat() {
 
                                 {msg.type === 'bot' ? (
                                     <div className="prose prose-sm dark:prose-invert max-w-none">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            {msg.data?.source === 'Gemini AI' && (
+                                                <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase rounded-full border border-blue-500/20">
+                                                    Powered by Gemini
+                                                </span>
+                                            )}
+                                            {msg.isError && (
+                                                <span className="px-2 py-0.5 bg-red-500/10 text-red-500 text-[10px] font-bold uppercase rounded-full">
+                                                    Error
+                                                </span>
+                                            )}
+                                        </div>
                                         <ReactMarkdown
                                             components={{
                                                 h3: ({ node, ...props }) => <h3 className="text-base font-bold text-indigo-500 mb-2 mt-4" {...props} />,
@@ -103,16 +115,41 @@ export default function AIChat() {
                                 {/* Rich Content for Bot (if available) */}
                                 {msg.data && (
                                     <div className="mt-6 space-y-6">
-                                        {/* If we have direct law matches (from backend analyzer) */}
-                                        {msg.data.matches && msg.data.matches.length > 0 && (
+                                        {/* Actionable Steps from Gemini */}
+                                        {msg.data.steps && msg.data.steps.length > 0 && (
+                                            <div className="space-y-3 pt-4 border-t border-[var(--border-color)]">
+                                                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
+                                                    <Loader size={12} className="text-indigo-500" />
+                                                    Actionable Steps
+                                                </p>
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    {msg.data.steps.map((step, sIdx) => (
+                                                        <div key={sIdx} className="p-3 bg-[var(--bg-tertiary)] rounded-xl border border-[var(--border-color)]">
+                                                            <p className="text-xs font-bold text-indigo-500">{step.title}</p>
+                                                            <p className="text-[11px] text-[var(--text-secondary)] mt-1">{step.description}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* If we have direct law matches (from backend analyzer or Gemini) */}
+                                        {(msg.data.matches || msg.data.relevant_laws) && (
                                             <div className="space-y-4 pt-4 border-t border-[var(--border-color)]">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Verified Legal Matches</p>
+                                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">{t('verified_matches')}</p>
                                                 </div>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    {msg.data.matches.slice(0, 2).map((match, i) => (
+                                                    {msg.data.matches?.slice(0, 2).map((match, i) => (
                                                         <ResultCard key={i} match={match} />
+                                                    ))}
+                                                    {/* If Gemini provided relevant laws not in our local DB */}
+                                                    {!msg.data.matches?.length && msg.data.relevant_laws?.slice(0, 2).map((law, i) => (
+                                                        <div key={`rem-${i}`} className="p-3 bg-[var(--bg-tertiary)] rounded-xl border border-[var(--border-color)]">
+                                                            <p className="text-xs font-bold text-indigo-500">{law.name}</p>
+                                                            <p className="text-[11px] text-[var(--text-secondary)] mt-1">{law.description}</p>
+                                                        </div>
                                                     ))}
                                                 </div>
                                             </div>
@@ -123,15 +160,15 @@ export default function AIChat() {
                                             <div className="flex flex-wrap gap-2 pt-2">
                                                 {msg.data.risk_level && msg.data.risk_level !== 'N/A' && (
                                                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.risk_level === 'Emergency')
-                                                            ? 'bg-red-500/10 text-red-500'
-                                                            : 'bg-green-500/10 text-green-500'
+                                                        ? 'bg-red-500/10 text-red-500'
+                                                        : 'bg-green-500/10 text-green-500'
                                                         }`}>
-                                                        {msg.data.risk_level} Risk
+                                                        {msg.data.risk_level} {t('risk_label')}
                                                     </span>
                                                 )}
                                                 {msg.data.lawyer_type && (
-                                                    <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500 text-[10px] font-bold uppercase">
-                                                        {msg.data.lawyer_type}
+                                                    <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500 text-[10px] font-bold uppercase border border-indigo-500/20">
+                                                        {msg.data.lawyer_type} Specialist
                                                     </span>
                                                 )}
                                             </div>

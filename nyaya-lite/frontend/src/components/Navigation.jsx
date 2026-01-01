@@ -48,8 +48,8 @@ export default function Navigation() {
                             key={item.path}
                             to={item.path}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${location.pathname === item.path
-                                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
-                                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
+                                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+                                : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                                 }`}
                         >
                             {item.icon}
@@ -61,7 +61,7 @@ export default function Navigation() {
                 <div className="p-4 border-t border-[var(--border-color)]">
                     <button className="flex items-center gap-3 px-4 py-2 w-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                         <Settings size={20} />
-                        <span>Settings</span>
+                        <span>{t('settings')}</span>
                     </button>
                 </div>
             </aside>

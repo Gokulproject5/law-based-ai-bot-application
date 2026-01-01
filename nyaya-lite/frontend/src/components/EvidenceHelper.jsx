@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Camera, Upload, CheckSquare, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function EvidenceHelper({ checklist }) {
+    const { t } = useTranslation();
     const [uploads, setUploads] = useState([]);
     const [showCamera, setShowCamera] = useState(false);
 
@@ -26,7 +28,7 @@ export default function EvidenceHelper({ checklist }) {
         <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 space-y-4">
             <h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
                 <CheckSquare className="text-blue-600" size={20} />
-                Evidence Checklist
+                {t('evidence_checklist')}
             </h3>
 
             <div className="space-y-2">
@@ -36,22 +38,22 @@ export default function EvidenceHelper({ checklist }) {
                         <span>{item}</span>
                     </div>
                 ))}
-                {!checklist && <p className="text-gray-500 text-sm">No specific evidence checklist available.</p>}
+                {!checklist && <p className="text-gray-500 text-sm">{t('no_evidence_checklist')}</p>}
             </div>
 
             <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                <h4 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">Collect Proof</h4>
+                <h4 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">{t('collect_proof')}</h4>
                 <div className="flex gap-2">
                     <button
                         onClick={handleCameraCapture}
                         className="flex-1 flex items-center justify-center gap-2 bg-blue-100 text-blue-700 py-2 rounded hover:bg-blue-200 transition"
                     >
                         <Camera size={18} />
-                        <span>Camera</span>
+                        <span>{t('camera')}</span>
                     </button>
                     <label className="flex-1 flex items-center justify-center gap-2 bg-green-100 text-green-700 py-2 rounded hover:bg-green-200 transition cursor-pointer">
                         <Upload size={18} />
-                        <span>Upload</span>
+                        <span>{t('upload')}</span>
                         <input type="file" className="hidden" onChange={handleFileChange} accept="image/*,application/pdf" />
                     </label>
                 </div>
@@ -77,8 +79,9 @@ export default function EvidenceHelper({ checklist }) {
             )}
 
             <p className="text-xs text-gray-500 dark:text-gray-400 italic mt-2">
-                * Photos/Docs are stored locally in your browser session only.
+                {t('local_storage_disclaimer')}
             </p>
         </div>
     );
 }
+

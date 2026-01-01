@@ -53,7 +53,7 @@ export default function App() {
                         <button
                             onClick={toggleTheme}
                             className="p-2 rounded-full hover:bg-[var(--bg-tertiary)] transition-colors border border-[var(--border-color)]"
-                            title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                            title={darkMode ? t('switch_light') : t('switch_dark')}
                         >
                             {darkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-indigo-600" />}
                         </button>
