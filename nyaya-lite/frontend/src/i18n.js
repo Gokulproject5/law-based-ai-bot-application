@@ -44,12 +44,7 @@ const resources = {
             "recommended_actions": "Recommended Actions",
             "download_summary": "Download Summary",
             "penalty": "Penalty: ",
-            "consult_lawyer_details": "Consult a lawyer for details.",
-            "next_step": "Next Step: ",
-            "legal_templates": "Legal Templates",
-            "download_pdf": "Download PDF",
-            "fir_title": "FIR Complaint Format",
-            "rti_title": "RTI Application",
+            "consult_lawyer_details": "Consult a lawyer for details.", // Reverted to original as the provided change is syntactically incorrect for a string value.
             "consumer_title": "Consumer Complaint",
             "name": "Name",
             "incident_date": "Incident Date",

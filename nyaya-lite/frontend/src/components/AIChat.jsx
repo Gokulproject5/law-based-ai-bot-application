@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User, Bot, Loader } from 'lucide-react';
+import { Send, User, Bot, Loader, BookOpen } from 'lucide-react';
 import { useLegalAnalysis } from '../hooks/useLegalAnalysis';
 import { useTranslation } from 'react-i18next';
 import VoiceInput from './VoiceInput';
@@ -83,11 +83,12 @@ export default function AIChat() {
                                 }`}>
 
                                 {msg.type === 'bot' ? (
-                                    <div className="prose prose-sm dark:prose-invert max-w-none">
-                                        <div className="flex items-center gap-2 mb-2">
+                                    <div className="space-y-4">
+                                        {/* Status / Source Info */}
+                                        <div className="flex items-center gap-2">
                                             {msg.data?.source === 'Gemini AI' && (
                                                 <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase rounded-full border border-blue-500/20">
-                                                    Powered by Gemini
+                                                    Gemini Legal Guide
                                                 </span>
                                             )}
                                             {msg.isError && (
@@ -96,84 +97,96 @@ export default function AIChat() {
                                                 </span>
                                             )}
                                         </div>
-                                        <ReactMarkdown
-                                            components={{
-                                                h3: ({ node, ...props }) => <h3 className="text-base font-bold text-indigo-500 mb-2 mt-4" {...props} />,
-                                                ul: ({ node, ...props }) => <ul className="list-disc pl-4 space-y-1 my-3" {...props} />,
-                                                li: ({ node, ...props }) => <li className="text-sm opacity-90" {...props} />,
-                                                p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
-                                                strong: ({ node, ...props }) => <strong className="font-bold text-indigo-400" {...props} />,
-                                            }}
-                                        >
-                                            {msg.text}
-                                        </ReactMarkdown>
-                                    </div>
-                                ) : (
-                                    msg.text
-                                )}
 
-                                {/* Rich Content for Bot (if available) */}
-                                {msg.data && (
-                                    <div className="mt-6 space-y-6">
-                                        {/* Actionable Steps from Gemini */}
-                                        {msg.data.steps && msg.data.steps.length > 0 && (
-                                            <div className="space-y-3 pt-4 border-t border-[var(--border-color)]">
-                                                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
-                                                    <Loader size={12} className="text-indigo-500" />
-                                                    Actionable Steps
-                                                </p>
-                                                <div className="grid grid-cols-1 gap-2">
+                                        {/* Main Analysis Block */}
+                                        <div className="prose prose-sm dark:prose-invert max-w-none text-[var(--text-primary)]">
+                                            <ReactMarkdown
+                                                components={{
+                                                    h3: ({ node, ...props }) => <h3 className="text-base font-bold text-indigo-500 mb-2 mt-4 flex items-center gap-2" {...props} />,
+                                                    ul: ({ node, ...props }) => <ul className="list-disc pl-4 space-y-1 my-3" {...props} />,
+                                                    li: ({ node, ...props }) => <li className="text-sm opacity-90" {...props} />,
+                                                    p: ({ node, ...props }) => <p className="mb-3 leading-relaxed" {...props} />,
+                                                    strong: ({ node, ...props }) => <strong className="font-bold text-indigo-400" {...props} />,
+                                                }}
+                                            >
+                                                {msg.text}
+                                            </ReactMarkdown>
+                                        </div>
+
+                                        {/* Prominent Step-by-Step Guide */}
+                                        {msg.data?.steps && msg.data.steps.length > 0 && (
+                                            <div className="mt-6 border-t border-[var(--border-color)] pt-5 animate-in slide-in-from-bottom-4 duration-700">
+                                                <div className="flex items-center gap-2 mb-4">
+                                                    <div className="w-6 h-6 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold shadow-sm">
+                                                        <Loader size={14} className="animate-spin-slow" />
+                                                    </div>
+                                                    <p className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
+                                                        Your Step-by-Step Action Plan
+                                                    </p>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3">
                                                     {msg.data.steps.map((step, sIdx) => (
-                                                        <div key={sIdx} className="p-3 bg-[var(--bg-tertiary)] rounded-xl border border-[var(--border-color)]">
-                                                            <p className="text-xs font-bold text-indigo-500">{step.title}</p>
-                                                            <p className="text-[11px] text-[var(--text-secondary)] mt-1">{step.description}</p>
+                                                        <div
+                                                            key={sIdx}
+                                                            className="flex gap-4 p-4 bg-[var(--bg-tertiary)] rounded-2xl border border-[var(--border-color)] hover:border-indigo-500/30 transition-all group"
+                                                        >
+                                                            <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-sm font-bold flex-shrink-0 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                                                                {sIdx + 1}
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm font-bold text-[var(--text-primary)]">{step.title}</p>
+                                                                <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+                                                                    {step.description}
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
                                         )}
 
-                                        {/* If we have direct law matches (from backend analyzer or Gemini) */}
-                                        {(msg.data.matches || msg.data.relevant_laws) && (
-                                            <div className="space-y-4 pt-4 border-t border-[var(--border-color)]">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">{t('verified_matches')}</p>
+                                        {/* Legal References & Severity */}
+                                        {(msg.data?.matches || msg.data?.relevant_laws || msg.data?.primary_offense) && (
+                                            <div className="mt-6 border-t border-[var(--border-color)] pt-5 space-y-4">
+                                                <div className="flex flex-wrap items-center justify-between gap-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                                                        <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                                                            Legal Framework
+                                                        </p>
+                                                    </div>
+
+                                                    {msg.data.risk_level && (
+                                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${(msg.data.risk_level === 'High' || msg.data.risk_level === 'Emergency')
+                                                            ? 'bg-red-500/10 text-red-500 border-red-500/20'
+                                                            : 'bg-green-500/10 text-green-500 border-green-500/20'
+                                                            }`}>
+                                                            {msg.data.risk_level} Priority
+                                                        </span>
+                                                    )}
                                                 </div>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                     {msg.data.matches?.slice(0, 2).map((match, i) => (
                                                         <ResultCard key={i} match={match} />
                                                     ))}
-                                                    {/* If Gemini provided relevant laws not in our local DB */}
                                                     {!msg.data.matches?.length && msg.data.relevant_laws?.slice(0, 2).map((law, i) => (
-                                                        <div key={`rem-${i}`} className="p-3 bg-[var(--bg-tertiary)] rounded-xl border border-[var(--border-color)]">
-                                                            <p className="text-xs font-bold text-indigo-500">{law.name}</p>
-                                                            <p className="text-[11px] text-[var(--text-secondary)] mt-1">{law.description}</p>
+                                                        <div key={`rem-${i}`} className="p-3 bg-[var(--bg-tertiary)] rounded-xl border border-[var(--border-color)] flex items-start gap-2">
+                                                            <div className="p-1 bg-indigo-500/10 rounded-lg">
+                                                                <BookOpen size={14} className="text-indigo-500" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs font-bold text-[var(--text-primary)]">{law.name}</p>
+                                                                <p className="text-[11px] text-[var(--text-secondary)] mt-1">{law.description}</p>
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
                                         )}
-
-                                        {/* Simple Explanation / Bottom Stats if it was a legal query */}
-                                        {msg.data.primary_offense && msg.data.primary_offense !== 'Conversational' && (
-                                            <div className="flex flex-wrap gap-2 pt-2">
-                                                {msg.data.risk_level && msg.data.risk_level !== 'N/A' && (
-                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${(msg.data.risk_level === 'High' || msg.data.risk_level === 'Emergency')
-                                                        ? 'bg-red-500/10 text-red-500'
-                                                        : 'bg-green-500/10 text-green-500'
-                                                        }`}>
-                                                        {msg.data.risk_level} {t('risk_label')}
-                                                    </span>
-                                                )}
-                                                {msg.data.lawyer_type && (
-                                                    <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500 text-[10px] font-bold uppercase border border-indigo-500/20">
-                                                        {msg.data.lawyer_type} Specialist
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )}
                                     </div>
+                                ) : (
+                                    <p className="leading-relaxed">{msg.text}</p>
                                 )}
                             </div>
                         </div>
@@ -222,6 +235,6 @@ export default function AIChat() {
                     <Send size={20} />
                 </button>
             </div>
-        </div>
+        </div >
     );
 }

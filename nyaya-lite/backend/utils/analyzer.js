@@ -234,8 +234,17 @@ function analyzeText(text, lawData) {
     else if (severities.includes('High')) urgency_level = 'High';
     else if (severities.includes('Medium')) urgency_level = 'Medium';
 
+    // Generate basic next steps for local fallback
+    const steps = [];
+    if (urgency_level === 'Emergency' || urgency_level === 'High') {
+        steps.push({ title: 'Contact Emergency Services', description: 'Dial 100 or use the Emergency button in the app immediately.' });
+    }
+    steps.push({ title: 'Document Evidence', description: 'Collect photos, videos, and witness details as mentioned in our Evidence Helper.' });
+    steps.push({ title: 'Consult a Professional', description: `We recommend speaking with a ${primary_issue} specialist lawyer to understand your full legal standing.` });
+
     return {
         matches: topMatches.map(r => r.law),
+        steps, // Added fallback steps
         analysis: {
             primary_issue,
             related_issues,

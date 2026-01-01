@@ -521,3 +521,34 @@ select:focus {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* AI Guide Animations */
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+@keyframes slideInUpCustom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+
+.slide-in-from-bottom-4 {
+  animation-name: slideInUpCustom;
+}
