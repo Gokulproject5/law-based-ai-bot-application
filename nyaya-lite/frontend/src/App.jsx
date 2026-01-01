@@ -11,6 +11,8 @@ import DailyTip from './components/DailyTip';
 import DisclaimerPopup from './components/DisclaimerPopup';
 import EmergencyButton from './components/EmergencyButton';
 import SkeletonLoader from './components/SkeletonLoader';
+import SettingsModal from './components/SettingsModal';
+import { Settings as SettingsIcon } from 'lucide-react';
 
 import { useTheme } from './context/ThemeContext';
 
@@ -22,14 +24,15 @@ const MapView = lazy(() => import('./components/MapView'));
 export default function App() {
     const { darkMode, toggleTheme } = useTheme();
     const { t } = useTranslation();
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300 font-inter">
-            <DisclaimerPopup />
             <EmergencyButton />
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
 
             {/* Navigation (Sidebar Desktop / Bottom Bar Mobile) */}
-            <Navigation />
+            <Navigation onOpenSettings={() => setIsSettingsOpen(true)} />
 
             {/* Main Content Area */}
             <div className="md:pl-64 flex flex-col min-h-screen">
@@ -49,10 +52,19 @@ export default function App() {
 
                     <div className="flex items-center gap-4">
                         <DailyTip compact={true} />
-                        <LanguageSelector />
+                        <div className="hidden md:block">
+                            <LanguageSelector />
+                        </div>
+                        <button
+                            onClick={() => setIsSettingsOpen(true)}
+                            className="p-2 rounded-full hover:bg-[var(--bg-tertiary)] transition-colors border border-[var(--border-color)]"
+                            title={t('settings')}
+                        >
+                            <SettingsIcon size={20} />
+                        </button>
                         <button
                             onClick={toggleTheme}
-                            className="p-2 rounded-full hover:bg-[var(--bg-tertiary)] transition-colors border border-[var(--border-color)]"
+                            className="hidden md:flex p-2 rounded-full hover:bg-[var(--bg-tertiary)] transition-colors border border-[var(--border-color)]"
                             title={darkMode ? t('switch_light') : t('switch_dark')}
                         >
                             {darkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-indigo-600" />}

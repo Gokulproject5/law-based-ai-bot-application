@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Camera, Upload, CheckSquare, X } from 'lucide-react';
+import { Camera, Upload, CheckSquare, X, FileText, Image as ImageIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import CameraCapture from './CameraCapture';
 
 export default function EvidenceHelper({ checklist }) {
     const { t } = useTranslation();
@@ -15,9 +15,12 @@ export default function EvidenceHelper({ checklist }) {
         }
     };
 
-    // Mock camera capture (since we can't easily do real webcam in all envs without https)
-    const handleCameraCapture = () => {
-        alert("Camera feature would open device camera here. (Requires HTTPS/Mobile)");
+    const handleCameraCapture = (imageData) => {
+        setUploads([...uploads, {
+            name: `Capture_${new Date().getTime()}.jpg`,
+            url: imageData,
+            type: 'image'
+        }]);
     };
 
     const removeUpload = (index) => {
@@ -45,13 +48,13 @@ export default function EvidenceHelper({ checklist }) {
                 <h4 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">{t('collect_proof')}</h4>
                 <div className="flex gap-2">
                     <button
-                        onClick={handleCameraCapture}
-                        className="flex-1 flex items-center justify-center gap-2 bg-blue-100 text-blue-700 py-2 rounded hover:bg-blue-200 transition"
+                        onClick={() => setShowCamera(true)}
+                        className="flex-1 flex items-center justify-center gap-2 bg-indigo-50 text-indigo-600 py-3 rounded-xl hover:bg-indigo-100 transition border border-indigo-100 font-medium"
                     >
                         <Camera size={18} />
                         <span>{t('camera')}</span>
                     </button>
-                    <label className="flex-1 flex items-center justify-center gap-2 bg-green-100 text-green-700 py-2 rounded hover:bg-green-200 transition cursor-pointer">
+                    <label className="flex-1 flex items-center justify-center gap-2 bg-green-50 text-green-700 py-3 rounded-xl hover:bg-green-100 transition cursor-pointer border border-green-100 font-medium">
                         <Upload size={18} />
                         <span>{t('upload')}</span>
                         <input type="file" className="hidden" onChange={handleFileChange} accept="image/*,application/pdf" />
@@ -59,17 +62,30 @@ export default function EvidenceHelper({ checklist }) {
                 </div>
             </div>
 
+            {showCamera && (
+                <CameraCapture
+                    onCapture={handleCameraCapture}
+                    onClose={() => setShowCamera(false)}
+                />
+            )}
+
             {uploads.length > 0 && (
                 <div className="grid grid-cols-3 gap-2 mt-2">
                     {uploads.map((u, i) => (
                         <div key={i} className="relative group">
-                            <div className="h-16 w-full bg-gray-200 rounded overflow-hidden flex items-center justify-center">
-                                {/* Preview logic */}
-                                <span className="text-xs text-gray-500 px-1 truncate">{u.name}</span>
+                            <div className="h-20 w-full bg-white dark:bg-gray-700 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600 shadow-sm flex items-center justify-center">
+                                {u.url.startsWith('data:image') || u.name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                                    <img src={u.url} alt="Preview" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="flex flex-col items-center gap-1">
+                                        <FileText size={16} className="text-gray-400" />
+                                        <span className="text-[10px] text-gray-500 px-1 truncate max-w-full">{u.name}</span>
+                                    </div>
+                                )}
                             </div>
                             <button
                                 onClick={() => removeUpload(i)}
-                                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 shadow-sm"
+                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg border-2 border-white dark:border-gray-800 z-10"
                             >
                                 <X size={12} />
                             </button>

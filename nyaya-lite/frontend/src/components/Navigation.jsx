@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, BookOpen, MapPin, FileText, Settings, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-export default function Navigation() {
+export default function Navigation({ onOpenSettings }) {
     const location = useLocation();
     const { t } = useTranslation();
 
@@ -59,7 +59,10 @@ export default function Navigation() {
                 </div>
 
                 <div className="p-4 border-t border-[var(--border-color)]">
-                    <button className="flex items-center gap-3 px-4 py-2 w-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                    <button
+                        onClick={onOpenSettings}
+                        className="flex items-center gap-3 px-4 py-2 w-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-tertiary)] rounded-xl"
+                    >
                         <Settings size={20} />
                         <span>{t('settings')}</span>
                     </button>

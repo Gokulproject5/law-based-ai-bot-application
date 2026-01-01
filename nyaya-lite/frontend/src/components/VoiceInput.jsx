@@ -12,16 +12,20 @@ const LANGUAGES = [
 ];
 
 export default function VoiceInput({ value = '', onChange, onSubmit, onTranscript, compact = false }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [listening, setListening] = useState(false);
-    const [lang, setLang] = useState('en-IN');
+
+    // Sync internal lang with i18n.language
+    const currentLang = i18n.language === 'en' ? 'en-IN' :
+        i18n.language === 'hi' ? 'hi-IN' :
+            i18n.language === 'ta' ? 'ta-IN' : 'en-IN';
     const recognitionRef = useRef(null);
 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) return;
         const rec = new SpeechRecognition();
-        rec.lang = lang;
+        rec.lang = currentLang;
         rec.interimResults = false;
         rec.maxAlternatives = 1;
 
@@ -32,7 +36,7 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
         };
         rec.onend = () => setListening(false);
         recognitionRef.current = rec;
-    }, [onChange, lang]);
+    }, [onChange, currentLang, onTranscript]);
 
     function toggleListen() {
         if (!recognitionRef.current) return alert(t('browser_not_supported'));
@@ -55,22 +59,11 @@ export default function VoiceInput({ value = '', onChange, onSubmit, onTranscrip
     return (
         <div className="relative space-y-3 fade-in">
             {/* Language Selector */}
-            <div className="flex justify-end">
+            <div className="flex justify-start">
                 <div className="relative inline-block">
-                    <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs shadow-sm">
-                        <Globe size={14} className="text-[#667eea]" />
-                        <select
-                            value={lang}
-                            onChange={(e) => setLang(e.target.value)}
-                            className="bg-transparent border-none outline-none cursor-pointer font-medium text-[var(--text-primary)]"
-                            style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
-                        >
-                            {LANGUAGES.map(l => (
-                                <option key={l.code} value={l.code}>
-                                    {l.flag} {l.name}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="flex items-center gap-2 glass px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-indigo-500 bg-indigo-500/5 border border-indigo-500/10">
+                        <Globe size={12} />
+                        <span>{LANGUAGES.find(l => l.code === currentLang)?.name}</span>
                     </div>
                 </div>
             </div>
