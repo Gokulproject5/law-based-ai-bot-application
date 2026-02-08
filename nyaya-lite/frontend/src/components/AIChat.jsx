@@ -9,11 +9,12 @@ import ReactMarkdown from 'react-markdown';
 
 export default function AIChat() {
     const { t } = useTranslation();
-    const { results, loading, error, analyzeText } = useLegalAnalysis();
+    const { results, loading, error, analyzeText, sessionId } = useLegalAnalysis();
     const [messages, setMessages] = useState([
         { type: 'bot', text: t('greeting') + " " + t('subtitle') }
     ]);
     const [inputValue, setInputValue] = useState("");
+    const [quickReplies, setQuickReplies] = useState([]);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -40,6 +41,13 @@ export default function AIChat() {
                 text: responseText
             };
             setMessages(prev => [...prev, botResponse]);
+
+            // Set quick reply suggestions if available
+            if (results.follow_up_suggestions && results.follow_up_suggestions.length > 0) {
+                setQuickReplies(results.follow_up_suggestions);
+            } else {
+                setQuickReplies([]);
+            }
         }
     }, [results]);
 
@@ -56,9 +64,14 @@ export default function AIChat() {
         // Add user message
         setMessages(prev => [...prev, { type: 'user', text: text }]);
         setInputValue("");
+        setQuickReplies([]); // Clear quick replies when sending
 
         // Trigger analysis
         await analyzeText(text);
+    };
+
+    const handleQuickReply = (reply) => {
+        handleSend(reply);
     };
 
     return (
@@ -145,6 +158,29 @@ export default function AIChat() {
                                             </div>
                                         )}
 
+                                        {/* Confidence Score */}
+                                        {msg.data?.confidence_score && (
+                                            <div className="mt-4 flex items-center gap-2">
+                                                <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Confidence:</span>
+                                                <div className="flex-1 h-2 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+                                                        style={{ width: `${msg.data.confidence_score * 100}%` }}
+                                                    ></div>
+                                                </div>
+                                                <span className="text-xs font-bold text-indigo-500">{Math.round(msg.data.confidence_score * 100)}%</span>
+                                            </div>
+                                        )}
+
+                                        {/* Emotional Support Message */}
+                                        {msg.data?.emotional_support && (
+                                            <div className="mt-4 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl">
+                                                <p className="text-xs text-[var(--text-primary)] italic">
+                                                    💜 {msg.data.emotional_support}
+                                                </p>
+                                            </div>
+                                        )}
+
                                         {/* Legal References & Severity */}
                                         {(msg.data?.matches || msg.data?.relevant_laws || msg.data?.primary_offense) && (
                                             <div className="mt-6 border-t border-[var(--border-color)] pt-5 space-y-4">
@@ -166,11 +202,11 @@ export default function AIChat() {
                                                     )}
                                                 </div>
 
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                    {msg.data.matches?.slice(0, 2).map((match, i) => (
-                                                        <ResultCard key={i} match={match} />
+                                                <div className="grid grid-cols-1 gap-3">
+                                                    {msg.data.matches?.slice(0, 1).map((match, i) => (
+                                                        <ResultCard key={i} match={match} defaultExpanded={true} />
                                                     ))}
-                                                    {!msg.data.matches?.length && msg.data.relevant_laws?.slice(0, 2).map((law, i) => (
+                                                    {!msg.data.matches?.length && msg.data.relevant_laws?.slice(0, 1).map((law, i) => (
                                                         <div key={`rem-${i}`} className="p-3 bg-[var(--bg-tertiary)] rounded-xl border border-[var(--border-color)] flex items-start gap-2">
                                                             <div className="p-1 bg-indigo-500/10 rounded-lg">
                                                                 <BookOpen size={14} className="text-indigo-500" />
@@ -212,6 +248,26 @@ export default function AIChat() {
 
                 <div ref={messagesEndRef} />
             </div>
+
+            {/* Quick Reply Suggestions */}
+            {quickReplies.length > 0 && (
+                <div className="absolute bottom-16 md:bottom-20 left-0 right-0 px-4 pb-2">
+                    <div className="bg-[var(--glass-bg)] backdrop-blur-lg border border-[var(--glass-border)] rounded-2xl p-3 shadow-lg">
+                        <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Suggested Questions:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {quickReplies.map((reply, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleQuickReply(reply)}
+                                    className="px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-500 text-xs rounded-full border border-indigo-500/20 hover:border-indigo-500/40 transition-all"
+                                >
+                                    {reply}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Input Area */}
             <div className="absolute bottom-0 left-0 right-0 p-2 md:p-4 bg-[var(--glass-bg)] backdrop-blur-lg border-t border-[var(--glass-border)] flex items-center gap-2 shadow-2xl">

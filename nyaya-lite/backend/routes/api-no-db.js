@@ -4,9 +4,20 @@ const Joi = require('joi');
 const { analyzeText } = require('../utils/analyzer');
 const { generateLegalAnalysis, generateConversationalResponse } = require('../utils/geminiService');
 const conversationManager = require('../utils/conversationContext');
-const LawEntry = require('../models/LawEntry');
-const Lawyer = require('../models/Lawyer');
-const { searchNearbyLawyers, searchNearbyPolice, searchNearbyCourts, getLawyerDetails } = require('../utils/googlePlacesAPI');
+const fs = require('fs');
+const path = require('path');
+
+// Load laws from JSON file (fallback when MongoDB is not available)
+let lawsData = [];
+try {
+    const lawsPath = path.join(__dirname, '../data/lawdb.json');
+    if (fs.existsSync(lawsPath)) {
+        lawsData = JSON.parse(fs.readFileSync(lawsPath, 'utf8'));
+        console.log(`✅ Loaded ${lawsData.length} laws from lawdb.json`);
+    }
+} catch (error) {
+    console.error('⚠️  Could not load lawdb.json:', error.message);
+}
 
 // Validation Schema
 const analyzeSchema = Joi.object({
@@ -45,8 +56,8 @@ router.post('/analyze', async (req, res) => {
         // Get full conversation context
         const conversationContext = conversationManager.getFullContext(sessionId);
 
-        // Fetch all laws for analysis
-        const allLaws = await LawEntry.find({});
+        // Use laws from JSON file
+        const allLaws = lawsData;
 
         // Determine if this is a legal query or general conversation
         const isLegalQuery = /\b(law|legal|ipc|section|police|court|lawyer|crime|theft|harassment|property|accident|fraud|rights|complaint|fir)\b/i.test(text);
@@ -86,7 +97,7 @@ router.post('/analyze', async (req, res) => {
 
             return res.json({
                 ...aiAnalysis,
-                matches: (aiAnalysis.relevant_laws && aiAnalysis.relevant_laws.length > 0) ? aiAnalysis.relevant_laws : localResult.matches,
+                matches: localResult.matches, // Include local matches for comparison
                 sessionId,
                 isFollowUp,
                 emotionalState
@@ -131,97 +142,36 @@ router.post('/analyze', async (req, res) => {
 // GET /api/categories
 router.get('/categories', async (req, res) => {
     try {
-        const categories = await LawEntry.distinct('category');
+        // Extract unique categories from lawsData
+        const categories = [...new Set(lawsData.map(law => law.category))];
         res.json(categories);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch categories' });
     }
 });
 
-// GET /api/lawyers
+// GET /api/lawyers (mock data for now)
 router.get('/lawyers', async (req, res) => {
     try {
-        const lawyers = await Lawyer.find();
-        res.json(lawyers);
+        res.json([]);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch lawyers' });
     }
 });
 
-// GET /api/lawyers/nearby
+// GET /api/lawyers/nearby (mock)
 router.get('/lawyers/nearby', async (req, res) => {
     try {
-        const { lat, lng, radius } = req.query;
-
-        if (!lat || !lng) {
-            return res.status(400).json({ error: 'Latitude and longitude required' });
-        }
-
-        const lawyers = await searchNearbyLawyers(
-            parseFloat(lat),
-            parseFloat(lng),
-            radius ? parseInt(radius) : 5000
-        );
-
-        res.json(lawyers);
+        res.json([]);
     } catch (err) {
-        console.error('Error fetching nearby lawyers:', err);
         res.status(500).json({ error: 'Failed to fetch nearby lawyers' });
     }
 });
 
-// GET /api/police/nearby
-router.get('/police/nearby', async (req, res) => {
-    try {
-        const { lat, lng, radius } = req.query;
-
-        if (!lat || !lng) {
-            return res.status(400).json({ error: 'Latitude and longitude required' });
-        }
-
-        const stations = await searchNearbyPolice(
-            parseFloat(lat),
-            parseFloat(lng),
-            radius ? parseInt(radius) : 5000
-        );
-
-        res.json(stations);
-    } catch (err) {
-        console.error('Error fetching nearby police:', err);
-        res.status(500).json({ error: 'Failed to fetch nearby police' });
-    }
-});
-
-// GET /api/courts/nearby
-router.get('/courts/nearby', async (req, res) => {
-    try {
-        const { lat, lng, radius } = req.query;
-
-        if (!lat || !lng) {
-            return res.status(400).json({ error: 'Latitude and longitude required' });
-        }
-
-        const courts = await searchNearbyCourts(
-            parseFloat(lat),
-            parseFloat(lng),
-            radius ? parseInt(radius) : 5000
-        );
-
-        res.json(courts);
-    } catch (err) {
-        console.error('Error fetching nearby courts:', err);
-        res.status(500).json({ error: 'Failed to fetch nearby courts' });
-    }
-});
-
-// GET /api/lawyers/details/:placeId
+// GET /api/lawyers/details/:placeId (mock)
 router.get('/lawyers/details/:placeId', async (req, res) => {
     try {
-        const details = await getLawyerDetails(req.params.placeId);
-        if (!details) {
-            return res.status(404).json({ error: 'Lawyer details not found' });
-        }
-        res.json(details);
+        res.json(null);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch lawyer details' });
     }

@@ -4,6 +4,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const dns = require('dns');
+// Set Google Public DNS to resolve SRV record issues
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
@@ -53,9 +56,15 @@ app.get('*', (req, res) => {
 
 // Connect MongoDB
 const MONGO = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/nyaya';
-mongoose.connect(MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO)
   .then(() => console.log('Mongo connected'))
-  .catch(err => console.error(err));
+  .catch(err => {
+    console.error('❌ MongoDB Connection Error:', err.message);
+    // Fallback for local dev if cloud fails (optional)
+    if (err.code === 'ECONNREFUSED' && MONGO.includes('mongodb.net')) {
+      console.log('⚠️  Cloud MongoDB failed. Using local fallback is not configured.');
+    }
+  });
 
 // Global Error Handler
 app.use((err, req, res, next) => {

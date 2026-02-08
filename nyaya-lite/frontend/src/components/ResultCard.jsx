@@ -3,9 +3,9 @@ import { AlertTriangle, Shield, FileText, ChevronDown, ChevronUp, Download } fro
 import EvidenceHelper from './EvidenceHelper';
 import { useTranslation } from 'react-i18next';
 
-export default function ResultCard({ match }) {
+export default function ResultCard({ match, defaultExpanded = false }) {
     const { t } = useTranslation();
-    const [expanded, setExpanded] = useState(false);
+    const [expanded, setExpanded] = useState(defaultExpanded);
 
     const severityColors = {
         Low: 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -89,6 +89,34 @@ Disclaimer: Not legal advice. Consult a lawyer.
                         </div>
                     </div>
 
+                    {/* Offense Details Grid */}
+                    {(match.offense_nature || match.bail_status || match.court_jurisdiction) && (
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[var(--bg-tertiary)] p-3 rounded-lg border border-[var(--border-color)]">
+                            {match.offense_nature && (
+                                <div>
+                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Nature</p>
+                                    <p className="text-sm font-semibold text-[var(--text-primary)]">{match.offense_nature}</p>
+                                </div>
+                            )}
+                            {match.bail_status && (
+                                <div>
+                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Bail</p>
+                                    <p className={`text-sm font-semibold ${match.bail_status.includes('Non') ? 'text-red-500' : 'text-green-500'}`}>
+                                        {match.bail_status}
+                                    </p>
+                                </div>
+                            )}
+                            {match.court_jurisdiction && (
+                                <div>
+                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Court</p>
+                                    <p className="text-sm font-semibold text-[var(--text-primary)] truncate" title={match.court_jurisdiction}>
+                                        {match.court_jurisdiction}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Action Steps */}
                     <div>
                         <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-2">{t('recommended_actions')}</h4>
@@ -125,4 +153,3 @@ Disclaimer: Not legal advice. Consult a lawyer.
         </div>
     );
 }
-
