@@ -10,7 +10,53 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
  * @param {Object} conversationContext - Previous conversation context
  * @returns {Promise<Object>} - Structured analysis
  */
-async function generateLegalAnalysis(query, contextLaws = [], conversationContext = null) {
+/**
+ * Detect the legal intent of the query
+ * @param {string} query - User's query
+ * @returns {Promise<Object>} - Intent analysis
+ */
+async function detectIntent(query) {
+    try {
+        if (!process.env.GEMINI_API_KEY) return { category: 'General', confidence: 0 };
+
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const prompt = `
+        Classify this legal query into one of these categories:
+        - Criminal (Theft, Assault, Harassment)
+        - Civil (Property, Contract, Family)
+        - Consumer (Defective product, Service issue)
+        - Cyber (Online fraud, Hacking)
+        - Traffic (Accident, Challan)
+        - Corporate (Startup, Tax)
+        - General (Other)
+
+        Query: "${query}"
+
+        Return JSON only:
+        {
+            "category": "CategoryName",
+            "specific_intent": "e.g., File FIR for theft",
+            "confidence": 0.95
+        }`;
+
+        const result = await model.generateContent(prompt);
+        const text = result.response.text().replace(/```json|```/g, '').trim();
+        return JSON.parse(text);
+    } catch (e) {
+        console.error("Intent detection failed:", e.message);
+        return { category: 'General', confidence: 0 };
+    }
+}
+
+/**
+ * Enhanced Legal Analysis with Conversation Context and Intent
+ * @param {string} query - The user's legal question
+ * @param {Array} contextLaws - Optional: closely related laws from local DB
+ * @param {Object} conversationContext - Previous conversation context
+ * @param {Object} intent - Detected intent
+ * @returns {Promise<Object>} - Structured analysis
+ */
+async function generateLegalAnalysis(query, contextLaws = [], conversationContext = null, intent = null) {
     try {
         if (!process.env.GEMINI_API_KEY) {
             console.warn("GEMINI_API_KEY is missing. Using rule-based fallback.");
@@ -20,21 +66,11 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
         const model = genAI.getGenerativeModel({
             model: "gemini-pro",
             generationConfig: {
-                temperature: 0.7,
+                temperature: 0.4, // Lower temperature for more precise legal output
                 topK: 40,
                 topP: 0.95,
                 maxOutputTokens: 2048,
-            },
-            safetySettings: [
-                {
-                    category: "HARM_CATEGORY_HARASSMENT",
-                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
-                },
-                {
-                    category: "HARM_CATEGORY_HATE_SPEECH",
-                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
-                }
-            ]
+            }
         });
 
         // Build conversation history for context
@@ -46,171 +82,64 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
                 ).join('\n');
         }
 
-        // Detect emotional state and adapt tone
+        // Contextual Guidance
+        const intentContext = intent ? `Detected Intent: ${intent.category} - ${intent.specific_intent}` : "";
         const emotionalState = conversationContext?.context?.emotionalState || 'neutral';
-        let toneGuidance = "";
 
-        switch (emotionalState) {
-            case 'distressed':
-                toneGuidance = "The user seems distressed or in an urgent situation. Be extra empathetic, reassuring, and prioritize immediate safety steps.";
-                break;
-            case 'frustrated':
-                toneGuidance = "The user appears frustrated. Be patient, validating, and provide clear, actionable guidance.";
-                break;
-            case 'confused':
-                toneGuidance = "The user seems confused. Use simple language, break down complex concepts, and provide examples.";
-                break;
-            case 'grateful':
-                toneGuidance = "The user is appreciative. Maintain a warm, helpful tone and offer additional assistance.";
-                break;
-            default:
-                toneGuidance = "Maintain a professional yet friendly and empathetic tone.";
-        }
-
-        // Check if this is a follow-up question
-        const isFollowUp = conversationContext?.conversationHistory?.length > 0;
-        const followUpGuidance = isFollowUp
-            ? "This is a follow-up question. Reference the previous conversation and build upon it. Maintain continuity and context."
-            : "This is a new conversation. Provide a comprehensive initial response.";
-
-        // Enhanced prompt with personality and context
         const prompt = `
-You are **Nyaya Lite AI**, an advanced legal assistant powered by Google Gemini. You combine deep legal knowledge with empathy and clarity.
+    You are a **Legal Awareness Assistant** for Indian Law. 
+    🎯 MISSION: Provide educational awareness about Indian Laws. 
+    ⚠️ STRICT RULE: DO NOT give personal legal advice.
+    ⚠️ CONSTRAINT: Only reference valid Indian legal sections.
 
-🎯 YOUR CORE IDENTITY:
-- Expert in Indian law (IPC, BNS, CrPC, Civil laws)
-- Empathetic and patient communicator
-- Focused on practical, actionable guidance
-- Culturally sensitive to Indian context
-- Multi-lingual (English, Hindi, Tamil, Telugu, Malayalam, Kannada)
+    📚 KNOWLEDGE BASE FOR GROUNDING:
+    ${JSON.stringify(contextLaws.slice(0, 5).map(l => ({ title: l.title, sections: l.ipc_sections, description: l.description })), null, 2)}
 
-📋 CURRENT SITUATION:
-${toneGuidance}
-${followUpGuidance}
+    🔍 USER QUERY: "${query}"
 
-${conversationHistoryText}
+    📤 OUTPUT FORMAT (Strict JSON):
+    {
+        "summary": "1-sentence summary of the query.",
+        "detailed_analysis": "### 1️⃣ **Relevant Law**\\nList specific BNS/IPC sections from the Knowledge Base or wider Indian law.\\n\\n### 2️⃣ **Explanation**\\nExplain these laws in very simple language for a common person.\\n\\n### 3️⃣ **Immediate Steps**\\nPractical first steps like 'File an FIR', 'Call Helpline', 'Document Evidence'.\\n\\n### 4️⃣ **Disclaimer**\\nState: 'This is educational legal awareness information and does not constitute personal legal advice.'",
+        "relevant_laws": [
+            {
+                "name": "Section Name",
+                "description": "Short description of what it covers."
+            }
+        ],
+        "steps": [
+            {
+                "title": "Action Title",
+                "description": "Action detail.",
+                "priority": "Normal"
+            }
+        ],
+        "risk_level": "Normal",
+        "confidence_score": 1.0
+    }
 
-🔍 USER'S CURRENT QUERY:
-"${query}"
-
-📚 RELEVANT LEGAL CONTEXT (from database):
-${JSON.stringify(contextLaws.slice(0, 5).map(l => ({
-            title: l.title,
-            category: l.category,
-            ipc_sections: l.ipc_sections,
-            description: l.description
-        })), null, 2)}
-
-🎨 RESPONSE REQUIREMENTS:
-
-1. **Language Detection**: Detect and respond in the user's language (auto-detect from query)
-
-2. **Empathetic Opening**: Start with a brief, warm acknowledgment of their situation
-
-3. **Comprehensive Analysis**: Provide detailed legal analysis using:
-   - Clear headings (###)
-   - **Bold** for key terms
-   - Bullet points for lists
-   - Real-world examples when helpful
-   - Relevant IPC/BNS sections with explanations
-
-4. **Actionable Steps**: Provide 3-7 specific, numbered action steps with:
-   - Clear title for each step
-   - Detailed description (2-3 sentences)
-   - Priority indicators (if urgent)
-   - Timeline guidance (when applicable)
-
-5. **Context Awareness**: 
-   - Reference previous messages if this is a follow-up
-   - Build upon earlier advice
-   - Address new aspects of the situation
-
-6. **Confidence & Limitations**:
-   - Be clear about what you know vs. what requires a lawyer
-   - Provide confidence levels for recommendations
-   - Always include professional consultation disclaimer
-
-📤 OUTPUT FORMAT (Strict JSON):
-{
-    "summary": "One-sentence situation summary in user's language",
-    "detailed_analysis": "Rich Markdown text (3-5 paragraphs) with legal analysis. Use ### for headings, **bold** for emphasis, and bullet points. Include relevant sections and their explanations.",
-    "primary_offense": "Main legal category (e.g., 'Theft', 'Harassment', 'Property Dispute', 'General Query')",
-    "risk_level": "Low | Medium | High | Emergency | N/A",
-    "confidence_score": 0.85,
-    "steps": [
-        {
-            "title": "Immediate Action: [What to do]",
-            "description": "Detailed 2-3 sentence explanation with specific guidance",
-            "priority": "high | medium | low",
-            "timeline": "Immediately | Within 24 hours | Within 7 days | etc."
-        }
-    ],
-    "relevant_laws": [
-        {
-            "title": "Law Title/Offense (e.g. Theft under IPC)",
-            "ipc_sections": ["IPC Section XXX", "BNS Section YYY"],
-            "description": " Detailed legal explanation of how this section applies to the specific situation.",
-            "penalty": "Imprisonment for X years, or fine, or both.",
-            "severity": "Low | Medium | High | Emergency",
-            "offense_nature": "Cognizable | Non-Cognizable",
-            "bail_status": "Bailable | Non-Bailable",
-            "court_jurisdiction": "Triable by Magistrate of First Class | Sessions Court | etc.",
-            "steps": ["Step 1 specific to this law", "Step 2"],
-            "evidence_required": ["Evidence Item 1", "Evidence Item 2"]
-        }
-    ],
-    "lawyer_type": "Recommended specialization (e.g., 'Criminal Defense Lawyer', 'Family Law Attorney')",
-    "follow_up_suggestions": [
-        "Suggested follow-up question 1",
-        "Suggested follow-up question 2"
-    ],
-    "emotional_support": "Brief empathetic message based on detected emotional state"
-}
-
-⚠️ CRITICAL RULES:
-- Return ONLY valid JSON (no markdown code blocks)
-- Ensure all strings are properly escaped
-- Make detailed_analysis rich and informative (minimum 200 words)
-- Provide at least 3 actionable steps
-- Always include emotional_support message
-- Be culturally sensitive to Indian context
-- Use simple language for legal jargon
-`;
+    ⚠️ IMPORTANT: Use the 1️⃣, 2️⃣, 3️⃣, 4️⃣ markers exactly as shown in 'detailed_analysis'.
+    `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
 
         // Robust JSON extraction
-        let jsonStr = text.trim();
+        let jsonStr = text.replace(/```json|```/g, '').trim();
+        const start = jsonStr.indexOf('{');
+        const end = jsonStr.lastIndexOf('}');
+        if (start !== -1 && end !== -1) jsonStr = jsonStr.substring(start, end + 1);
 
-        // Remove markdown code blocks if present
-        jsonStr = jsonStr.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-
-        // Find JSON boundaries
-        const firstBrace = jsonStr.indexOf('{');
-        const lastBrace = jsonStr.lastIndexOf('}');
-
-        if (firstBrace !== -1 && lastBrace !== -1) {
-            jsonStr = jsonStr.substring(firstBrace, lastBrace + 1);
-        }
-
-        console.log("✅ Gemini AI Response Received");
-
-        const parsedData = JSON.parse(jsonStr);
-
+        console.log("✅ Gemini AI Analysis Generated");
         return {
-            ...parsedData,
+            ...JSON.parse(jsonStr),
             source: 'Gemini AI',
-            timestamp: new Date().toISOString(),
-            model: 'gemini-pro'
+            timestamp: new Date().toISOString()
         };
 
     } catch (error) {
         console.error("❌ Gemini AI Analysis failed:", error.message);
-        if (error.message.includes('JSON')) {
-            console.error("JSON Parse Error - Raw response might be malformed");
-        }
         return null;
     }
 }
@@ -265,7 +194,66 @@ Keep your response concise (2-3 sentences) and friendly.
     }
 }
 
+/**
+ * Generate embedding for a text (RAG Feature)
+ * @param {string} text - Text to embed
+ * @returns {Promise<Array<number>>} - Vector embedding
+ */
+async function generateEmbedding(text) {
+    try {
+        if (!process.env.GEMINI_API_KEY) return null;
+        const model = genAI.getGenerativeModel({ model: "embedding-001" });
+        const result = await model.embedContent(text);
+        return result.embedding.values;
+    } catch (error) {
+        console.error("❌ Embedding failed:", error.message);
+        return null;
+    }
+}
+
+/**
+ * Cosine similarity between two vectors
+ */
+function cosineSimilarity(vecA, vecB) {
+    if (!vecA || !vecB || vecA.length !== vecB.length) return 0;
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+    for (let i = 0; i < vecA.length; i++) {
+        dotProduct += vecA[i] * vecB[i];
+        normA += vecA[i] * vecA[i];
+        normB += vecB[i] * vecB[i];
+    }
+    const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return isNaN(similarity) ? 0 : similarity;
+}
+
+/**
+ * Perform semantic search across law entries (RAG Feature)
+ * @param {string} query - User query
+ * @param {Array} laws - Array of LawEntry objects with embeddings
+ * @param {number} topK - Number of results to return
+ * @returns {Promise<Array>} - Top K relevant laws
+ */
+async function performRAGSearch(query, laws, topK = 5) {
+    const queryEmbedding = await generateEmbedding(query);
+    if (!queryEmbedding) return laws.slice(0, topK);
+
+    const scoredLaws = laws
+        .filter(law => law.embedding && law.embedding.length > 0)
+        .map(law => ({
+            ...law._doc || law,
+            similarity: cosineSimilarity(queryEmbedding, law.embedding)
+        }))
+        .sort((a, b) => b.similarity - a.similarity);
+
+    return scoredLaws.slice(0, topK);
+}
+
 module.exports = {
     generateLegalAnalysis,
-    generateConversationalResponse
+    generateConversationalResponse,
+    generateEmbedding,
+    performRAGSearch,
+    detectIntent
 };

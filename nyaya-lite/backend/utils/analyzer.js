@@ -242,9 +242,43 @@ function analyzeText(text, lawData) {
     steps.push({ title: 'Document Evidence', description: 'Collect photos, videos, and witness details as mentioned in our Evidence Helper.' });
     steps.push({ title: 'Consult a Professional', description: `We recommend speaking with a ${primary_issue} specialist lawyer to understand your full legal standing.` });
 
+    // Generate emergency buttons for local fallback
+    const emergency_buttons = [];
+    if (urgency_level === 'Emergency' || urgency_level === 'High') {
+        if (primary_issue.includes('Accident') || primary_issue.includes('Injury')) {
+            emergency_buttons.push({ label: 'Call Ambulance (108)', type: 'call', value: '108', icon: 'activity' });
+        }
+        emergency_buttons.push({ label: 'Call Police (112)', type: 'call', value: '112', icon: 'shield' });
+        emergency_buttons.push({ label: 'Find Nearest Police Station', type: 'action', value: 'location_police', icon: 'map-pin' });
+    }
+
+    if (primary_issue.includes('Women') || primary_issue.includes('Abuse')) {
+        emergency_buttons.push({ label: 'Call Women Helpline (181)', type: 'call', value: '181', icon: 'phone' });
+    }
+
+    if (primary_issue.includes('Cyber')) {
+        emergency_buttons.push({ label: 'Call Cyber Helpline (1930)', type: 'call', value: '1930', icon: 'phone' });
+    }
+
+    // Add common action buttons
+    if (topMatches.length > 0) {
+        emergency_buttons.push({ label: 'Find a Lawyer', type: 'action', value: 'location_lawyer', icon: 'users' });
+    }
+
     return {
+        summary: `Local Analysis: Potential ${primary_issue} incident detected.`,
+        logic_path: `local_matching → category:${primary_issue}`,
+        detailed_analysis: `### 1️⃣ **Relevant Law**\nMatched ${topMatches.length} section(s) in local database: ${topMatches.map(m => m.law.ipc_sections?.join(', ')).filter(s => s).join(', ') || 'General Provisions'}.\n\n### 2️⃣ **Explanation**\nDetected keywords related to ${primary_issue}. This typically involves legal provisions regarding rights and duties in such situations.\n\n### 3️⃣ **Immediate Steps**\n1. ${steps[0].description}\n2. ${steps[1] ? steps[1].description : 'Document evidence.'}\n3. ${steps[2] ? steps[2].description : 'Consult an expert.'}\n\n### 4️⃣ **Disclaimer**\n**This is educational awareness information only and does not constitute personal legal advice.**`,
+        relevant_laws: topMatches.map(r => ({
+            name: r.law.title,
+            description: r.law.description
+        })),
         matches: topMatches.map(r => r.law),
-        steps, // Added fallback steps
+        steps,
+        emergency_buttons,
+        confidence_score: topMatches.length > 0 ? 0.7 : 0,
+        risk_level: urgency_level,
+        emotional_support: entities.has_danger ? "Stay safe. Contact authorities immediately if you are in danger." : null,
         analysis: {
             primary_issue,
             related_issues,

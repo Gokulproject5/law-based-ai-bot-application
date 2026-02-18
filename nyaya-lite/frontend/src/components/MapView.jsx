@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { ExternalLink, Locate, Loader, Shield, Scale, Users, AlertTriangle } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import LawyerCard from './LawyerCard';
 import axios from 'axios';
 import L from 'leaflet';
@@ -52,12 +53,13 @@ function RecenterMap({ center }) {
 
 export default function MapView() {
     const { t, i18n } = useTranslation();
+    const location = useLocation();
     const [userLocation, setUserLocation] = useState(null);
     const [places, setPlaces] = useState([]);
     const [loading, setLoading] = useState(false);
     const [locationError, setLocationError] = useState(null);
     const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]); // India center
-    const [searchType, setSearchType] = useState('lawyers'); // 'lawyers', 'police', 'courts'
+    const [searchType, setSearchType] = useState(location.state?.type || 'lawyers'); // 'lawyers', 'police', 'courts'
     const [searchRadius, setSearchRadius] = useState(20000); // Default 20km
 
     const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
@@ -132,6 +134,13 @@ export default function MapView() {
             fetchPlaces(userLocation.lat, userLocation.lng, searchType, searchRadius);
         }
     }, [searchType, searchRadius]);
+
+    // Automatically trigger location if navigated with a specific type
+    useEffect(() => {
+        if (location.state?.type && !userLocation) {
+            getUserLocation();
+        }
+    }, [location.state]);
 
     // Calculate distance between two coordinates in km
     const calculateDistance = (lat1, lon1, lat2, lon2) => {

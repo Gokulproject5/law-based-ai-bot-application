@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FileText, Download, Check } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { useTranslation } from 'react-i18next';
 
 export default function TemplateGenerator() {
     const { t } = useTranslation();
+    const location = useLocation();
     const TEMPLATES = {
         FIR: {
             title: t('fir_title'),
@@ -71,8 +73,14 @@ export default function TemplateGenerator() {
         }
     };
 
-    const [selectedTemplate, setSelectedTemplate] = useState('FIR');
+    const [selectedTemplate, setSelectedTemplate] = useState(location.state?.template || 'FIR');
     const [formData, setFormData] = useState({});
+
+    useEffect(() => {
+        if (location.state?.template) {
+            setSelectedTemplate(location.state.template);
+        }
+    }, [location.state]);
 
     const handleChange = (field, value) => {
         setFormData({ ...formData, [field]: value });

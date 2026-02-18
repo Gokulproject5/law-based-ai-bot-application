@@ -80,7 +80,7 @@ async function searchNearbyLawyers(lat, lng, radius = 5000) {
 }
 
 async function searchNearbyPolice(lat, lng, radius = 5000) {
-    return searchNearbyPlaces(lat, lng, radius, 'police station thole', 'police');
+    return searchNearbyPlaces(lat, lng, radius, 'police station thana', 'police');
 }
 
 async function searchNearbyCourts(lat, lng, radius = 5000) {

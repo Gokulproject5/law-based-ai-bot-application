@@ -39,7 +39,8 @@ app.use(cors({
   origin: process.env.NODE_ENV === 'production' ? clientUrl : '*',
   credentials: true
 }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 // Routes
 app.use('/api', apiRoutes);
@@ -53,6 +54,9 @@ app.use(express.static(path.join(__dirname, '../frontend/dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
+
+// Optimization for Load Balancers (prevent 502 Bad Gateway)
+/* ... */
 
 // Connect MongoDB
 const MONGO = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/nyaya';
@@ -76,4 +80,34 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log('Server listening on', PORT));
+const server = app.listen(PORT, () => console.log('Server listening on', PORT));
+
+// Optimization for Load Balancers (prevent 502 Bad Gateway)
+server.keepAliveTimeout = 120 * 1000;
+server.headersTimeout = 120 * 1000;
+
+// Graceful Shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+    mongoose.connection.close(false, () => {
+      console.log('MongoDb connection closed');
+      process.exit(0);
+    });
+  });
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.error(err.name, err.message);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.error(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});

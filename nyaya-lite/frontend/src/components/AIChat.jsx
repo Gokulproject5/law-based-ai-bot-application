@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User, Bot, Loader, BookOpen } from 'lucide-react';
+import { Send, User, Bot, Loader, BookOpen, Phone, MapPin, FileText, Shield, Activity, ExternalLink } from 'lucide-react';
 import { useLegalAnalysis } from '../hooks/useLegalAnalysis';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import VoiceInput from './VoiceInput';
 import SkeletonLoader from './SkeletonLoader';
 import ResultCard from './ResultCard';
@@ -9,7 +10,19 @@ import ReactMarkdown from 'react-markdown';
 
 export default function AIChat() {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const { results, loading, error, analyzeText, sessionId } = useLegalAnalysis();
+
+    // Define standard markdown styles for consistent informative content
+    const markdownStyles = {
+        h3: ({ node, ...props }) => <h3 className="text-base font-bold text-indigo-500 mb-2 mt-4 flex items-center gap-2" {...props} />,
+        ul: ({ node, ...props }) => <ul className="list-disc pl-5 space-y-2 my-4" {...props} />,
+        li: ({ node, ...props }) => <li className="text-sm opacity-90 leading-relaxed" {...props} />,
+        p: ({ node, ...props }) => <p className="mb-4 leading-relaxed text-sm opacity-90" {...props} />,
+        strong: ({ node, ...props }) => <strong className="font-bold text-indigo-500" {...props} />,
+        blockquote: ({ node, ...props }) => <div className="border-l-4 border-indigo-500/30 pl-4 py-1 my-4 italic opacity-80 bg-indigo-500/5 rounded-r-lg" {...props} />,
+    };
+
     const [messages, setMessages] = useState([
         { type: 'bot', text: t('greeting') + " " + t('subtitle') }
     ]);
@@ -74,6 +87,34 @@ export default function AIChat() {
         handleSend(reply);
     };
 
+    const handleEmergencyAction = (button) => {
+        const { type, value } = button;
+
+        switch (type) {
+            case 'call':
+                window.location.href = `tel:${value}`;
+                break;
+            case 'link':
+                window.open(value, '_blank');
+                break;
+            case 'action':
+                if (value === 'location_police') {
+                    navigate('/map', { state: { type: 'police' } });
+                } else if (value === 'location_court') {
+                    navigate('/map', { state: { type: 'courts' } });
+                } else if (value === 'location_lawyer') {
+                    navigate('/map', { state: { type: 'lawyers' } });
+                } else if (value === 'draft_fir') {
+                    navigate('/templates', { state: { template: 'FIR' } });
+                } else if (value === 'complaint_format') {
+                    navigate('/templates', { state: { template: 'Consumer' } });
+                }
+                break;
+            default:
+                console.warn('Unknown action type:', type);
+        }
+    };
+
     return (
         <div className="flex flex-col h-full bg-[var(--bg-primary)] overflow-hidden rounded-2xl shadow-inner border border-[var(--border-color)] relative">
 
@@ -112,19 +153,94 @@ export default function AIChat() {
                                         </div>
 
                                         {/* Main Analysis Block */}
-                                        <div className="prose prose-sm dark:prose-invert max-w-none text-[var(--text-primary)]">
-                                            <ReactMarkdown
-                                                components={{
-                                                    h3: ({ node, ...props }) => <h3 className="text-base font-bold text-indigo-500 mb-2 mt-4 flex items-center gap-2" {...props} />,
-                                                    ul: ({ node, ...props }) => <ul className="list-disc pl-4 space-y-1 my-3" {...props} />,
-                                                    li: ({ node, ...props }) => <li className="text-sm opacity-90" {...props} />,
-                                                    p: ({ node, ...props }) => <p className="mb-3 leading-relaxed" {...props} />,
-                                                    strong: ({ node, ...props }) => <strong className="font-bold text-indigo-400" {...props} />,
-                                                }}
-                                            >
-                                                {msg.text}
-                                            </ReactMarkdown>
+                                        <div className="space-y-4">
+                                            <div className="prose prose-sm dark:prose-invert max-w-none text-[var(--text-primary)]">
+                                                {/* Smart Section Parsing */}
+                                                {(() => {
+                                                    // Support multiple marker styles: '1️⃣', '### 1.', '### 1️⃣', '### 1', etc.
+                                                    const sections = msg.text.split(/(?:[1-4]️⃣|### [1-4]️⃣|### \d\.?)\s\*\*(.*?)\*\*/g);
+
+                                                    if (sections.length > 1) {
+                                                        const renderedSections = [];
+                                                        for (let i = 1; i < sections.length; i += 2) {
+                                                            const title = sections[i];
+                                                            const content = sections[i + 1];
+                                                            const sectionIndex = Math.floor(i / 2) + 1;
+                                                            const emoji = sectionIndex === 1 ? '📜' : sectionIndex === 2 ? '💡' : sectionIndex === 3 ? '👣' : '⚠️';
+
+                                                            // Logic for showing ResultCards in "Relevant Law" (Section 1)
+                                                            if (sectionIndex === 1) {
+                                                                renderedSections.push(
+                                                                    <div key={title} className="mb-6 last:mb-0 animate-in fade-in slide-in-from-left-4 duration-500">
+                                                                        <div className="flex items-center gap-2 mb-3">
+                                                                            <span className="text-lg">{emoji}</span>
+                                                                            <h4 className="text-sm font-bold text-indigo-500 uppercase tracking-wider">{title}</h4>
+                                                                        </div>
+                                                                        <div className="pl-4 border-l-2 border-indigo-500/10 space-y-4">
+                                                                            {msg.data?.matches && msg.data.matches.length > 0 ? (
+                                                                                <div className="grid grid-cols-1 gap-3">
+                                                                                    {msg.data.matches.map((match, idx) => (
+                                                                                        <ResultCard key={idx} match={match} defaultExpanded={idx === 0} />
+                                                                                    ))}
+                                                                                </div>
+                                                                            ) : (
+                                                                                <ReactMarkdown components={markdownStyles}>{content}</ReactMarkdown>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            } else {
+                                                                renderedSections.push(
+                                                                    <div key={title} className="mb-6 last:mb-0 animate-in fade-in slide-in-from-left-4 duration-500">
+                                                                        <div className="flex items-center gap-2 mb-3">
+                                                                            <span className="text-lg">{emoji}</span>
+                                                                            <h4 className="text-sm font-bold text-indigo-500 uppercase tracking-wider">{title}</h4>
+                                                                        </div>
+                                                                        <div className="pl-4 border-l-2 border-indigo-500/10">
+                                                                            <ReactMarkdown components={markdownStyles}>
+                                                                                {content}
+                                                                            </ReactMarkdown>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        }
+                                                        return renderedSections;
+                                                    }
+
+                                                    return <ReactMarkdown components={markdownStyles}>{msg.text}</ReactMarkdown>;
+                                                })()}
+                                            </div>
                                         </div>
+
+                                        {/* Emergency Action Buttons */}
+                                        {msg.data?.emergency_buttons && msg.data.emergency_buttons.length > 0 && (
+                                            <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[var(--border-color)]">
+                                                {msg.data.emergency_buttons.map((btn, bIdx) => {
+                                                    const Icon = btn.icon === 'phone' ? Phone :
+                                                        btn.icon === 'map-pin' ? MapPin :
+                                                            btn.icon === 'file-text' ? FileText :
+                                                                btn.icon === 'shield' ? Shield :
+                                                                    btn.icon === 'activity' ? Activity : ExternalLink;
+
+                                                    return (
+                                                        <button
+                                                            key={bIdx}
+                                                            onClick={() => handleEmergencyAction(btn)}
+                                                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm hover:shadow-md active:scale-95 ${btn.type === 'call'
+                                                                ? 'bg-red-500 text-white hover:bg-red-600'
+                                                                : btn.type === 'link'
+                                                                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                                                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                                                                }`}
+                                                        >
+                                                            <Icon size={14} />
+                                                            <span>{btn.label}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
 
                                         {/* Prominent Step-by-Step Guide */}
                                         {msg.data?.steps && msg.data.steps.length > 0 && (
@@ -230,16 +346,22 @@ export default function AIChat() {
                 ))}
 
                 {loading && (
-                    <div className="flex justify-start">
+                    <div className="flex justify-start animate-in fade-in duration-300">
                         <div className="flex gap-3 max-w-[85%]">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white flex items-center justify-center shadow-lg">
                                 <Bot size={16} />
                             </div>
-                            <div className="p-4 bg-[var(--bg-secondary)] rounded-2xl rounded-tl-none border border-[var(--border-color)]">
-                                <div className="flex gap-1">
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></span>
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></span>
+                            <div className="p-4 bg-[var(--bg-secondary)] rounded-2xl rounded-tl-none border border-[var(--border-color)] shadow-sm">
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex items-center gap-2 text-indigo-500 font-medium text-xs uppercase tracking-wide">
+                                        <Loader size={12} className="animate-spin" />
+                                        <span>AI Legal Assistant is thinking...</span>
+                                    </div>
+                                    <div className="flex gap-1.5 h-3 items-center">
+                                        <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                        <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                        <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

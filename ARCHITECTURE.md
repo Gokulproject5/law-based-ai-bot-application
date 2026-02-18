@@ -1,154 +1,68 @@
-# 🏗️ System Architecture Diagram
+## 🏗️ Optimized System Architecture
 
-## ChatGPT-like Legal Chatbot Architecture
+The Nyaya Lite platform follows a high-performance, 6-layer architecture designed for scalability, accuracy, and ethical compliance.
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         👤 USER INTERFACE                            │
-│                                                                       │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │                    💬 Chat Interface                           │ │
-│  │  ┌──────────────────────────────────────────────────────────┐ │ │
-│  │  │  • Confidence Score Bar (0-100%)                         │ │ │
-│  │  │  • Emotional Support Messages 💜                         │ │ │
-│  │  │  • Quick Reply Suggestions ⚡                            │ │ │
-│  │  │  • Rich Markdown Responses 📝                            │ │ │
-│  │  │  • Step-by-Step Action Plans 📋                          │ │ │
-│  │  └──────────────────────────────────────────────────────────┘ │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-│                                                                       │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │              🔧 useLegalAnalysis Hook                         │ │
-│  │  • Session ID Generation                                      │ │
-│  │  • API Communication                                          │ │
-│  │  • Toast Notifications                                        │ │
-│  │  • Error Handling                                             │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-                                    ↕
-                          HTTP POST /api/analyze
-                     { text, sessionId } → ← { response }
-                                    ↕
-┌─────────────────────────────────────────────────────────────────────┐
-│                        🌐 API LAYER                                  │
-│                                                                       │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │                   📡 API Routes                                │ │
-│  │  POST /api/analyze                                             │ │
-│  │  • Validates input                                             │ │
-│  │  • Manages sessions                                            │ │
-│  │  • Detects query type (legal/conversational)                   │ │
-│  │  • Routes to appropriate service                               │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-                                    ↕
-┌─────────────────────────────────────────────────────────────────────┐
-│                      🧠 BACKEND INTELLIGENCE                         │
-│                                                                       │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │           💾 Conversation Context Manager                      │ │
-│  │  ┌──────────────────────────────────────────────────────────┐ │ │
-│  │  │  Session Storage (In-Memory)                             │ │ │
-│  │  │  • Conversation history (last 20 messages)               │ │ │
-│  │  │  • User context (legal category, severity)               │ │ │
-│  │  │  • Emotional state detection                             │ │ │
-│  │  │  • Follow-up question identification                     │ │ │
-│  │  │  • Session metadata (created, last activity)             │ │ │
-│  │  └──────────────────────────────────────────────────────────┘ │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-│                                                                       │
-│                                    ↕                                  │
-│                                                                       │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │              🤖 Enhanced Gemini AI Service                     │ │
-│  │  ┌──────────────────────────────────────────────────────────┐ │ │
-│  │  │  AI Prompt Engineering                                   │ │ │
-│  │  │  • Conversation history context                          │ │ │
-│  │  │  • Emotional state adaptation                            │ │ │
-│  │  │  • Follow-up awareness                                   │ │ │
-│  │  │  • Multi-language support                                │ │ │
-│  │  │  • Safety settings                                       │ │ │
-│  │  └──────────────────────────────────────────────────────────┘ │ │
-│  │  ┌──────────────────────────────────────────────────────────┐ │ │
-│  │  │  Response Generation                                     │ │ │
-│  │  │  • Detailed legal analysis (200-500 words)               │ │ │
-│  │  │  • Step-by-step action plans                             │ │ │
-│  │  │  • Confidence scoring (0-100%)                           │ │ │
-│  │  │  • Follow-up suggestions                                 │ │ │
-│  │  │  • Emotional support messages                            │ │ │
-│  │  └──────────────────────────────────────────────────────────┘ │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-│                                                                       │
-│                                    ↕                                  │
-│                              (If AI fails)                            │
-│                                    ↕                                  │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │              🔍 Local NLP Analyzer (Fallback)                  │ │
-│  │  • Keyword matching with stemming                             │ │
-│  │  • Fuzzy matching (typo tolerance)                            │ │
-│  │  • Context detection                                          │ │
-│  │  • Entity extraction                                          │ │
-│  │  • Scoring algorithm                                          │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-                                    ↕
-┌─────────────────────────────────────────────────────────────────────┐
-│                        💾 DATA LAYER                                 │
-│                                                                       │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │                   🗄️ MongoDB Database                          │ │
-│  │  • Law Entries (50+ entries)                                   │ │
-│  │    - Title, Category, IPC Sections                             │ │
-│  │    - Description, Keywords                                     │ │
-│  │    - Steps, Evidence Required                                  │ │
-│  │    - Severity, Penalties                                       │ │
-│  │  • Lawyer Directory (optional)                                 │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-```
+### 🔹 1. Presentation Layer
+- **Tech**: React.js / Vite / Tailwind CSS
+- **Components**: Chat UI, Voice Input (Web Speech API), Map Navigation, Document Viewers.
+- **Responsibility**: Delivering a "wow" user experience with rich micro-animations and responsive layouts.
 
-## 🔄 Data Flow
+### 🔹 2. Application Layer (API Gateway)
+- **Tech**: Node.js / Express
+- **Responsibilities**: 
+  - Query preprocessing & Input validation (Joi)
+  - Session management & Conversation context persistence
+  - Intent detection (Legal vs General)
 
-### 1. User Sends Message
-```
-User Input → AIChat Component → useLegalAnalysis Hook → API
-```
+### 🔹 3. Intelligence Layer (AI Processing)
+- **Engine**: Google Gemini Pro 1.5
+- **Features**: 
+  - Emotional context awareness
+  - Follow-up awareness
+  - Prompt Template Engine for structured output
+  - Fine-tuned personality (Professional, empathetic Indian Lawyer)
 
-### 2. Backend Processing
-```
-API → Conversation Context Manager
-    ↓
-    • Get/Create Session
-    • Add Message to History
-    • Detect Emotional State
-    • Check if Follow-up
-    • Get Full Context
-```
+### 🔹 4. Knowledge Layer
+- **Data Source**: MongoDB Atlas + Local JSON Fallback
+- **Components**: 
+  - Legal knowledge base (BNS, IPC, Motor Vehicles Act, etc.)
+  - Vector database for semantic search (RAG)
+  - FAQ and legal procedure repository
 
-### 3. AI Analysis
-```
-Context + User Query → Enhanced Gemini Service
-    ↓
-    • Build Conversation-Aware Prompt
-    • Adapt Tone Based on Emotion
-    • Generate Rich Response
-    • Calculate Confidence Score
-    • Suggest Follow-ups
-    ↓
-Response → API → Frontend
-```
+### 🔹 5. Validation Layer
+- **Checks**:
+  - Rule-based legal sanity checks
+  - Safety filtering (Hate speech, harassment)
+  - Response formatting validation
 
-### 4. Fallback (if AI fails)
-```
-User Query → Local NLP Analyzer
-    ↓
-    • Keyword Matching
-    • Entity Extraction
-    • Law Database Search
-    • Score & Rank Results
-    ↓
-Basic Response → API → Frontend
-```
+### 🔹 6. Output Layer
+- **Components**:
+  - Structured response generator (The 4-Point Template)
+  - PDF Export module for FIR/Legal drafts
+  - Dynamic Emergency Buttons
+
+---
+
+## 🔄 Data Flow Model
+
+1️⃣ **User Submission**: User submits query via text or voice.
+2️⃣ **Preprocessing**: Speech-to-text conversion (if voice) and NLP cleaning.
+3️⃣ **Intent Parsing**: System extracts intent and emotional state.
+4️⃣ **Knowledge Retrieval**: Semantic search across the legal knowledge base (RAG).
+5️⃣ **AI Generation**: Gemini LLM generates a contextual answer using the retrieved facts.
+6️⃣ **Structuring**: Response formatter applies the 4-part legal structure.
+7️⃣ **Presentation**: Final response with actionable buttons is displayed to the user.
+
+---
+
+## 📋 Response Template (Core Logic)
+
+Every legal response follows a standardized high-clarity format:
+
+1️⃣ **Relevant Law**: Mention applicable BNS/IPC sections.
+2️⃣ **Explanation**: Simple breakdown of the user's rights and situation.
+3️⃣ **Immediate Steps**: An actionable, numbered checklist.
+4️⃣ **Disclaimer**: Mandatory informational purpose clarification.
 
 ## 🎯 Key Components
 

@@ -17,7 +17,8 @@ const LawEntrySchema = new mongoose.Schema({
     time_limit: String, // Limitation period
     offense_type: String, // Cognizable, Bailable, etc.
     templates: [String], // Names of applicable templates e.g. "FIR", "Complaint"
-    state_specific: { type: Map, of: String } // e.g., {"Tamil Nadu": "TN Act Section X"}
+    state_specific: { type: Map, of: String }, // e.g., {"Tamil Nadu": "TN Act Section X"}
+    embedding: [Number] // For RAG semantic search
 });
 
 module.exports = mongoose.model('LawEntry', LawEntrySchema);

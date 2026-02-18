@@ -18,14 +18,15 @@ export function useLegalAnalysis() {
     const [error, setError] = useState(null);
     const [sessionId] = useState(generateSessionId());
 
-    const analyzeText = async (text) => {
+    const analyzeText = async (text, retryCount = 0) => {
         if (!text || !text.trim()) {
             toast.error("Please enter or speak your legal issue.");
             return;
         }
 
         setLoading(true);
-        setResults(null);
+        // Don't reset results immediately to prevent flashing, optional
+        // setResults(null); 
         setError(null);
 
         try {
@@ -34,33 +35,42 @@ export function useLegalAnalysis() {
             const r = await axios.post(`${API_URL}/api/analyze`, {
                 text,
                 sessionId // Include session ID for context
+            }, {
+                timeout: 60000 // 60s timeout for AI analysis
             });
 
             if (r.data.error) {
-                setError(r.data.error);
-                toast.error(r.data.error);
+                throw new Error(r.data.error);
             } else {
                 setResults(r.data);
-
-                // Show success toast with context
-                if (r.data.isFollowUp) {
-                    toast.success("Follow-up analyzed!");
-                } else if (r.data.source === 'Gemini AI') {
-                    toast.success("AI analysis complete!");
-                } else {
-                    toast.success("Analysis complete!");
-                }
+                // toast.success("Analysis complete!"); // Optional, maybe too noisy
             }
         } catch (e) {
             console.error(e);
-            let errorMsg = 'Server connection failed. Is the backend running?';
-            if (e.response && e.response.data && e.response.data.error) {
-                errorMsg = e.response.data.error;
+            let errorMsg = 'Server connection failed.';
+
+            if (e.code === 'ECONNABORTED') {
+                errorMsg = 'Request timed out. The AI is thinking hard!';
+            } else if (e.response) {
+                if (e.response.status === 429) {
+                    errorMsg = 'Too many requests. Please wait a moment.';
+                } else if (e.response.status === 503 || e.response.status === 504) {
+                    errorMsg = 'Server is busy. logic retrying...';
+                    // Retry once
+                    if (retryCount < 1) {
+                        console.log('Retrying request...');
+                        setTimeout(() => analyzeText(text, retryCount + 1), 2000);
+                        return;
+                    }
+                } else if (e.response.data && e.response.data.error) {
+                    errorMsg = e.response.data.error;
+                }
             }
+
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {
-            setLoading(false);
+            if (retryCount === 0) setLoading(false);
         }
     };
 

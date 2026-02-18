@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
 const { analyzeText } = require('../utils/analyzer');
-const { generateLegalAnalysis, generateConversationalResponse } = require('../utils/geminiService');
+const { generateLegalAnalysis, generateConversationalResponse, performRAGSearch, detectIntent } = require('../utils/geminiService');
 const conversationManager = require('../utils/conversationContext');
 const LawEntry = require('../models/LawEntry');
+const LegalSection = require('../models/LegalSection');
 const Lawyer = require('../models/Lawyer');
 const { searchNearbyLawyers, searchNearbyPolice, searchNearbyCourts, getLawyerDetails } = require('../utils/googlePlacesAPI');
 
@@ -48,15 +49,33 @@ router.post('/analyze', async (req, res) => {
         // Fetch all laws for analysis
         const allLaws = await LawEntry.find({});
 
+        // ARCITECTURE STEP 2: Intent Detection
+        console.log(`🧠 NLP: Detecting intent for "${text}"...`);
+        const intent = await detectIntent(text);
+        console.log(`✅ Intent Detected: ${intent.category} (${intent.specific_intent}) | Confidence: ${intent.confidence}`);
+
+        // Update context with intent
+        conversationManager.updateContext(sessionId, { lastIntent: intent });
+
         // Determine if this is a legal query or general conversation
-        const isLegalQuery = /\b(law|legal|ipc|section|police|court|lawyer|crime|theft|harassment|property|accident|fraud|rights|complaint|fir)\b/i.test(text);
+        const isLegalQuery = intent.category !== 'General' || /\b(law|legal|ipc|section|police|court|lawyer|crime|theft|harassment|property|accident|fraud|rights|complaint|fir)\b/i.test(text);
 
         let aiAnalysis = null;
 
         if (isLegalQuery || isFollowUp) {
-            // 1. Try Gemini AI Legal Analysis
-            console.log(`🔍 Analyzing legal query (Session: ${sessionId}, Follow-up: ${isFollowUp})`);
-            aiAnalysis = await generateLegalAnalysis(text, allLaws.slice(0, 10), conversationContext);
+            // 1. RAG ARCHITECTURE: Semantic Retrieval
+            console.log(`🔍 RAG: Performing semantic search for "${text}"`);
+
+            // Load both high-level laws and granular sections
+            const allLaws = await LawEntry.find();
+            const allSections = await LegalSection.find({ embedding: { $exists: true, $not: { $size: 0 } } });
+
+            // Search across both sets
+            const relevantLaws = await performRAGSearch(text, [...allLaws, ...allSections]);
+
+            console.log(`🧠 RAG: Augmenting prompt with ${relevantLaws.length} relevant legal docs`);
+            // Pass intent to the analysis engine
+            aiAnalysis = await generateLegalAnalysis(text, relevantLaws, conversationContext, intent);
             console.log("AI Analysis Result:", aiAnalysis ? "✅ SUCCESS" : "❌ FAILED/NULL");
         } else {
             // Handle general conversation
@@ -69,7 +88,7 @@ router.post('/analyze', async (req, res) => {
             }
         }
 
-        // 2. Fallback to local analysis
+        // 2. Fallback to local analysis (Ground Truth / Search)
         const localResult = analyzeText(text, allLaws);
 
         // Update context with detected category
@@ -80,16 +99,39 @@ router.post('/analyze', async (req, res) => {
             });
         }
 
+        // 🧱 ARCHITECTURE STEP 8: Post Processor & Rule Layer
+        let finalResponse = aiAnalysis || localResult;
+
+        // Rule: Force emergency buttons for high-risk categories
+        if (intent.category === 'Criminal' || localResult.analysis.urgency_level === 'Emergency') {
+            const safetyButtons = localResult.emergency_buttons || [];
+
+            // Merge buttons with AI buttons (avoid duplicates by label)
+            if (aiAnalysis && aiAnalysis.emergency_buttons) {
+                safetyButtons.forEach(sb => {
+                    if (!aiAnalysis.emergency_buttons.some(ab => ab.label === sb.label)) {
+                        aiAnalysis.emergency_buttons.push(sb);
+                    }
+                });
+            } else if (aiAnalysis) {
+                aiAnalysis.emergency_buttons = safetyButtons;
+            }
+        }
+
+        // Ensure matches are populated for UI ResultCards
         if (aiAnalysis) {
             // Add AI response to conversation
             conversationManager.addMessage(sessionId, 'assistant', aiAnalysis.summary || aiAnalysis.detailed_analysis);
 
             return res.json({
                 ...aiAnalysis,
-                matches: (aiAnalysis.relevant_laws && aiAnalysis.relevant_laws.length > 0) ? aiAnalysis.relevant_laws : localResult.matches,
+                // CRITICAL FIX: Prioritize actual database objects (localResult.matches) over AI-generated strings 
+                // for the ResultCard component to function correctly.
+                matches: (localResult.matches && localResult.matches.length > 0) ? localResult.matches : (aiAnalysis.relevant_laws || []),
                 sessionId,
                 isFollowUp,
-                emotionalState
+                emotionalState,
+                intent: intent
             });
         }
 
@@ -114,9 +156,7 @@ router.post('/analyze', async (req, res) => {
         conversationManager.addMessage(sessionId, 'assistant', responseMessage);
 
         return res.json({
-            matches,
-            steps,
-            ...analysis,
+            ...localResult,
             source: 'Local',
             sessionId,
             isFollowUp,
@@ -224,6 +264,31 @@ router.get('/lawyers/details/:placeId', async (req, res) => {
         res.json(details);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch lawyer details' });
+    }
+});
+
+const indianKanoon = require('../utils/indianKanoon');
+
+// GET /api/cases/search
+router.get('/cases/search', async (req, res) => {
+    try {
+        const { q, p } = req.query;
+        if (!q) return res.status(400).json({ error: 'Search query required' });
+
+        const results = await indianKanoon.search(q, p || 0);
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to search Indian Kanoon' });
+    }
+});
+
+// GET /api/cases/doc/:docid
+router.get('/cases/doc/:docid', async (req, res) => {
+    try {
+        const doc = await indianKanoon.getDocument(req.params.docid);
+        res.json(doc);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch document' });
     }
 });
 
