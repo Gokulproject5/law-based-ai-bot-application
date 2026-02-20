@@ -17,9 +17,13 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
  */
 async function detectIntent(query) {
     try {
+        // Check if AI is enabled
+        if (process.env.ENABLE_AI === 'false') {
+            return { category: 'General', confidence: 0 };
+        }
         if (!process.env.GEMINI_API_KEY) return { category: 'General', confidence: 0 };
 
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const prompt = `
         Classify this legal query into one of these categories:
         - Criminal (Theft, Assault, Harassment)
@@ -58,13 +62,18 @@ async function detectIntent(query) {
  */
 async function generateLegalAnalysis(query, contextLaws = [], conversationContext = null, intent = null) {
     try {
+        // Check if AI is enabled
+        if (process.env.ENABLE_AI === 'false') {
+            console.log("ℹ️ AI is disabled. Skipping Gemini analysis.");
+            return null;
+        }
         if (!process.env.GEMINI_API_KEY) {
             console.warn("GEMINI_API_KEY is missing. Using rule-based fallback.");
             return null;
         }
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-pro",
+            model: "gemini-1.5-flash",
             generationConfig: {
                 temperature: 0.4, // Lower temperature for more precise legal output
                 topK: 40,
@@ -100,10 +109,11 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
     📤 OUTPUT FORMAT (Strict JSON):
     {
         "summary": "1-sentence summary of the query.",
-        "detailed_analysis": "### 1️⃣ **Relevant Law**\\nList specific BNS/IPC sections from the Knowledge Base or wider Indian law.\\n\\n### 2️⃣ **Explanation**\\nExplain these laws in very simple language for a common person.\\n\\n### 3️⃣ **Immediate Steps**\\nPractical first steps like 'File an FIR', 'Call Helpline', 'Document Evidence'.\\n\\n### 4️⃣ **Disclaimer**\\nState: 'This is educational legal awareness information and does not constitute personal legal advice.'",
+        "detailed_analysis": "### 1️⃣ **Relevant Law**\\nList each relevant IPC/BNS section with its number and name (e.g. IPC 420 – Cheating, IPC 379 – Theft).\\n\\n### 2️⃣ **Explanation**\\nExplain these laws in very simple language for a common person.\\n\\n### 3️⃣ **Immediate Steps**\\nPractical first steps like 'File an FIR', 'Call Helpline', 'Document Evidence'.\\n\\n### 4️⃣ **Disclaimer**\\nState: 'This is educational legal awareness information and does not constitute personal legal advice.'",
         "relevant_laws": [
             {
-                "name": "Section Name",
+                "name": "IPC 420 – Cheating",
+                "ipc_sections": ["IPC 420"],
                 "description": "Short description of what it covers."
             }
         ],
@@ -118,7 +128,7 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
         "confidence_score": 1.0
     }
 
-    ⚠️ IMPORTANT: Use the 1️⃣, 2️⃣, 3️⃣, 4️⃣ markers exactly as shown in 'detailed_analysis'.
+    ⚠️ IMPORTANT: Use the 1️⃣, 2️⃣, 3️⃣, 4️⃣ markers exactly as shown in 'detailed_analysis'. Always include real IPC/BNS section numbers in both relevant_laws and detailed_analysis.
     `;
 
         const result = await model.generateContent(prompt);
@@ -152,11 +162,14 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
  */
 async function generateConversationalResponse(query, conversationContext = null) {
     try {
+        // Check if AI is enabled
+        if (process.env.ENABLE_AI === 'false') return null;
+
         if (!process.env.GEMINI_API_KEY) {
             return null;
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         let conversationHistoryText = "";
         if (conversationContext?.conversationHistory?.length > 0) {
@@ -201,8 +214,11 @@ Keep your response concise (2-3 sentences) and friendly.
  */
 async function generateEmbedding(text) {
     try {
+        // Check if AI is enabled (though this function is internal to RAG)
+        if (process.env.ENABLE_AI === 'false') return null;
+
         if (!process.env.GEMINI_API_KEY) return null;
-        const model = genAI.getGenerativeModel({ model: "embedding-001" });
+        const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
         const result = await model.embedContent(text);
         return result.embedding.values;
     } catch (error) {

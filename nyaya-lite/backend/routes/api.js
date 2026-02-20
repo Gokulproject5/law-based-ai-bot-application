@@ -47,7 +47,7 @@ router.post('/analyze', async (req, res) => {
         const conversationContext = conversationManager.getFullContext(sessionId);
 
         // Fetch all laws for analysis
-        const allLaws = await LawEntry.find({});
+        const allLaws = await LawEntry.find({}).lean();
 
         // ARCITECTURE STEP 2: Intent Detection
         console.log(`🧠 NLP: Detecting intent for "${text}"...`);
@@ -157,6 +157,7 @@ router.post('/analyze', async (req, res) => {
 
         return res.json({
             ...localResult,
+            text: localResult.detailed_analysis,
             source: 'Local',
             sessionId,
             isFollowUp,

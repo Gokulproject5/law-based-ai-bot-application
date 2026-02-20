@@ -14,6 +14,11 @@ export default function ResultCard({ match, defaultExpanded = false }) {
         Emergency: 'bg-red-600 text-white border-red-700 animate-pulse'
     };
 
+    console.log(`Issue: ${match.title}
+Category: ${match.category}
+Severity: ${match.severity}`);
+
+
     const downloadSummary = () => {
         const content = `
 NYAYA LITE - LEGAL SUMMARY
@@ -22,6 +27,7 @@ Issue: ${match.title}
 Category: ${match.category}
 Severity: ${match.severity}
 
+ 
 IPC Sections: ${match.ipc_sections ? match.ipc_sections.join(', ') : 'N/A'}
 
 Steps to Take:
@@ -56,6 +62,17 @@ Disclaimer: Not legal advice. Consult a lawyer.
                     </div>
                     <h3 className="font-bold text-lg text-gray-900 dark:text-white leading-tight mb-1">{match.title}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{match.description}</p>
+
+                    {/* IPC Sections Preview (always visible) */}
+                    {match.ipc_sections && match.ipc_sections.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1">
+                            {match.ipc_sections.map((sec, idx) => (
+                                <span key={idx} className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded border border-blue-100 font-mono">
+                                    {sec}
+                                </span>
+                            ))}
+                        </div>
+                    )}
 
                     {/* Immediate Next Step Preview */}
                     {!expanded && match.steps && match.steps.length > 0 && (

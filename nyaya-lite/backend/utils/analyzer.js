@@ -265,12 +265,23 @@ function analyzeText(text, lawData) {
         emergency_buttons.push({ label: 'Find a Lawyer', type: 'action', value: 'location_lawyer', icon: 'users' });
     }
 
+    // Build Section 1 law list text
+    const lawListText = topMatches.length > 0
+        ? topMatches.map(m => {
+            const ipcPart = m.law.ipc_sections && m.law.ipc_sections.length > 0
+                ? ` (${m.law.ipc_sections.join(', ')})`
+                : '';
+            const title = m.law.title || m.law.name || 'Legal Provision';
+            return `- **${title}**${ipcPart}  \n  ${m.law.description || ''}`;
+        }).join('\n')
+        : '- No specific IPC section matched. Please describe your situation in more detail.';
+
     return {
         summary: `Local Analysis: Potential ${primary_issue} incident detected.`,
         logic_path: `local_matching → category:${primary_issue}`,
-        detailed_analysis: `### 1️⃣ **Relevant Law**\nMatched ${topMatches.length} section(s) in local database: ${topMatches.map(m => m.law.ipc_sections?.join(', ')).filter(s => s).join(', ') || 'General Provisions'}.\n\n### 2️⃣ **Explanation**\nDetected keywords related to ${primary_issue}. This typically involves legal provisions regarding rights and duties in such situations.\n\n### 3️⃣ **Immediate Steps**\n1. ${steps[0].description}\n2. ${steps[1] ? steps[1].description : 'Document evidence.'}\n3. ${steps[2] ? steps[2].description : 'Consult an expert.'}\n\n### 4️⃣ **Disclaimer**\n**This is educational awareness information only and does not constitute personal legal advice.**`,
+        detailed_analysis: `### 1️⃣ **Relevant Law**\n${lawListText}\n\n### 2️⃣ **Explanation**\nDetected keywords related to ${primary_issue}. This typically involves legal provisions regarding rights and duties in such situations.\n\n### 3️⃣ **Immediate Steps**\n1. ${steps[0].description}\n2. ${steps[1] ? steps[1].description : 'Document evidence.'}\n3. ${steps[2] ? steps[2].description : 'Consult an expert.'}\n\n### 4️⃣ **Disclaimer**\n**This is educational awareness information only and does not constitute personal legal advice.**`,
         relevant_laws: topMatches.map(r => ({
-            name: r.law.title,
+            name: r.law.title || r.law.name || 'Legal Provision',
             description: r.law.description
         })),
         matches: topMatches.map(r => r.law),

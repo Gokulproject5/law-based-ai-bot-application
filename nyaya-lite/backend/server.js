@@ -59,16 +59,41 @@ app.get('*', (req, res) => {
 /* ... */
 
 // Connect MongoDB
+// Connect MongoDB with Retry Logic
 const MONGO = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/nyaya';
-mongoose.connect(MONGO)
-  .then(() => console.log('Mongo connected'))
-  .catch(err => {
-    console.error('❌ MongoDB Connection Error:', err.message);
-    // Fallback for local dev if cloud fails (optional)
-    if (err.code === 'ECONNREFUSED' && MONGO.includes('mongodb.net')) {
-      console.log('⚠️  Cloud MongoDB failed. Using local fallback is not configured.');
+
+const connectDB = async (retries = 5) => {
+  try {
+    await mongoose.connect(MONGO, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    console.log('✅ MongoDB Connected Successfully');
+  } catch (err) {
+    if (retries === 0) {
+      console.error('❌ MongoDB Connection Failed after retries:', err.message);
+      // Exit process with failure
+      process.exit(1);
     }
-  });
+    console.log(`⚠️  MongoDB Connection Failed: ${err.message}`);
+    console.log(`🔄 Retrying in 5 seconds... (${retries} retries left)`);
+    // Wait for 5 seconds before retrying
+    setTimeout(() => connectDB(retries - 1), 5000);
+  }
+};
+
+// Initial Connection
+connectDB();
+
+// Handle ongoing connection errors
+mongoose.connection.on('error', err => {
+  console.error('❌ MongoDB Runtime Error:', err.message);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️  MongoDB Disconnected. Attempting to reconnect...');
+  connectDB();
+});
 
 // Global Error Handler
 app.use((err, req, res, next) => {

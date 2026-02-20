@@ -119,7 +119,7 @@ export default function AIChat() {
         <div className="flex flex-col h-full bg-[var(--bg-primary)] overflow-hidden rounded-2xl shadow-inner border border-[var(--border-color)] relative">
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth pb-20">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth mb-20 pb-20">
                 {messages.map((msg, idx) => (
                     <div key={idx} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2`}>
                         <div className={`flex gap-3 max-w-[85%] ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -168,21 +168,52 @@ export default function AIChat() {
                                                             const sectionIndex = Math.floor(i / 2) + 1;
                                                             const emoji = sectionIndex === 1 ? '📜' : sectionIndex === 2 ? '💡' : sectionIndex === 3 ? '👣' : '⚠️';
 
-                                                            // Logic for showing ResultCards in "Relevant Law" (Section 1)
+                                                            // Logic for showing IPC laws as simple text in "Relevant Law" (Section 1)
                                                             if (sectionIndex === 1) {
+                                                                // Use matches (local DB) OR relevant_laws (Gemini AI)
+                                                                const lawsToShow = (msg.data?.matches && msg.data.matches.length > 0)
+                                                                    ? msg.data.matches.map(m => ({
+                                                                        name: m.title || m.name,   // local DB uses 'title', Gemini uses 'name'
+                                                                        description: m.description,
+                                                                        ipc_sections: m.ipc_sections
+                                                                    })).filter(m => m.name)        // skip any with no name
+                                                                    : (msg.data?.relevant_laws && msg.data.relevant_laws.length > 0)
+                                                                        ? msg.data.relevant_laws
+                                                                        : null;
+
                                                                 renderedSections.push(
                                                                     <div key={title} className="mb-6 last:mb-0 animate-in fade-in slide-in-from-left-4 duration-500">
                                                                         <div className="flex items-center gap-2 mb-3">
                                                                             <span className="text-lg">{emoji}</span>
                                                                             <h4 className="text-sm font-bold text-indigo-500 uppercase tracking-wider">{title}</h4>
                                                                         </div>
-                                                                        <div className="pl-4 border-l-2 border-indigo-500/10 space-y-4">
-                                                                            {msg.data?.matches && msg.data.matches.length > 0 ? (
-                                                                                <div className="grid grid-cols-1 gap-3">
-                                                                                    {msg.data.matches.map((match, idx) => (
-                                                                                        <ResultCard key={idx} match={match} defaultExpanded={idx === 0} />
-                                                                                    ))}
-                                                                                </div>
+                                                                        <div className="pl-4 border-l-2 border-indigo-500/10 space-y-3">
+                                                                            {lawsToShow && lawsToShow.length > 0 ? (
+                                                                                <ul className="space-y-4">
+                                                                                    {lawsToShow.map((law, idx) => {
+                                                                                        const name = law.title || law.name;
+                                                                                        if (!name) return null;
+                                                                                        return (
+                                                                                            <li key={idx} className="text-sm">
+                                                                                                <div className="flex flex-wrap items-baseline gap-2">
+                                                                                                    <span className="font-bold text-indigo-100">{name}</span>
+                                                                                                    {(law.ipc_sections || law.sections) && (
+                                                                                                        <span className="text-indigo-400 font-mono text-xs px-1.5 py-0.5 bg-indigo-500/10 rounded">
+                                                                                                            {Array.isArray(law.ipc_sections || law.sections)
+                                                                                                                ? (law.ipc_sections || law.sections).join(', ')
+                                                                                                                : (law.ipc_sections || law.sections)}
+                                                                                                        </span>
+                                                                                                    )}
+                                                                                                </div>
+                                                                                                {law.description && (
+                                                                                                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                                                                                                        {law.description}
+                                                                                                    </p>
+                                                                                                )}
+                                                                                            </li>
+                                                                                        );
+                                                                                    })}
+                                                                                </ul>
                                                                             ) : (
                                                                                 <ReactMarkdown components={markdownStyles}>{content}</ReactMarkdown>
                                                                             )}
@@ -297,43 +328,15 @@ export default function AIChat() {
                                             </div>
                                         )}
 
-                                        {/* Legal References & Severity */}
-                                        {(msg.data?.matches || msg.data?.relevant_laws || msg.data?.primary_offense) && (
-                                            <div className="mt-6 border-t border-[var(--border-color)] pt-5 space-y-4">
-                                                <div className="flex flex-wrap items-center justify-between gap-3">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                                                        <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
-                                                            Legal Framework
-                                                        </p>
-                                                    </div>
-
-                                                    {msg.data.risk_level && (
-                                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${(msg.data.risk_level === 'High' || msg.data.risk_level === 'Emergency')
-                                                            ? 'bg-red-500/10 text-red-500 border-red-500/20'
-                                                            : 'bg-green-500/10 text-green-500 border-green-500/20'
-                                                            }`}>
-                                                            {msg.data.risk_level} Priority
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                <div className="grid grid-cols-1 gap-3">
-                                                    {msg.data.matches?.slice(0, 1).map((match, i) => (
-                                                        <ResultCard key={i} match={match} defaultExpanded={true} />
-                                                    ))}
-                                                    {!msg.data.matches?.length && msg.data.relevant_laws?.slice(0, 1).map((law, i) => (
-                                                        <div key={`rem-${i}`} className="p-3 bg-[var(--bg-tertiary)] rounded-xl border border-[var(--border-color)] flex items-start gap-2">
-                                                            <div className="p-1 bg-indigo-500/10 rounded-lg">
-                                                                <BookOpen size={14} className="text-indigo-500" />
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-xs font-bold text-[var(--text-primary)]">{law.name}</p>
-                                                                <p className="text-[11px] text-[var(--text-secondary)] mt-1">{law.description}</p>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
+                                        {/* Risk level badge (standalone, no duplicate cards) */}
+                                        {msg.data?.risk_level && (
+                                            <div className="mt-4 flex justify-end">
+                                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${(msg.data.risk_level === 'High' || msg.data.risk_level === 'Emergency')
+                                                    ? 'bg-red-500/10 text-red-500 border-red-500/20'
+                                                    : 'bg-green-500/10 text-green-500 border-green-500/20'
+                                                    }`}>
+                                                    {msg.data.risk_level} Priority
+                                                </span>
                                             </div>
                                         )}
                                     </div>
