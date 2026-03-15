@@ -138,6 +138,7 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
         ],
         "case_analysis": {
             "win_probability": 75,
+            "legal_strategy": "A high-level strategic approach in ${targetLanguage} (e.g., 'Focus on documenting the timeline...', 'Prioritize mediation before litigation...')",
             "likely_outcome": "Likely outcome description in ${targetLanguage}",
             "expected_duration": "Estimated time for resolution in ${targetLanguage} (e.g., 6-12 months)",
             "key_challenges": [
@@ -146,8 +147,15 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
             ],
             "estimated_cost_range": "General cost awareness in ${targetLanguage} (e.g., Low, Medium, High + brief explanation)",
             "improvement_suggestions": [
-                "Suggestion 1 to increase winning chances in ${targetLanguage}",
-                "Suggestion 2 in ${targetLanguage}"
+                "Detailed, high-impact tactical suggestion in ${targetLanguage} (e.g., 'Secure a certified bank statement showing the unauthorized transfer to establish a paper trail...')",
+                "Evidentiary requirement in ${targetLanguage} (e.g., 'Identify at least two neutral witnesses present at the scene...')"
+            ],
+            "winning_roadmap": [
+                {
+                    "stage": "Roadmap stage name in ${targetLanguage} (e.g., 'Evidence Collection')",
+                    "action": "Specific high-impact action to move towards 90-100% win probability in ${targetLanguage}",
+                    "impact": "Explanation of how this specific action drastically increases case strength"
+                }
             ]
         },
         "risk_level": "Normal",

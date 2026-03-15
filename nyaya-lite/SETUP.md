@@ -44,6 +44,13 @@ MONGO_URI=mongodb://127.0.0.1:27017/nyaya
 # MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/nyaya
 
 PORT=5000
+
+# AI Configuration (Optional but Recommended)
+AI_PROVIDER=openrouter # options: 'openrouter' or 'gemini'
+OPENROUTER_API_KEY=your_openrouter_api_key
+OPENROUTER_MODEL=google/gemini-2.0-flash-001
+GEMINI_API_KEY=your_gemini_api_key
+ENABLE_AI=true
 ```
 
 #### Seed the Database

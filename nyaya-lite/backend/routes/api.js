@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
 const { analyzeText } = require('../utils/analyzer');
-const { generateLegalAnalysis, generateConversationalResponse, performRAGSearch, detectIntent } = require('../utils/geminiService');
+const { generateLegalAnalysis, generateConversationalResponse, performRAGSearch, detectIntent } = require('../utils/aiService');
 const conversationManager = require('../utils/conversationContext');
 const LawEntry = require('../models/LawEntry');
 const LegalSection = require('../models/LegalSection');
@@ -65,7 +65,7 @@ router.post('/analyze', async (req, res) => {
         conversationManager.updateContext(sessionId, { lastIntent: intent });
 
         // Determine if this is a legal query or general conversation
-        const isLegalQuery = intent.category !== 'General' || /\b(law|legal|ipc|section|police|court|lawyer|crime|theft|harassment|property|accident|fraud|rights|complaint|fir)\b/i.test(text);
+        const isLegalQuery = intent.category !== 'General' || /\b(law|legal|ipc|bns|section|police|court|lawyer|advocate|crime|theft|harassment|property|accident|fraud|rights|complaint|fir|justice|jail|punishment|penalty|bail|suit|litigation)\b/i.test(text);
 
         let aiAnalysis = null;
 
