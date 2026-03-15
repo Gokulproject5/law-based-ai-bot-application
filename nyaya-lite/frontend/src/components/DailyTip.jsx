@@ -23,9 +23,9 @@ export default function DailyTip() {
     }, []);
 
     return (
-        <div className="hidden lg:flex items-center gap-2 bg-blue-700 px-3 py-1 rounded-full text-xs text-blue-50 max-w-xs">
-            <Lightbulb size={12} className="text-yellow-300 flex-shrink-0" />
-            <span className="w-full">{tip}</span>
+        <div className="hidden md:flex items-center gap-2 bg-blue-600/10 border border-blue-500/20 px-3 py-1.5 rounded-xl text-[10px] md:text-xs text-blue-600 dark:text-blue-400 max-w-[200px] lg:max-w-sm overflow-hidden transition-all duration-300 hover:bg-blue-600/20">
+            <Lightbulb size={14} className="text-yellow-500 flex-shrink-0" />
+            <span className="truncate font-medium">{tip}</span>
         </div>
     );
 }

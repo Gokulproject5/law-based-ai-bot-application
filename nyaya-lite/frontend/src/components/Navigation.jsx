@@ -36,8 +36,8 @@ export default function Navigation({ onOpenSettings }) {
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 bg-[var(--bg-secondary)] border-r border-[var(--border-color)] z-40">
                 <div className="p-6">
-                    <h1 className="text-2xl font-bold font-['Outfit'] gradient-text flex items-center gap-2">
-                        <img src="/logo.png" alt="Logo" className="w-8 h-8" />
+                    <h1 className="text-2xl font-bold font-['Outfit'] rounded-full overflow-hidden gradient-text flex items-center gap-2">
+                        <img src="/logo.png" alt="Logo" className="w-10 h-10 rounded-full " />
                         NyayaLite
                     </h1>
                 </div>

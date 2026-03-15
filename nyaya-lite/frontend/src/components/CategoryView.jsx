@@ -72,7 +72,7 @@ export default function CategoryView() {
                                 <ArrowLeft size={24} className="text-gray-600" />
                             </button>
                         )}
-                        <h2 className="text-2xl font-bold text-gray-800">
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                             {selectedCategory || t('legal_categories')}
                         </h2>
                     </div>
@@ -83,7 +83,7 @@ export default function CategoryView() {
                                 <button
                                     key={idx}
                                     onClick={() => handleCategoryClick(cat)}
-                                    className="flex justify-between items-center p-4 bg-white border border-gray-200 rounded-xl hover:bg-blue-50 hover:border-blue-200 transition shadow-sm text-left"
+                                    className="flex justify-between items-center p-4 text-gray-950 bg-white  border border-gray-200 rounded-xl hover:bg-blue-50 hover:border-blue-200 transition shadow-sm text-left"
                                 >
                                     <span className="font-medium text-gray-700">{cat}</span>
                                     <ChevronRight size={20} className="text-gray-400" />

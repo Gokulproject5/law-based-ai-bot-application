@@ -139,6 +139,12 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
         "case_analysis": {
             "win_probability": 75,
             "likely_outcome": "Likely outcome description in ${targetLanguage}",
+            "expected_duration": "Estimated time for resolution in ${targetLanguage} (e.g., 6-12 months)",
+            "key_challenges": [
+                "Challenge 1 in ${targetLanguage}",
+                "Challenge 2 in ${targetLanguage}"
+            ],
+            "estimated_cost_range": "General cost awareness in ${targetLanguage} (e.g., Low, Medium, High + brief explanation)",
             "improvement_suggestions": [
                 "Suggestion 1 to increase winning chances in ${targetLanguage}",
                 "Suggestion 2 in ${targetLanguage}"
