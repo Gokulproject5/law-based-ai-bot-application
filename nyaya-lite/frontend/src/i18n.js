@@ -158,7 +158,10 @@ const resources = {
             "how_to_increase_probability": "How to Strengthen Your Case",
             "expected_duration": "Expected Duration",
             "key_challenges": "Key Challenges",
-            "estimated_cost": "Estimated Cost Awareness"
+            "estimated_cost": "Estimated Cost Awareness",
+            "legal_strategy": "Legal Strategy",
+            "clear_chat": "Clear History",
+            "confirm_clear_chat": "Are you sure you want to clear your chat history?"
         }
     },
     hi: {
@@ -320,7 +323,10 @@ const resources = {
             "how_to_increase_probability": "अपने पक्ष को कैसे मजबूत करें",
             "expected_duration": "अपेक्षित अवधि",
             "key_challenges": "मुख्य चुनौतियां",
-            "estimated_cost": "अनुमानित लागत जागरूकता"
+            "estimated_cost": "अनुमानित लागत जागरूकता",
+            "legal_strategy": "कानूनी रणनीति",
+            "clear_chat": "इतिहास मिटाएं",
+            "confirm_clear_chat": "क्या आप वाकई अपना चैट इतिहास मिटाना चाहते हैं?"
         }
     },
     ta: {
@@ -482,7 +488,10 @@ const resources = {
             "how_to_increase_probability": "உங்கள் வழக்கை எவ்வாறு வலுப்படுத்துவது",
             "expected_duration": "எதிர்பார்க்கப்படும் காலம்",
             "key_challenges": "முக்கிய சவால்கள்",
-            "estimated_cost": "மதிப்பிடப்பட்ட செலவு விழிப்புணர்வு"
+            "estimated_cost": "மதிப்பிடப்பட்ட செலவு விழிப்புணர்வு",
+            "legal_strategy": "சட்ட மூலோபாயம்",
+            "clear_chat": "வரலாற்றை அழி",
+            "confirm_clear_chat": "உங்கள் அரட்டை வரலாற்றை அழிக்க விரும்புகிறீர்களா?"
         }
     }
 };

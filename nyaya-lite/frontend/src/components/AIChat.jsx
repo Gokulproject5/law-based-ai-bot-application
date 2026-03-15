@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User, Bot, Loader, BookOpen, Phone, MapPin, FileText, Shield, Activity, ExternalLink, Volume2, VolumeX, Clock, AlertCircle, IndianRupee } from 'lucide-react';
+import { Send, User, Bot, Loader, BookOpen, Phone, MapPin, FileText, Shield, Activity, ExternalLink, Volume2, VolumeX, Clock, AlertCircle, IndianRupee, Trash2 } from 'lucide-react';
 import { useSpeech } from '../hooks/useSpeech';
 import { useLegalAnalysis } from '../hooks/useLegalAnalysis';
 import { useTranslation } from 'react-i18next';
@@ -25,9 +25,12 @@ export default function AIChat() {
         blockquote: ({ node, ...props }) => <div className="border-l-4 border-indigo-500/30 pl-4 py-1 my-4 italic opacity-80 bg-indigo-500/5 rounded-r-lg" {...props} />,
     };
 
-    const [messages, setMessages] = useState([
-        { type: 'bot', text: t('greeting') + " " + t('subtitle') }
-    ]);
+    const [messages, setMessages] = useState(() => {
+        const saved = localStorage.getItem('nyaya_chat_history');
+        return saved ? JSON.parse(saved) : [
+            { type: 'bot', text: t('greeting') + " " + t('subtitle') }
+        ];
+    });
     const [inputValue, setInputValue] = useState("");
     const [quickReplies, setQuickReplies] = useState([]);
     const messagesEndRef = useRef(null);
@@ -46,6 +49,11 @@ export default function AIChat() {
             messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
         }
     }, [messages, loading]);
+
+    // Save chats to local storage
+    useEffect(() => {
+        localStorage.setItem('nyaya_chat_history', JSON.stringify(messages));
+    }, [messages]);
 
     // Handle new results from the hook
     useEffect(() => {
@@ -124,8 +132,28 @@ export default function AIChat() {
         }
     };
 
+    const clearChat = () => {
+        if (window.confirm(t('confirm_clear_chat') || 'Are you sure you want to clear your chat history?')) {
+            const initialMessage = [{ type: 'bot', text: t('greeting') + " " + t('subtitle') }];
+            setMessages(initialMessage);
+            localStorage.setItem('nyaya_chat_history', JSON.stringify(initialMessage));
+        }
+    };
+
     return (
         <div className="flex flex-col h-full bg-[var(--bg-primary)] overflow-hidden rounded-2xl shadow-inner border border-[var(--border-color)] relative">
+
+            {/* Header / Clear Chat Row */}
+            <div className="flex justify-end p-2 px-4 bg-[var(--bg-secondary)] border-b border-[var(--border-color)]">
+                <button 
+                    onClick={clearChat}
+                    className="flex items-center gap-1.5 text-[10px] font-bold text-red-500 hover:text-red-600 uppercase tracking-tighter bg-red-500/5 px-2 py-1 rounded-md transition-all hover:bg-red-500/10"
+                    title={t('clear_chat')}
+                >
+                    <Trash2 size={12} />
+                    {t('clear_chat') || 'Clear History'}
+                </button>
+            </div>
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth mb-20 pb-20">
@@ -384,6 +412,16 @@ export default function AIChat() {
                                                         </div>
                                                     </div>
 
+                                                    {/* Legal Strategy */}
+                                                    {msg.data.case_analysis.legal_strategy && (
+                                                        <div className="py-3 border-y border-[var(--border-color)] border-dashed">
+                                                            <p className="text-xs font-bold text-[var(--text-muted)] uppercase mb-1">{t('legal_strategy') || 'Legal Strategy'}</p>
+                                                            <p className="text-sm text-indigo-600 dark:text-indigo-400 font-medium leading-relaxed">
+                                                                {msg.data.case_analysis.legal_strategy}
+                                                            </p>
+                                                        </div>
+                                                    )}
+
                                                     {/* Likely Outcome */}
                                                     {msg.data.case_analysis.likely_outcome && (
                                                         <div className="py-3 border-y border-[var(--border-color)] border-dashed">
@@ -447,6 +485,38 @@ export default function AIChat() {
                                                                     </li>
                                                                 ))}
                                                             </ul>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Roadmap to 100% Win Success */}
+                                                    {msg.data.case_analysis.winning_roadmap && msg.data.case_analysis.winning_roadmap.length > 0 && (
+                                                        <div className="mt-6 pt-6 border-t border-indigo-500/20">
+                                                            <div className="flex items-center gap-2 mb-4">
+                                                                <div className="w-6 h-6 rounded bg-indigo-600 text-white flex items-center justify-center shadow-md">
+                                                                    <Activity size={14} />
+                                                                </div>
+                                                                <p className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em] animate-pulse">
+                                                                    {t('roadmap_to_win') || 'Roadmap to 90-100% Success'}
+                                                                </p>
+                                                                <span className="text-[9px] bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded font-bold ml-auto">{t('ai_generated') || 'AI Generated'}</span>
+                                                            </div>
+                                                            <div className="space-y-4">
+                                                                {msg.data.case_analysis.winning_roadmap.map((item, roadmapIdx) => (
+                                                                    <div key={roadmapIdx} className="bg-white dark:bg-gray-800/80 p-4 rounded-2xl border border-[var(--border-color)] shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                                                        <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 transition-all group-hover:w-2" />
+                                                                        <div className="flex justify-between items-start mb-2">
+                                                                            <span className="text-[9px] font-black text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded-full uppercase tracking-tighter">{item.stage}</span>
+                                                                        </div>
+                                                                        <p className="text-sm font-bold text-[var(--text-primary)] mb-2 group-hover:text-indigo-500 transition-colors">{item.action}</p>
+                                                                        <div className="bg-indigo-50/50 dark:bg-indigo-950/20 p-2 rounded-lg border border-indigo-100/30">
+                                                                            <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed italic">
+                                                                                <span className="font-bold text-indigo-400 not-italic mr-1">Impact:</span>
+                                                                                {item.impact}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
                                                         </div>
                                                     )}
                                                 </div>
