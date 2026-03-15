@@ -15,6 +15,7 @@ import SettingsModal from './components/SettingsModal';
 import { Settings as SettingsIcon } from 'lucide-react';
 
 import { useTheme } from './context/ThemeContext';
+import AdminView from './components/AdminView';
 
 // Lazy load route components
 const CategoryView = lazy(() => import('./components/CategoryView'));
@@ -28,9 +29,7 @@ export default function App() {
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300 font-inter">
-            <div className="hidden md:block">
-                <EmergencyButton />
-            </div>
+            {<DisclaimerPopup />}
             <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
 
             {/* Navigation (Sidebar Desktop / Bottom Bar Mobile) */}
@@ -52,12 +51,12 @@ export default function App() {
                         <h2 className="text-xl font-semibold opacity-80">{t('greeting')}</h2>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <DailyTip compact={true} />
-                        <div className="hidden md:block">
+                    <div className="flex items-center gap-4 ">
+                        <DailyTip compact={true}  />
+                        <div className="hidden md:block ">
                             <LanguageSelector />
                         </div>
-                        <div className="md:hidden">
+                        <div>
                             <EmergencyButton compact={true} />
                         </div>
                         <button
@@ -91,6 +90,7 @@ export default function App() {
                                 </div>
                             } />
                             <Route path="/categories" element={<CategoryView />} />
+                            {/* <Route path="/admin" element={<AdminView />} /> */}
                             <Route path="/templates" element={<TemplateGenerator />} />
                             <Route path="/map" element={
                                 <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-140px)]">

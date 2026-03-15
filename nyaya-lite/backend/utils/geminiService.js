@@ -60,7 +60,7 @@ async function detectIntent(query) {
  * @param {Object} intent - Detected intent
  * @returns {Promise<Object>} - Structured analysis
  */
-async function generateLegalAnalysis(query, contextLaws = [], conversationContext = null, intent = null) {
+async function generateLegalAnalysis(query, contextLaws = [], conversationContext = null, intent = null, language = 'en') {
     try {
         // Check if AI is enabled
         if (process.env.ENABLE_AI === 'false') {
@@ -95,11 +95,23 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
         const intentContext = intent ? `Detected Intent: ${intent.category} - ${intent.specific_intent}` : "";
         const emotionalState = conversationContext?.context?.emotionalState || 'neutral';
 
+        // Language instruction
+        const languageMap = {
+            ta: 'Tamil (தமிழ்)',
+            hi: 'Hindi (हिंदी)',
+            en: 'English'
+        };
+        const targetLanguage = languageMap[language] || 'English';
+        const languageInstruction = language !== 'en'
+            ? `🌐 LANGUAGE REQUIREMENT: You MUST write the ENTIRE response — including all fields (summary, detailed_analysis, step titles, step descriptions, emotional_support) — in ${targetLanguage}. Do NOT use English anywhere in the content fields. IPC/BNS section numbers and legal codes may remain in their standard format (e.g., IPC 420).`
+            : '';
+
         const prompt = `
     You are a **Legal Awareness Assistant** for Indian Law. 
-    🎯 MISSION: Provide educational awareness about Indian Laws. 
-    ⚠️ STRICT RULE: DO NOT give personal legal advice.
+    🎯 MISSION: Provide educational awareness about Indian Laws and analyze legal scenarios.
+    ⚠️ STRICT RULE: DO NOT give personal legal advice. Use phrases like "Based on the scenario provided..." and "Generally, in such cases...".
     ⚠️ CONSTRAINT: Only reference valid Indian legal sections.
+    ${languageInstruction}
 
     📚 KNOWLEDGE BASE FOR GROUNDING:
     ${JSON.stringify(contextLaws.slice(0, 5).map(l => ({ title: l.title, sections: l.ipc_sections, description: l.description })), null, 2)}
@@ -108,27 +120,36 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
 
     📤 OUTPUT FORMAT (Strict JSON):
     {
-        "summary": "1-sentence summary of the query.",
-        "detailed_analysis": "### 1️⃣ **Relevant Law**\\nList each relevant IPC/BNS section with its number and name (e.g. IPC 420 – Cheating, IPC 379 – Theft).\\n\\n### 2️⃣ **Explanation**\\nExplain these laws in very simple language for a common person.\\n\\n### 3️⃣ **Immediate Steps**\\nPractical first steps like 'File an FIR', 'Call Helpline', 'Document Evidence'.\\n\\n### 4️⃣ **Disclaimer**\\nState: 'This is educational legal awareness information and does not constitute personal legal advice.'",
+        "summary": "1-sentence summary of the query in ${targetLanguage}.",
+        "detailed_analysis": "### 1️⃣ **Relevant Law**\\nList each relevant IPC/BNS section with its number and name (e.g. IPC 420 – Cheating, IPC 379 – Theft).\\n\\n### 2️⃣ **Explanation**\\nExplain these laws in very simple language in ${targetLanguage} for a common person.\\n\\n### 3️⃣ **Immediate Steps**\\nPractical first steps in ${targetLanguage} like 'File an FIR', 'Call Helpline', 'Document Evidence'.\\n\\n### 4️⃣ **Disclaimer**\\nState the disclaimer in ${targetLanguage}.",
         "relevant_laws": [
             {
                 "name": "IPC 420 – Cheating",
                 "ipc_sections": ["IPC 420"],
-                "description": "Short description of what it covers."
+                "description": "Short description in ${targetLanguage}."
             }
         ],
         "steps": [
             {
-                "title": "Action Title",
-                "description": "Action detail.",
+                "title": "Action Title in ${targetLanguage}",
+                "description": "Action detail in ${targetLanguage}.",
                 "priority": "Normal"
             }
         ],
+        "case_analysis": {
+            "win_probability": 75,
+            "likely_outcome": "Likely outcome description in ${targetLanguage}",
+            "improvement_suggestions": [
+                "Suggestion 1 to increase winning chances in ${targetLanguage}",
+                "Suggestion 2 in ${targetLanguage}"
+            ]
+        },
         "risk_level": "Normal",
-        "confidence_score": 1.0
+        "confidence_score": 1.0,
+        "emotional_support": "A supportive message in ${targetLanguage} if the user is distressed."
     }
 
-    ⚠️ IMPORTANT: Use the 1️⃣, 2️⃣, 3️⃣, 4️⃣ markers exactly as shown in 'detailed_analysis'. Always include real IPC/BNS section numbers in both relevant_laws and detailed_analysis.
+    ⚠️ IMPORTANT: Use the 1️⃣, 2️⃣, 3️⃣, 4️⃣ markers exactly as shown in 'detailed_analysis'. Always include real IPC/BNS section numbers in both relevant_laws and detailed_analysis. All human-readable text must be in ${targetLanguage}.
     `;
 
         const result = await model.generateContent(prompt);
@@ -160,7 +181,7 @@ async function generateLegalAnalysis(query, contextLaws = [], conversationContex
  * @param {Object} conversationContext - Conversation context
  * @returns {Promise<Object>} - Conversational response
  */
-async function generateConversationalResponse(query, conversationContext = null) {
+async function generateConversationalResponse(query, conversationContext = null, language = 'en') {
     try {
         // Check if AI is enabled
         if (process.env.ENABLE_AI === 'false') return null;
@@ -179,14 +200,25 @@ async function generateConversationalResponse(query, conversationContext = null)
                 ).join('\n');
         }
 
+        const languageMap = {
+            ta: 'Tamil (தமிழ்)',
+            hi: 'Hindi (हिंदी)',
+            en: 'English'
+        };
+        const targetLanguage = languageMap[language] || 'English';
+        const languageInstruction = language !== 'en'
+            ? `IMPORTANT: Respond ENTIRELY in ${targetLanguage}. Do not use English in your reply.`
+            : '';
+
         const prompt = `
 You are Nyaya Lite AI, a friendly and knowledgeable legal assistant.
+${languageInstruction}
 
 ${conversationHistoryText}
 
 User: "${query}"
 
-Provide a helpful, conversational response. If the query is legal-related, offer to help analyze their situation. If it's a greeting or general question, respond warmly and guide them on how you can help.
+Provide a helpful, conversational response in ${targetLanguage}. If the query is legal-related, offer to help analyze their situation. If it's a greeting or general question, respond warmly and guide them on how you can help.
 
 Keep your response concise (2-3 sentences) and friendly.
 `;

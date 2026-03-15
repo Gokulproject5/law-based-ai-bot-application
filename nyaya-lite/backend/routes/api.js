@@ -16,7 +16,8 @@ const analyzeSchema = Joi.object({
         'string.min': 'Description is too short. Please provide more details.',
         'string.max': 'Description is too long. Please summarize.'
     }),
-    sessionId: Joi.string().optional()
+    sessionId: Joi.string().optional(),
+    language: Joi.string().valid('en', 'hi', 'ta').default('en').optional()
 });
 
 // POST /api/analyze
@@ -27,7 +28,7 @@ router.post('/analyze', async (req, res) => {
         return res.status(400).json({ error: error.details[0].message });
     }
 
-    const { text, sessionId = 'default' } = req.body;
+    const { text, sessionId = 'default', language = 'en' } = req.body;
 
     try {
         // Get or create conversation session
@@ -75,12 +76,12 @@ router.post('/analyze', async (req, res) => {
 
             console.log(`🧠 RAG: Augmenting prompt with ${relevantLaws.length} relevant legal docs`);
             // Pass intent to the analysis engine
-            aiAnalysis = await generateLegalAnalysis(text, relevantLaws, conversationContext, intent);
+            aiAnalysis = await generateLegalAnalysis(text, relevantLaws, conversationContext, intent, language);
             console.log("AI Analysis Result:", aiAnalysis ? "✅ SUCCESS" : "❌ FAILED/NULL");
         } else {
             // Handle general conversation
             console.log(`💬 Handling conversational query (Session: ${sessionId})`);
-            const conversationalResponse = await generateConversationalResponse(text, conversationContext);
+            const conversationalResponse = await generateConversationalResponse(text, conversationContext, language);
 
             if (conversationalResponse) {
                 conversationManager.addMessage(sessionId, 'assistant', conversationalResponse.message);

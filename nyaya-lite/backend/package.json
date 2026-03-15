@@ -8,6 +8,7 @@
     "postinstall": "npm install --prefix ../frontend && npm run build --prefix ../frontend"
   },
   "dependencies": {
+    "@google/genai": "^1.44.0",
     "@google/generative-ai": "^0.24.1",
     "@googlemaps/google-maps-services-js": "^3.4.2",
     "axios": "^1.13.2",

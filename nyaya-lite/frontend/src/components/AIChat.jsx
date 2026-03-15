@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User, Bot, Loader, BookOpen, Phone, MapPin, FileText, Shield, Activity, ExternalLink } from 'lucide-react';
+import { Send, User, Bot, Loader, BookOpen, Phone, MapPin, FileText, Shield, Activity, ExternalLink, Volume2, VolumeX } from 'lucide-react';
+import { useSpeech } from '../hooks/useSpeech';
 import { useLegalAnalysis } from '../hooks/useLegalAnalysis';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +13,7 @@ export default function AIChat() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { results, loading, error, analyzeText, sessionId } = useLegalAnalysis();
+    const { speak, stop, isSpeaking, speakingId, isSupported: ttsSupported } = useSpeech();
 
     // Define standard markdown styles for consistent informative content
     const markdownStyles = {
@@ -138,17 +140,40 @@ export default function AIChat() {
 
                                 {msg.type === 'bot' ? (
                                     <div className="space-y-4">
-                                        {/* Status / Source Info */}
-                                        <div className="flex items-center gap-2">
-                                            {msg.data?.source === 'Gemini AI' && (
-                                                <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase rounded-full border border-blue-500/20">
-                                                    Gemini Legal Guide
-                                                </span>
-                                            )}
-                                            {msg.isError && (
-                                                <span className="px-2 py-0.5 bg-red-500/10 text-red-500 text-[10px] font-bold uppercase rounded-full">
-                                                    Error
-                                                </span>
+                                        {/* Status / Source Info + TTS button row */}
+                                        <div className="flex items-center justify-between gap-2">
+                                            <div className="flex items-center gap-2">
+                                                {msg.data?.source === 'Gemini AI' && (
+                                                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase rounded-full border border-blue-500/20">
+                                                        {t('gemini_badge')}
+                                                    </span>
+                                                )}
+                                                {msg.isError && (
+                                                    <span className="px-2 py-0.5 bg-red-500/10 text-red-500 text-[10px] font-bold uppercase rounded-full">
+                                                        {t('error_badge')}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* TTS Speak Button */}
+                                            {ttsSupported && msg.text && (
+                                                <button
+                                                    onClick={() => speak(msg.text, idx)}
+                                                    title={speakingId === idx && isSpeaking ? t('stop_reading') : t('read_aloud')}
+                                                    className={`relative flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200
+                                                        ${speakingId === idx && isSpeaking
+                                                            ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/40'
+                                                            : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)] hover:bg-indigo-500/20 hover:text-indigo-400'
+                                                        }`}
+                                                >
+                                                    {/* Pulsing ring when speaking */}
+                                                    {speakingId === idx && isSpeaking && (
+                                                        <span className="absolute inset-0 rounded-full animate-ping bg-indigo-500/40 pointer-events-none" />
+                                                    )}
+                                                    {speakingId === idx && isSpeaking
+                                                        ? <VolumeX size={13} />
+                                                        : <Volume2 size={13} />}
+                                                </button>
                                             )}
                                         </div>
 
@@ -196,7 +221,7 @@ export default function AIChat() {
                                                                                         return (
                                                                                             <li key={idx} className="text-sm">
                                                                                                 <div className="flex flex-wrap items-baseline gap-2">
-                                                                                                    <span className="font-bold text-indigo-100">{name}</span>
+                                                                                                    <span className="font-bold text-gray-900 dark:text-gray-100">{name}</span>
                                                                                                     {(law.ipc_sections || law.sections) && (
                                                                                                         <span className="text-indigo-400 font-mono text-xs px-1.5 py-0.5 bg-indigo-500/10 rounded">
                                                                                                             {Array.isArray(law.ipc_sections || law.sections)
@@ -281,7 +306,7 @@ export default function AIChat() {
                                                         <Loader size={14} className="animate-spin-slow" />
                                                     </div>
                                                     <p className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
-                                                        Your Step-by-Step Action Plan
+                                                        {t('step_by_step_plan')}
                                                     </p>
                                                 </div>
                                                 <div className="grid grid-cols-1 gap-3">
@@ -308,7 +333,7 @@ export default function AIChat() {
                                         {/* Confidence Score */}
                                         {msg.data?.confidence_score && (
                                             <div className="mt-4 flex items-center gap-2">
-                                                <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Confidence:</span>
+                                                <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">{t('confidence')}</span>
                                                 <div className="flex-1 h-2 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
                                                     <div
                                                         className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
@@ -316,6 +341,63 @@ export default function AIChat() {
                                                     ></div>
                                                 </div>
                                                 <span className="text-xs font-bold text-indigo-500">{Math.round(msg.data.confidence_score * 100)}%</span>
+                                            </div>
+                                        )}
+
+                                        {/* Case Analysis: Win Probability & Improvement Suggestions */}
+                                        {msg.data?.case_analysis && (
+                                            <div className="mt-6 border-t border-[var(--border-color)] pt-5 animate-in slide-in-from-bottom-4 duration-700">
+                                                <div className="flex items-center gap-2 mb-4">
+                                                    <div className="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-[10px] font-bold shadow-sm">
+                                                        <Activity size={14} />
+                                                    </div>
+                                                    <p className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
+                                                        {t('case_legal_analysis') || 'Legal Strategy & Analysis'}
+                                                    </p>
+                                                </div>
+
+                                                <div className="bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-2xl border border-indigo-500/10 p-5 space-y-4">
+                                                    {/* Win Probability Gauge */}
+                                                    <div>
+                                                        <div className="flex justify-between items-center mb-2">
+                                                            <span className="text-sm font-medium text-[var(--text-secondary)]">{t('win_probability') || 'Probable Chance of Winning'}</span>
+                                                            <span className={`text-lg font-black ${msg.data.case_analysis.win_probability > 70 ? 'text-green-500' : msg.data.case_analysis.win_probability > 40 ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                                {msg.data.case_analysis.win_probability}%
+                                                            </span>
+                                                        </div>
+                                                        <div className="h-3 bg-[var(--bg-tertiary)] rounded-full overflow-hidden shadow-inner">
+                                                            <div
+                                                                className={`h-full transition-all duration-1000 ease-out ${msg.data.case_analysis.win_probability > 70 ? 'bg-gradient-to-r from-green-400 to-green-600' : msg.data.case_analysis.win_probability > 40 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' : 'bg-gradient-to-r from-red-400 to-red-600'}`}
+                                                                style={{ width: `${msg.data.case_analysis.win_probability}%` }}
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Likely Outcome */}
+                                                    {msg.data.case_analysis.likely_outcome && (
+                                                        <div className="py-3 border-y border-[var(--border-color)] border-dashed">
+                                                            <p className="text-xs font-bold text-[var(--text-muted)] uppercase mb-1">{t('likely_outcome') || 'Likely Outcome'}</p>
+                                                            <p className="text-sm text-[var(--text-primary)] leading-relaxed italic">
+                                                                "{msg.data.case_analysis.likely_outcome}"
+                                                            </p>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Suggestions to increase probability */}
+                                                    {msg.data.case_analysis.improvement_suggestions && msg.data.case_analysis.improvement_suggestions.length > 0 && (
+                                                        <div>
+                                                            <p className="text-xs font-bold text-[var(--text-muted)] uppercase mb-3">{t('how_to_increase_probability') || 'How to Strengthen Your Case'}</p>
+                                                            <ul className="space-y-2">
+                                                                {msg.data.case_analysis.improvement_suggestions.map((sug, sIdx) => (
+                                                                    <li key={sIdx} className="flex gap-3 items-start text-sm text-[var(--text-secondary)]">
+                                                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
+                                                                        <span>{sug}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         )}
 
@@ -335,7 +417,7 @@ export default function AIChat() {
                                                     ? 'bg-red-500/10 text-red-500 border-red-500/20'
                                                     : 'bg-green-500/10 text-green-500 border-green-500/20'
                                                     }`}>
-                                                    {msg.data.risk_level} Priority
+                                                    {msg.data.risk_level} {t('priority')}
                                                 </span>
                                             </div>
                                         )}
@@ -358,7 +440,7 @@ export default function AIChat() {
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2 text-indigo-500 font-medium text-xs uppercase tracking-wide">
                                         <Loader size={12} className="animate-spin" />
-                                        <span>AI Legal Assistant is thinking...</span>
+                                        <span>{t('ai_thinking')}</span>
                                     </div>
                                     <div className="flex gap-1.5 h-3 items-center">
                                         <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
@@ -378,7 +460,7 @@ export default function AIChat() {
             {quickReplies.length > 0 && (
                 <div className="absolute bottom-16 md:bottom-20 left-0 right-0 px-4 pb-2">
                     <div className="bg-[var(--glass-bg)] backdrop-blur-lg border border-[var(--glass-border)] rounded-2xl p-3 shadow-lg">
-                        <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Suggested Questions:</p>
+                        <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('suggested_questions')}</p>
                         <div className="flex flex-wrap gap-2">
                             {quickReplies.map((reply, idx) => (
                                 <button

@@ -14,9 +14,6 @@ export default function ResultCard({ match, defaultExpanded = false }) {
         Emergency: 'bg-red-600 text-white border-red-700 animate-pulse'
     };
 
-    console.log(`Issue: ${match.title}
-Category: ${match.category}
-Severity: ${match.severity}`);
 
 
     const downloadSummary = () => {

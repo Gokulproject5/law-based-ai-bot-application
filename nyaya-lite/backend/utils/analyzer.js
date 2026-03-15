@@ -286,6 +286,15 @@ function analyzeText(text, lawData) {
         })),
         matches: topMatches.map(r => r.law),
         steps,
+        case_analysis: {
+            win_probability: urgency_level === 'Emergency' ? 45 : urgency_level === 'High' ? 60 : 75,
+            likely_outcome: "Based on the matched statutes, a favorable outcome is possible with strong documentation.",
+            improvement_suggestions: [
+                "Ensure all digital evidence is backed up and timestamped.",
+                "Identify any independent witnesses who can corroborate your claim.",
+                "Send a formal written notice before initiating legal proceedings."
+            ]
+        },
         emergency_buttons,
         confidence_score: topMatches.length > 0 ? 0.7 : 0,
         risk_level: urgency_level,

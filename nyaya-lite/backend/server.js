@@ -13,6 +13,7 @@ const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const apiRoutes = require('./routes/api');
 const lawRoutes = require('./routes/laws');
+const ttsRoutes = require('./routes/tts');
 
 require('dotenv').config();
 
@@ -45,6 +46,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 // Routes
 app.use('/api', apiRoutes);
 app.use('/api/laws', lawRoutes); // Mount laws route
+app.use('/api', ttsRoutes);      // TTS proxy route
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../frontend/dist')));

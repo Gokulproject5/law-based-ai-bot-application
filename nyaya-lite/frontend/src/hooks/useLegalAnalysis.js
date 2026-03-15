@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import i18n from '../i18n';
 
 // Generate a unique session ID for this browser session
 const generateSessionId = () => {
@@ -34,7 +35,8 @@ export function useLegalAnalysis() {
 
             const r = await axios.post(`${API_URL}/api/analyze`, {
                 text,
-                sessionId // Include session ID for context
+                sessionId, // Include session ID for context
+                language: i18n.language.split('-')[0] // e.g. 'ta', 'hi', 'en'
             }, {
                 timeout: 60000 // 60s timeout for AI analysis
             });

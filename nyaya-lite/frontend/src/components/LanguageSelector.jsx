@@ -11,7 +11,7 @@ export default function LanguageSelector() {
 
     return (
         <div className="relative group z-50">
-            <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/10 transition-colors text-white">
+            <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/10 transition-colors dark:text-white">
                 <Globe size={20} />
                 <span className="text-sm font-medium uppercase">{i18n.language.split('-')[0]}</span>
             </button>
