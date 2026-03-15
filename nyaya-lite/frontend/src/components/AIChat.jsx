@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User, Bot, Loader, BookOpen, Phone, MapPin, FileText, Shield, Activity, ExternalLink, Volume2, VolumeX } from 'lucide-react';
+import { Send, User, Bot, Loader, BookOpen, Phone, MapPin, FileText, Shield, Activity, ExternalLink, Volume2, VolumeX, Clock, AlertCircle, IndianRupee } from 'lucide-react';
 import { useSpeech } from '../hooks/useSpeech';
 import { useLegalAnalysis } from '../hooks/useLegalAnalysis';
 import { useTranslation } from 'react-i18next';
@@ -31,13 +31,20 @@ export default function AIChat() {
     const [inputValue, setInputValue] = useState("");
     const [quickReplies, setQuickReplies] = useState([]);
     const messagesEndRef = useRef(null);
+    const latestMessageRef = useRef(null);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollToLatest = () => {
+        if (latestMessageRef.current) {
+            latestMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
     };
 
     useEffect(() => {
-        scrollToBottom();
+        if (!loading) {
+            scrollToLatest();
+        } else {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
     }, [messages, loading]);
 
     // Handle new results from the hook
@@ -123,7 +130,11 @@ export default function AIChat() {
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth mb-20 pb-20">
                 {messages.map((msg, idx) => (
-                    <div key={idx} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2`}>
+                    <div 
+                        key={idx} 
+                        ref={idx === messages.length - 1 ? latestMessageRef : null}
+                        className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2`}
+                    >
                         <div className={`flex gap-3 max-w-[85%] ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
 
                             {/* Avatar */}
@@ -383,9 +394,50 @@ export default function AIChat() {
                                                         </div>
                                                     )}
 
+                                                    {/* Expected Duration */}
+                                                    {msg.data.case_analysis.expected_duration && (
+                                                        <div className="py-3 border-b border-[var(--border-color)] border-dashed">
+                                                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                                                                <Clock size={10} /> {t('expected_duration')}
+                                                            </p>
+                                                            <p className="text-sm text-[var(--text-secondary)]">
+                                                                {msg.data.case_analysis.expected_duration}
+                                                            </p>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Key Challenges */}
+                                                    {msg.data.case_analysis.key_challenges && msg.data.case_analysis.key_challenges.length > 0 && (
+                                                        <div className="py-3 border-b border-[var(--border-color)] border-dashed">
+                                                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                                                <AlertCircle size={10} /> {t('key_challenges')}
+                                                            </p>
+                                                            <ul className="space-y-1.5">
+                                                                {msg.data.case_analysis.key_challenges.map((challenge, cIdx) => (
+                                                                    <li key={cIdx} className="flex gap-2 items-start text-xs text-[var(--text-secondary)]">
+                                                                        <div className="w-1 h-1 rounded-full bg-red-400/50 mt-1.5 flex-shrink-0" />
+                                                                        <span>{challenge}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Estimated Cost Awareness */}
+                                                    {msg.data.case_analysis.estimated_cost_range && (
+                                                        <div className="py-3 border-b border-[var(--border-color)] border-dashed">
+                                                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                                                                <IndianRupee size={10} /> {t('estimated_cost')}
+                                                            </p>
+                                                            <p className="text-sm text-[var(--text-secondary)]">
+                                                                {msg.data.case_analysis.estimated_cost_range}
+                                                            </p>
+                                                        </div>
+                                                    )}
+
                                                     {/* Suggestions to increase probability */}
                                                     {msg.data.case_analysis.improvement_suggestions && msg.data.case_analysis.improvement_suggestions.length > 0 && (
-                                                        <div>
+                                                        <div className="pt-3">
                                                             <p className="text-xs font-bold text-[var(--text-muted)] uppercase mb-3">{t('how_to_increase_probability') || 'How to Strengthen Your Case'}</p>
                                                             <ul className="space-y-2">
                                                                 {msg.data.case_analysis.improvement_suggestions.map((sug, sIdx) => (

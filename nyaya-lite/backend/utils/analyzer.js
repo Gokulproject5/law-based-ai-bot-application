@@ -136,6 +136,20 @@ function calculateDynamicSeverity(baseSeverity, entities) {
     return severity;
 }
 
+const lawTokenCache = new Map();
+
+function getLawTokens(law) {
+    if (lawTokenCache.has(law._id)) return lawTokenCache.get(law._id);
+    
+    const titleTokens = tokenizer.tokenize(law.title.toLowerCase()).map(t => stemmer.stem(t));
+    const descTokens = law.description ? tokenizer.tokenize(law.description.toLowerCase()).map(t => stemmer.stem(t)) : [];
+    const keywordTokens = law.keywords ? law.keywords.map(k => stemmer.stem(k.toLowerCase())) : [];
+    
+    const tokens = { titleTokens, descTokens, keywordTokens };
+    lawTokenCache.set(law._id, tokens);
+    return tokens;
+}
+
 function analyzeText(text, lawData) {
     if (!text) return { matches: [], analysis: {} };
 
@@ -150,6 +164,7 @@ function analyzeText(text, lawData) {
 
     const results = lawData.map(law => {
         let score = 0;
+        const lawTokens = getLawTokens(law);
 
         // 1. Phrase Match (Highest priority)
         phraseMatches.forEach(phrase => {
@@ -162,26 +177,28 @@ function analyzeText(text, lawData) {
         });
 
         // 2. Keyword Match (High weight)
-        if (law.keywords) {
-            law.keywords.forEach(k => {
-                const stemmedKey = stemmer.stem(k.toLowerCase());
+        if (lawTokens.keywordTokens.length > 0) {
+            lawTokens.keywordTokens.forEach(stemmedKey => {
                 if (stemmedTokens.includes(stemmedKey)) {
                     score += 10;
-                } else {
-                    // Fuzzy match for keywords
+                }
+            });
+            
+            // Fuzzy match for raw keywords
+            if (law.keywords) {
+                law.keywords.forEach(k => {
                     tokens.forEach(t => {
-                        if (getEditDistance(t, k.toLowerCase()) <= 1) { // Allow 1 typo
+                        if (getEditDistance(t, k.toLowerCase()) <= 1) { // Allow  TYPO
                             score += 8;
                         }
                     });
-                }
-            });
+                });
+            }
         }
 
         // 3. Title Match
-        const titleTokens = tokenizer.tokenize(law.title.toLowerCase());
-        titleTokens.forEach(t => {
-            if (stemmedTokens.includes(stemmer.stem(t))) score += 5;
+        lawTokens.titleTokens.forEach(t => {
+            if (stemmedTokens.includes(t)) score += 5;
         });
 
         // 4. Category Context Match
@@ -194,12 +211,9 @@ function analyzeText(text, lawData) {
         });
 
         // 5. Description Match (Low weight)
-        if (law.description) {
-            const descTokens = tokenizer.tokenize(law.description.toLowerCase());
-            descTokens.forEach(t => {
-                if (stemmedTokens.includes(stemmer.stem(t))) score += 1;
-            });
-        }
+        lawTokens.descTokens.forEach(t => {
+            if (stemmedTokens.includes(t)) score += 1;
+        });
 
         // 6. Severity boost for child-related laws if child detected
         if (entities.involves_child && law.category.includes('Child')) {
@@ -276,6 +290,116 @@ function analyzeText(text, lawData) {
         }).join('\n')
         : '- No specific IPC section matched. Please describe your situation in more detail.';
 
+    // Category-specific Case Analysis Logic
+    let case_analysis = {
+        win_probability: 70,
+        likely_outcome: "A favorable outcome is possible with proper legal representation and evidence.",
+        expected_duration: "6-18 months depending on court backlog.",
+        key_challenges: [
+            "Delayed court proceedings",
+            "Verification of submitted documents",
+            "Availability of legal counsel"
+        ],
+        estimated_cost_range: "Medium - Includes lawyer fees and filing charges.",
+        improvement_suggestions: [
+            "Consult a lawyer specializing in " + primary_issue + ".",
+            "Gather all related documents and maintain a clear timeline of events.",
+            "Avoid sharing details of the case on social media."
+        ]
+    };
+
+    if (primary_issue.includes('Criminal') || urgency_level === 'Emergency') {
+        case_analysis = {
+            win_probability: 45,
+            likely_outcome: "Criminal cases require a high burden of proof. Legal representation is critical.",
+            expected_duration: "1-3 years for trial completion.",
+            key_challenges: [
+                "Strict evidence requirements",
+                "Police investigation timelines",
+                "Securing reliable witnesses"
+            ],
+            estimated_cost_range: "High - Requires specialized criminal defense.",
+            improvement_suggestions: [
+                "File an FIR at the nearest police station immediately.",
+                "Identify and list all potential witnesses.",
+                "Do not engage in any confrontation with the accused parties.",
+                "Keep a log of all interactions with the police."
+            ]
+        };
+    } else if (primary_issue.includes('Cyber') || primary_issue.includes('Fraud')) {
+        case_analysis = {
+            win_probability: 55,
+            likely_outcome: "Recovery depends on how quickly the incident is reported to authorities.",
+            expected_duration: "3-12 months for investigation.",
+            key_challenges: [
+                "Tracking anonymous digital footprints",
+                "Cross-jurisdictional complexities",
+                "Rapid disappearance of digital evidence"
+            ],
+            estimated_cost_range: "Medium - Technical expertise may be required.",
+            improvement_suggestions: [
+                "Immediately report to the National Cyber Crime Portal (cybercrime.gov.in).",
+                "Take screenshots of all fraudulent transactions or messages.",
+                "Freeze your bank accounts and credit cards involved in the incident.",
+                "Preserve all digital logs and communication records."
+            ]
+        };
+    } else if (primary_issue.includes('Consumer')) {
+        case_analysis = {
+            win_probability: 80,
+            likely_outcome: "Consumer courts are generally favorable towards individuals with valid proofs of purchase.",
+            expected_duration: "4-9 months for resolution.",
+            key_challenges: [
+                "Proving product defects",
+                "Company's denial of service",
+                "Lengthy appeals process"
+            ],
+            estimated_cost_range: "Low - Nominal court fees; lawyer not mandatory for small claims.",
+            improvement_suggestions: [
+                "Preserve the original bill, warranty card, and any repair receipts.",
+                "Send a formal notice to the company's customer grievance cell.",
+                "Keep records of all emails and calls made to the service provider.",
+                "Consider filing an online complaint through the NCH portal."
+            ]
+        };
+    } else if (primary_issue.includes('Civil') || primary_issue.includes('Property')) {
+        case_analysis = {
+            win_probability: 65,
+            likely_outcome: "Strong documentation and registered deeds significantly improve success rates.",
+            expected_duration: "2-5 years for final judgment.",
+            key_challenges: [
+                "Historical title disputes",
+                "Encroachment verification",
+                "Complex property laws"
+            ],
+            estimated_cost_range: "High - Extensive documentation and multiple hearings.",
+            improvement_suggestions: [
+                "Ensure all property titles and mutation records are up to date.",
+                "Collect old tax receipts and utility bills as proof of possession.",
+                "Check the Encumbrance Certificate (EC) for any prior claims.",
+                "Try to resolve through mediation before entering long-term litigation."
+            ]
+        };
+    } else if (primary_issue.includes('Employment')) {
+        case_analysis = {
+            win_probability: 70,
+            likely_outcome: "Labor laws provide strong protections against wrongful actions if documented properly.",
+            expected_duration: "6-12 months via Labor Court.",
+            key_challenges: [
+                "Proving verbal agreements",
+                "Retaliation from employer",
+                "Employer's financial status"
+            ],
+            estimated_cost_range: "Medium - Labor law advocates are generally accessible.",
+            improvement_suggestions: [
+                "Preserve your appointment letter and salary slips.",
+                "Document all internal communications (emails/memos) regarding the issue.",
+                "Check your employment contract for specific dispute resolution clauses.",
+                "Prepare a witness list of colleagues if the matter relates to workplace conduct."
+            ]
+        };
+    }
+
     return {
         summary: `Local Analysis: Potential ${primary_issue} incident detected.`,
         logic_path: `local_matching → category:${primary_issue}`,
@@ -286,15 +410,7 @@ function analyzeText(text, lawData) {
         })),
         matches: topMatches.map(r => r.law),
         steps,
-        case_analysis: {
-            win_probability: urgency_level === 'Emergency' ? 45 : urgency_level === 'High' ? 60 : 75,
-            likely_outcome: "Based on the matched statutes, a favorable outcome is possible with strong documentation.",
-            improvement_suggestions: [
-                "Ensure all digital evidence is backed up and timestamped.",
-                "Identify any independent witnesses who can corroborate your claim.",
-                "Send a formal written notice before initiating legal proceedings."
-            ]
-        },
+        case_analysis,
         emergency_buttons,
         confidence_score: topMatches.length > 0 ? 0.7 : 0,
         risk_level: urgency_level,

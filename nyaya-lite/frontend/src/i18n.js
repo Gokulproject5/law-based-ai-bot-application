@@ -155,7 +155,10 @@ const resources = {
             "case_legal_analysis": "Legal Strategy & Analysis",
             "win_probability": "Probable Chance of Winning",
             "likely_outcome": "Likely Outcome",
-            "how_to_increase_probability": "How to Strengthen Your Case"
+            "how_to_increase_probability": "How to Strengthen Your Case",
+            "expected_duration": "Expected Duration",
+            "key_challenges": "Key Challenges",
+            "estimated_cost": "Estimated Cost Awareness"
         }
     },
     hi: {
@@ -314,7 +317,10 @@ const resources = {
             "case_legal_analysis": "कानूनी रणनीति और विश्लेषण",
             "win_probability": "जीतने की संभावित संभावना",
             "likely_outcome": "संभावित परिणाम",
-            "how_to_increase_probability": "अपने पक्ष को कैसे मजबूत करें"
+            "how_to_increase_probability": "अपने पक्ष को कैसे मजबूत करें",
+            "expected_duration": "अपेक्षित अवधि",
+            "key_challenges": "मुख्य चुनौतियां",
+            "estimated_cost": "अनुमानित लागत जागरूकता"
         }
     },
     ta: {
@@ -473,7 +479,10 @@ const resources = {
             "case_legal_analysis": "சட்ட மூலோபாயம் மற்றும் பகுப்பாய்வு",
             "win_probability": "வெற்றி பெறுவதற்கான சாத்தியமான வாய்ப்பு",
             "likely_outcome": "சாத்தியமான முடிவு",
-            "how_to_increase_probability": "உங்கள் வழக்கை எவ்வாறு வலுப்படுத்துவது"
+            "how_to_increase_probability": "உங்கள் வழக்கை எவ்வாறு வலுப்படுத்துவது",
+            "expected_duration": "எதிர்பார்க்கப்படும் காலம்",
+            "key_challenges": "முக்கிய சவால்கள்",
+            "estimated_cost": "மதிப்பிடப்பட்ட செலவு விழிப்புணர்வு"
         }
     }
 };

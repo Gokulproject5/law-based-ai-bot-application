@@ -8,6 +8,7 @@ const LawEntry = require('../models/LawEntry');
 const LegalSection = require('../models/LegalSection');
 const Lawyer = require('../models/Lawyer');
 const { searchNearbyLawyers, searchNearbyPolice, searchNearbyCourts, getLawyerDetails } = require('../utils/googlePlacesAPI');
+const cache = require('../utils/cache');
 
 // Validation Schema
 const analyzeSchema = Joi.object({
@@ -47,8 +48,13 @@ router.post('/analyze', async (req, res) => {
         // Get full conversation context
         const conversationContext = conversationManager.getFullContext(sessionId);
 
-        // Fetch all laws for analysis
-        const allLaws = await LawEntry.find({}).lean();
+        // Fetch all laws for analysis (With Caching)
+        let allLaws = cache.get("all_laws");
+        if (!allLaws) {
+            console.log("📥 Cache Miss: Fetching laws from MongoDB...");
+            allLaws = await LawEntry.find({}).lean();
+            cache.set("all_laws", allLaws);
+        }
 
         // ARCITECTURE STEP 2: Intent Detection
         console.log(`🧠 NLP: Detecting intent for "${text}"...`);
@@ -67,9 +73,13 @@ router.post('/analyze', async (req, res) => {
             // 1. RAG ARCHITECTURE: Semantic Retrieval
             console.log(`🔍 RAG: Performing semantic search for "${text}"`);
 
-            // Load both high-level laws and granular sections
-            const allLaws = await LawEntry.find();
-            const allSections = await LegalSection.find({ embedding: { $exists: true, $not: { $size: 0 } } });
+            // Load both high-level laws and granular sections (With Caching)
+            let allSections = cache.get("all_sections");
+            if (!allSections) {
+                console.log("📥 Cache Miss: Fetching sections from MongoDB...");
+                allSections = await LegalSection.find({ embedding: { $exists: true, $not: { $size: 0 } } }).lean();
+                cache.set("all_sections", allSections);
+            }
 
             // Search across both sets
             const relevantLaws = await performRAGSearch(text, [...allLaws, ...allSections]);

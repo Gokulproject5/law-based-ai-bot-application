@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 // Components
 import Navigation from './components/Navigation';
-import AIChat from './components/AIChat';
 import LanguageSelector from './components/LanguageSelector';
 import DailyTip from './components/DailyTip';
 import DisclaimerPopup from './components/DisclaimerPopup';
@@ -18,6 +17,7 @@ import { useTheme } from './context/ThemeContext';
 import AdminView from './components/AdminView';
 
 // Lazy load route components
+const AIChat = lazy(() => import('./components/AIChat'));
 const CategoryView = lazy(() => import('./components/CategoryView'));
 const TemplateGenerator = lazy(() => import('./components/TemplateGenerator'));
 const MapView = lazy(() => import('./components/MapView'));
@@ -51,14 +51,10 @@ export default function App() {
                         <h2 className="text-xl font-semibold opacity-80">{t('greeting')}</h2>
                     </div>
 
-                    <div className="flex items-center gap-4 ">
-                        <DailyTip compact={true}  />
-                        <div className="hidden md:block ">
-                            <LanguageSelector />
-                        </div>
-                        <div>
-                            <EmergencyButton compact={true} />
-                        </div>
+                    <div className="flex items-center gap-3">
+                        <DailyTip />
+                        <LanguageSelector />
+                        <EmergencyButton compact={true} />
                         <button
                             onClick={() => setIsSettingsOpen(true)}
                             className="p-2 rounded-full hover:bg-[var(--bg-tertiary)] transition-colors border border-[var(--border-color)]"
@@ -90,7 +86,7 @@ export default function App() {
                                 </div>
                             } />
                             <Route path="/categories" element={<CategoryView />} />
-                            {/* <Route path="/admin" element={<AdminView />} /> */}
+                            <Route path="/admin" element={<AdminView />} />
                             <Route path="/templates" element={<TemplateGenerator />} />
                             <Route path="/map" element={
                                 <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-140px)]">
